@@ -1,0 +1,7 @@
+.operateur_container {
+  background-color: rgb(245, 146, 62);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  grid-area: operateur;
+}
