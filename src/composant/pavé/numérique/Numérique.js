@@ -3,7 +3,7 @@ import React from 'react';
 import Bouton from '../../partagé/bouton/Bouton';
 import './Numérique.css';
 
-export default function Numérique (props) {
+export default function Numérique(props) {
   return (
     <div className="numerique_container">
       <Bouton label="9" />

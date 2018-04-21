@@ -6,7 +6,7 @@ import Opérateur from './opérateur/Opérateur';
 
 import './Pavé.css';
 
-export default function Pavé (props) {
+export default function Pavé(props) {
   return (
     <div className="touche_wrapper">
       <Fonction />

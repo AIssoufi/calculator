@@ -1,10 +1,23 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import './Bouton.css';
 
-export default function Bouton (props) {
+function Bouton({ onClick, label, valeur, isLarge }) {
   let style = 'btn';
-  style += props.isLarge ? ' btn-large' : '';
+  style += isLarge ? ' btn-large' : '';
   
-  return <div className={style}>{ props.label }</div>;
+  return <div onClick={ e => console.log(label) } className={style}>{ label }</div>;
 };
+
+Bouton.PropTypes = {
+  onClick: PropTypes.func,
+  label: PropTypes.string.isRequired, 
+  valeur: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]), 
+  isLarge: PropTypes.bool
+}
+
+export default Bouton;
