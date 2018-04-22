@@ -1,8 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 import './index.css';
+import reduceurCalculatrice from './reducers';
 import Calculatrice from './Calculatrice';
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<Calculatrice />, document.getElementById('root'));
+const store = createStore(reduceurCalculatrice);
+
+ReactDOM.render(
+  <Provider store={store}>
+    <Calculatrice />
+  </Provider>,
+  document.getElementById('root')
+);
 registerServiceWorker();
