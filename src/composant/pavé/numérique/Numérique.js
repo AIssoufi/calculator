@@ -3,20 +3,20 @@ import React from 'react';
 import Bouton from '../../partagé/bouton/Bouton';
 import './Numérique.css';
 
-export default function Numérique(props) {
+export default function Numérique({ onTouchNumeriqueClick }) {
   return (
     <div className="numerique_container">
-      <Bouton label="9" />
-      <Bouton label="8" />
-      <Bouton label="7" />
-      <Bouton label="6" />
-      <Bouton label="5" />
-      <Bouton label="4" />
-      <Bouton label="3" />
-      <Bouton label="2" />
-      <Bouton label="1" />
-      <Bouton label="." />
-      <Bouton label="0" isLarge />
+      <Bouton onClick={ onTouchNumeriqueClick } label="9" />
+      <Bouton onClick={ onTouchNumeriqueClick } label="8" />
+      <Bouton onClick={ onTouchNumeriqueClick } label="7" />
+      <Bouton onClick={ onTouchNumeriqueClick } label="6" />
+      <Bouton onClick={ onTouchNumeriqueClick } label="5" />
+      <Bouton onClick={ onTouchNumeriqueClick } label="4" />
+      <Bouton onClick={ onTouchNumeriqueClick } label="3" />
+      <Bouton onClick={ onTouchNumeriqueClick } label="2" />
+      <Bouton onClick={ onTouchNumeriqueClick } label="1" />
+      <Bouton onClick={ onTouchNumeriqueClick } label="." />
+      <Bouton onClick={ onTouchNumeriqueClick } label="0" isLarge />
     </div>
   );
 };

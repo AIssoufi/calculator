@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import {
   AFFICHER,
   ADDITIONNER,
-  APPUYER_SUR,
+  APPUYER_SUR_UNE_TOUCHE_NUMERIQUE,
   DIVISER,
   MULTIPLIER,
   REINITIALISER,
@@ -14,10 +14,9 @@ import {
 const initialState = {
   resultat: 0,
   saisiIntermédiaire: 0,
-  afficher: ChoixAffichage.MONTRER_SAISI_INTERMEDIAIRE
 };
 
-function operation(state = initialState, action) {
+function pave(state = initialState, action) {
   switch(action.type) {
     case ADDITIONNER:
       return {
@@ -48,12 +47,23 @@ function operation(state = initialState, action) {
         ...state,
         afficher: ChoixAffichage.MONTRER_RESULTAT
       };
+    case APPUYER_SUR_UNE_TOUCHE_NUMERIQUE:
+      return {
+        ...state,
+        saisiIntermédiaire: ( '' + state.saisiIntermédiaire + action.unChiffre ) * 1
+      };
+    case REINITIALISER:
+      return {
+        ...state,
+        resultat: 0,
+        saisiIntermédiaire: 0
+      };
     default:
       return state;
   }
 }
 
-function ecran(state = initialState, action) {
+function ecran(state = { afficher: ChoixAffichage.MONTRER_SAISI_INTERMEDIAIRE }, action) {
    switch(action.type) {
      case AFFICHER:
        return {
@@ -65,37 +75,10 @@ function ecran(state = initialState, action) {
    }
 };
 
-function numerique(state = initialState, action) {
-  switch(action.type) {
-    case APPUYER_SUR:
-      return {
-        ...state,
-        saisiIntermédiaire: ( '' + state.saisiIntermédiaire + action.unChiffre ) * 1
-      };
-    default:
-      return state;
-  }
-};
-
-function fonction(state = initialState, action) {
-  switch(action.type) {
-    case REINITIALISER:
-      return {
-        ...state,
-        resultat: 0,
-        saisiIntermédiaire: 0,
-        afficher: ChoixAffichage.MONTRER_SAISI_INTERMEDIAIRE
-      };
-    default:
-      return state;
-  }
-};
 
 const reduceurCalculatrice = combineReducers({
-  operation,
-  ecran,
-  numerique,
-  fonction
+  pave,
+  ecran
 });
 
 export default reduceurCalculatrice;

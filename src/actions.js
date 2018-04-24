@@ -3,7 +3,7 @@
  */
 export const AFFICHER      = 'AFFCIHER';
 export const ADDITIONNER   = 'ADDITIONNER';
-export const APPUYER_SUR   = 'APPUYER_SUR';
+export const APPUYER_SUR_UNE_TOUCHE_NUMERIQUE   = 'APPUYER_SUR_UNE_TOUCHE_NUMERIQUE';
 export const DIVISER       = 'DIVISER';
 export const MULTIPLIER    = 'MULTIPLIER';
 export const REINITIALISER = 'REINITIALISER';
@@ -31,7 +31,7 @@ export function affcher(typeAffichage) {
 }
 
 export function appuyerSur(unChiffre) {
-   return { type: APPUYER_SUR, unChiffre };
+   return { type: APPUYER_SUR_UNE_TOUCHE_NUMERIQUE, unChiffre };
 }
  
 export function diviser() {

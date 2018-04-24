@@ -1,8 +1,10 @@
 import React from 'react';
 
-import Numérique from './numérique/Numérique';
 import Fonction  from './fonction/Fonction';
-import Opérateur from './opérateur/Opérateur';
+
+// Containers
+import NumériqueContainer from '../../containers/NumériqueContainer';
+import OpérateurContainer from '../../containers/OpérateurContainer';
 
 import './Pavé.css';
 
@@ -10,8 +12,8 @@ export default function Pavé(props) {
   return (
     <div className="touche_wrapper">
       <Fonction />
-      <Numérique />
-      <Opérateur />
+      <NumériqueContainer />
+      <OpérateurContainer />
     </div>
   );
 };

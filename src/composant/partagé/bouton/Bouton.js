@@ -7,7 +7,7 @@ function Bouton({ onClick, label, valeur, isLarge }) {
   let style = 'btn';
   style += isLarge ? ' btn-large' : '';
   
-  return <div onClick={ e => console.log(label) } className={style}>{ label }</div>;
+  return <div onClick={ () => { onClick(label); }} className={style}>{ label }</div>;
 };
 
 Bouton.PropTypes = {
@@ -18,6 +18,6 @@ Bouton.PropTypes = {
     PropTypes.number
   ]), 
   isLarge: PropTypes.bool
-}
+};
 
 export default Bouton;
