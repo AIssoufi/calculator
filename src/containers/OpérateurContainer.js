@@ -6,19 +6,19 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onClcikOpérateurAddition: () => {
       dispatch(addtionner());
-      dispatch(affcher(ChoixAffichage.MONTRER_RESULTAT));
+      dispatch(affcher(ChoixAffichage.MONTRER_OPERANDE_1));
     },
     onClcikOpérateurDivision: () => {
       dispatch(diviser());
-      dispatch(affcher(ChoixAffichage.MONTRER_RESULTAT));
+      dispatch(affcher(ChoixAffichage.MONTRER_OPERANDE_1));
     },
     onClcikOpérateurMultiplier: () => {
       dispatch(multiplier());
-      dispatch(affcher(ChoixAffichage.MONTRER_RESULTAT));
+      dispatch(affcher(ChoixAffichage.MONTRER_OPERANDE_1));
     },
     onClcikOpérateurSoustraire: () => {
       dispatch(soustraire());
-      dispatch(affcher(ChoixAffichage.MONTRER_RESULTAT));
+      dispatch(affcher(ChoixAffichage.MONTRER_OPERANDE_1));
     },
     onClcikOpérateurValider: () => {
       dispatch(valider());

@@ -8,6 +8,10 @@ const getResultat = (pave, ecran) => {
       return pave.resultat;
     case ChoixAffichage.MONTRER_SAISI_INTERMEDIAIRE:
       return pave.saisiIntermédiaire;
+    case ChoixAffichage.MONTRER_OPERANDE_1:
+      return pave.opérande1;
+    case ChoixAffichage.MONTRER_OPERANDE_2:
+      return pave.opérande2;
     default:
       return pave.saisiIntermédiaire;
   }
