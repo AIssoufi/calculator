@@ -1,26 +1,27 @@
-import Opérateur from '../composant/pavé/opérateur/Opérateur';
+import Opérateur from '../renders/pavé/opérateur/Opérateur';
 import { connect } from 'react-redux';
-import { addtionner, diviser, multiplier, soustraire, valider, affcher, ChoixAffichage } from '../actions';
+import { addtionner, diviser, multiplier, soustraire, valider, affcher } from '../../redux/actions/générateurs';
+import { ChoixAffichage } from '../../redux/actions/types';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onClcikOpérateurAddition: () => {
+    appuyerLaToucheAddition: () => {
       dispatch(addtionner());
       dispatch(affcher(ChoixAffichage.MONTRER_OPERANDE_1));
     },
-    onClcikOpérateurDivision: () => {
+    appuyerLaToucheDivision: () => {
       dispatch(diviser());
       dispatch(affcher(ChoixAffichage.MONTRER_OPERANDE_1));
     },
-    onClcikOpérateurMultiplier: () => {
+    appuyerLaToucheMultiplier: () => {
       dispatch(multiplier());
       dispatch(affcher(ChoixAffichage.MONTRER_OPERANDE_1));
     },
-    onClcikOpérateurSoustraire: () => {
+    appuyerLaToucheSoustraire: () => {
       dispatch(soustraire());
       dispatch(affcher(ChoixAffichage.MONTRER_OPERANDE_1));
     },
-    onClcikOpérateurValider: () => {
+    appuyerLaToucheÉgale: () => {
       dispatch(valider());
       dispatch(affcher(ChoixAffichage.MONTRER_RESULTAT));
     }

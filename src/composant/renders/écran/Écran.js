@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 
 import './Écran.css';
 
-function Écran({ resultat }) {
+function Écran({ résultat }) {
   return (
     <div className="ecran_wrapper">
-      <div id="resultat">{ resultat }</div>
+      <div id="resultat">{ résultat }</div>
     </div>
   );
 };
 
-Écran.PropTypes = {
-  resultat: PropTypes.oneOfType([
+Écran.propTypes = {
+  résultat: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number
   ]).isRequired

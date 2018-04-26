@@ -4,11 +4,12 @@
   display: flex;
   justify-content: flex-end;
   padding: 5px;
+  overflow-x: scroll;
 }
 
 #resultat {
   color: #fff;
   font-size: 3em;
-  font-weight: 400;
+  font-weight: 100;
   text-align: right;
 }

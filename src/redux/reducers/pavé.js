@@ -1,17 +1,17 @@
-import { combineReducers } from 'redux';
 import {
-  AFFICHER,
   ADDITIONNER,
-  APPUYER_SUR_UNE_TOUCHE_NUMERIQUE,
+  APPUYER_SUR_UNE_TOUCHE_NUMÉRIQUE,
   DIVISER,
   MULTIPLIER,
-  REINITIALISER,
+  TOUT_ÉFFACER,
   SOUSTRAIRE,
   VALIDER,
+  POURCENTAGE,
+  INVERSER_LE_SIGNE,
   ChoixAffichage
-} from './actions';
+} from '../actions/types';
 
-const initialState = {
+const étatInitial = {
   resultat: 0,
   saisiIntermédiaire: 0,
   opérande1: 0,
@@ -34,7 +34,7 @@ function claculer({ opérateur, opérande1, opérande2 }) {
   }
 }
 
-function pave(state = initialState, action) {
+function pavé(state = étatInitial, action) {
   switch(action.type) {
     case ADDITIONNER:
       return (state.opérande1 && state.opérande2) ? {
@@ -51,19 +51,19 @@ function pave(state = initialState, action) {
         opérateur: '+'
       };
     case DIVISER:
-    return (state.opérande1 && state.opérande2) ? {
-      ...state,
-      resultat: claculer(state),
-      opérande1: claculer(state),
-      opérande2: 0,
-      opérateur: '/'
-    } : {
-      ...state,
-      opérande1: (!state.opérande1) ? state.saisiIntermédiaire : state.opérande1,
-      opérande2: (state.opérande1 && !state.opérande2) ? state.saisiIntermédiaire : state.opérande2,
-      saisiIntermédiaire: 0,
-      opérateur: '/'
-    };
+      return (state.opérande1 && state.opérande2) ? {
+        ...state,
+        resultat: claculer(state),
+        opérande1: claculer(state),
+        opérande2: 0,
+        opérateur: '/'
+      } : {
+        ...state,
+        opérande1: (!state.opérande1) ? state.saisiIntermédiaire : state.opérande1,
+        opérande2: (state.opérande1 && !state.opérande2) ? state.saisiIntermédiaire : state.opérande2,
+        saisiIntermédiaire: 0,
+        opérateur: '/'
+      };
     case MULTIPLIER:
       return (state.opérande1 && state.opérande2) ? {
         ...state,
@@ -106,12 +106,13 @@ function pave(state = initialState, action) {
         opérande2: 0,
         saisiIntermédiaire: 0
       };
-    case APPUYER_SUR_UNE_TOUCHE_NUMERIQUE:
+    case APPUYER_SUR_UNE_TOUCHE_NUMÉRIQUE:
+      const nouveauSaisi = state.saisiIntermédiaire + action.unChiffre;
       return {
         ...state,
-        saisiIntermédiaire: ( '' + state.saisiIntermédiaire + action.unChiffre ) * 1
+        saisiIntermédiaire: action.unChiffre === '.' ? '' + nouveauSaisi : parseFloat(nouveauSaisi) 
       };
-    case REINITIALISER:
+    case TOUT_ÉFFACER:
       return {
         ...state,
         resultat: 0,
@@ -119,26 +120,25 @@ function pave(state = initialState, action) {
         opérande1: 0,
         opérande2: 0
       };
+    case POURCENTAGE:
+      return {
+        ...state,
+        resultat: (action.typeAffichage === ChoixAffichage.MONTRER_RESULTAT) ? state.resultat / 100 : state.resultat,
+        saisiIntermédiaire: (action.typeAffichage === ChoixAffichage.MONTRER_SAISI_INTERMEDIAIRE)  ? state.saisiIntermédiaire / 100 : state.saisiIntermédiaire,
+        opérande1: (action.typeAffichage === ChoixAffichage.MONTRER_OPERANDE_1) ? state.opérande1 / 100 : state.opérande1,
+        opérande2: (action.typeAffichage === ChoixAffichage.MONTRER_OPERANDE_2) ? state.opérande2 / 100 : state.opérande2
+      };
+    case INVERSER_LE_SIGNE:
+      return {
+        ...state,
+        resultat: (action.typeAffichage === ChoixAffichage.MONTRER_RESULTAT) ? state.resultat * -1 : state.resultat,
+        saisiIntermédiaire: (action.typeAffichage === ChoixAffichage.MONTRER_SAISI_INTERMEDIAIRE) ?  -1 * state.saisiIntermédiaire : state.saisiIntermédiaire,
+        opérande1: (action.typeAffichage === ChoixAffichage.MONTRER_OPERANDE_1) ? state.opérande1 * -1 : state.opérande1,
+        opérande2: (action.typeAffichage === ChoixAffichage.MONTRER_OPERANDE_2) ? state.opérande2 * -1 : state.opérande2
+      };
     default:
       return state;
   }
 }
 
-function ecran(state = { afficher: ChoixAffichage.MONTRER_SAISI_INTERMEDIAIRE }, action) {
-   switch(action.type) {
-     case AFFICHER:
-       return {
-         ...state,
-         afficher: action.typeAffichage,
-       };
-     default:
-       return state;
-   }
-};
-
-const reduceurCalculatrice = combineReducers({
-  pave,
-  ecran
-});
-
-export default reduceurCalculatrice;
+export default pavé;

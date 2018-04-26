@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 
-//import Écran from './composant/écran/Écran';
-import ÉcranContainer from './containers/ÉcranContainer'
-import Pavé  from './composant/pavé/Pavé';
+import ÉcranContainer from './composant/containers/ÉcranContainer'
+import Pavé  from './composant/renders/pavé/Pavé';
 
 import './Calculatrice.css';
 
