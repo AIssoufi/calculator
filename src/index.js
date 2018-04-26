@@ -5,8 +5,8 @@ import { createStore } from 'redux';
 
 import './index.css';
 
-import reduceurCalculatrice from './redux/reducers/reducer';
-import Calculatrice from './Calculatrice';
+import reduceurCalculatrice from './app/redux/reducers/reducer';
+import Calculatrice from './app/Calculatrice';
 import registerServiceWorker from './registerServiceWorker';
 
 /* eslint-disable no-underscore-dangle */

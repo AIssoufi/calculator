@@ -4,9 +4,15 @@
 
 body {
   background-color: #fff;
+  background-image: url('app/images/bg.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
   font-family: 'Roboto', sans-serif;
+  height: 100vh;
   margin: 0;
   padding: 0;
-  background-image: url('images/bg.jpg');
-  background-size: cover;
+}
+
+a {
+  color: #802d5e;
 }

@@ -2,18 +2,18 @@ import React, { Component } from 'react';
 
 import ÉcranContainer from './composant/containers/ÉcranContainer'
 import Pavé  from './composant/renders/pavé/Pavé';
+import Auteur from './composant/renders/auteur/Auteur'
 
 import './Calculatrice.css';
 
-class Calculatrice extends Component {
+export default class Calculatrice extends Component {
   render() {
     return (
       <div className="main_wrapper">
         <ÉcranContainer />
         <Pavé  />
+        <Auteur />
       </div>
     );
   }
 }
-
-export default Calculatrice;

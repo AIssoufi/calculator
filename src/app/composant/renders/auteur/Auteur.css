@@ -1,0 +1,42 @@
+.copyright {
+  color: #FFF;
+  position: fixed;
+  top: 20px;
+  right: 0;
+  font-size: 1rem;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.réseaux-sociaux {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+}
+
+  .réseaux-sociaux svg {
+    fill: #ffffff70;
+    height: 3rem;
+    width: 3rem;
+    margin-right: 1.2rem;
+  }
+
+  .réseaux-sociaux svg:hover {
+    fill: currentColor;
+  }
+
+.technos {
+  border-left: 2px solid #ffffff70;
+  padding-left: 1.2rem;
+}
+.technos p {
+  color: #ffffff70;
+  margin: 0;
+}
+.technos svg {
+  height: 2rem;
+  width: 3rem;
+  margin-right: 1.2rem;
+}

@@ -1,0 +1,26 @@
+.ecran_wrapper {
+  align-items: flex-end;
+  background-color: rgba(153, 153, 153, 0.2);
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px;
+  overflow-x: scroll;
+}
+
+.resultat {
+  color: #fff;
+  font-size: 3em;
+  font-weight: 100;
+  text-align: right;
+}
+
+#resultat {
+  position: fixed;
+  bottom: 0;
+  right: 10px;
+  color: #ffffff40;
+  font-size: 20rem;
+  z-index: -1;
+  font-weight: 300;
+  font-style: italic;
+}

@@ -6,6 +6,7 @@ import './Écran.css';
 function Écran({ résultat }) {
   return (
     <div className="ecran_wrapper">
+      <div className="resultat">{ résultat }</div>
       <div id="resultat">{ résultat }</div>
     </div>
   );

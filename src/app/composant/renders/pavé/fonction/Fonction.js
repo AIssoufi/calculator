@@ -4,10 +4,6 @@ import Bouton from '../../partagé/bouton/Bouton';
 import './Fonction.css';
 
 export default class Fonction extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   obtenirLabelToucheÉffacer(pavé) {
     const { resultat, saisiIntermédiaire, opérande1, opérande2 } = pavé;
     return (!resultat && !saisiIntermédiaire && !opérande1 && !opérande2) ? 'AC' : 'C';
