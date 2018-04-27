@@ -1,15 +1,10 @@
-[logo]: https://raw.githubusercontent.com/AIssoufi/calculatrice/master/src/app/images/logo.png "Logo"
-[capture]: https://raw.githubusercontent.com/AIssoufi/calculatrice/master/src/app/images/capture.png "capture d'écran"
-[redux]: https://raw.githubusercontent.com/AIssoufi/calculatrice/master/src/app/images/redux.png "redux"
-[react]: https://raw.githubusercontent.com/AIssoufi/calculatrice/master/src/app/images/react.png "recat"
-
 <p align="center">
-![alt text][logo]
+  <img src="https://raw.githubusercontent.com/AIssoufi/calculatrice/master/src/app/images/logo.png" alt="Logo">
 </p>
 
 # Calculatrice
 <p align="center">
-![alt text][capture]
+  <img src="https://raw.githubusercontent.com/AIssoufi/calculatrice/master/src/app/images/capture.png " alt="capture d'écran">
 </p>
 
 ## Lancer le projet
@@ -22,6 +17,6 @@ npm start
 
 ## Autres captures d'écran
 <p align="center">
-![alt text][redux]
-![alt text][react]
+<img src="https://raw.githubusercontent.com/AIssoufi/calculatrice/master/src/app/images/redux.png" alt="redux">
+<img src="https://raw.githubusercontent.com/AIssoufi/calculatrice/master/src/app/images/react.png" alt="react">
 </p>
