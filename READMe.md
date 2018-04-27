@@ -3,6 +3,8 @@
   <img src="https://raw.githubusercontent.com/AIssoufi/calculatrice/master/src/app/images/capture.png " alt="capture d'écran">
 </p>
 
+## [Démo](https://aissoufi.github.io/calculatrice)
+
 ## Lancer le projet
 ```
 npm start
