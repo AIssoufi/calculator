@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/AIssoufi/calculatrice/master/src/app/images/logo.png" alt="Logo">
-</p>
-
 # Calculatrice
 <p align="center">
   <img src="https://raw.githubusercontent.com/AIssoufi/calculatrice/master/src/app/images/capture.png " alt="capture d'écran">
@@ -12,8 +8,8 @@
 npm start
 ```
 ## Technos utilisées
-* ReactJS
-* ReduxJS
+* [ReactJS](http://redux.js.org)
+* [ReduxJS](http://redux.js.org)
 
 ## Autres captures d'écran
 <p align="center">
