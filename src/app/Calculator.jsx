@@ -1,18 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-import { ScreenContainer } from './components/containers'
-import { KeyPad, Author }  from './components/renders';
+import { Screen } from './Screen';
+import { KeyPad } from './KeyPad';
+import { Author }  from './Author';
 
 import './Calculator.css';
 
-export default class Calculator extends Component {
-  render() {
-    return (
-      <div className="main_wrapper">
-        <ScreenContainer />
-        <KeyPad  />
-        <Author />
-      </div>
-    );
-  }
-}
+const Calculator = () => (
+  <div className="main_wrapper">
+    <Screen />
+    <KeyPad  />
+    <Author />
+  </div>
+);
+
+export default Calculator;
