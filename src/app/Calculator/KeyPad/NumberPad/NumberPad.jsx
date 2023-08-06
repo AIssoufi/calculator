@@ -1,12 +1,12 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import { Button } from '../../shared';
+import { Button } from '../shared';
 import './NumberPad.css';
 
-import { pressNumericButton } from "../../../features/keyPad/keyPadSlice";
-import { display } from "../../../features/screen/screenSlice";
-import { DISPLAYS } from '../../constants';
+import { pressNumericButton } from "../../../../features/keyPad/keyPadSlice";
+import { display } from "../../../../features/screen/screenSlice";
+import { DISPLAYS } from '../../../constants';
 
 export default function NumberPad() {
   const dispatch = useDispatch();

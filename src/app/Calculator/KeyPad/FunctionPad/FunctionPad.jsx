@@ -1,10 +1,10 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { Button } from '../../shared';
+import { Button } from '../shared';
 import './FunctionPad.css';
 
-import { percentage, reverseSign, deleteAll } from "../../../features/keyPad/keyPadSlice";
+import { percentage, reverseSign, deleteAll } from "../../../../features/keyPad/keyPadSlice";
 
 const FunctionPad = () => {
   const { keyPad, display } = useSelector(state => ({

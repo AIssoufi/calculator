@@ -1,12 +1,12 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import { Button } from '../../shared';
+import { Button } from '../shared';
 import './OperatorPad.css';
 
-import { add, divide, multiply, substract, validate } from "../../../features/keyPad/keyPadSlice";
-import { display } from "../../../features/screen/screenSlice";
-import { DISPLAYS } from '../../constants';
+import { add, divide, multiply, substract, validate } from "../../../../features/keyPad/keyPadSlice";
+import { display } from "../../../../features/screen/screenSlice";
+import { DISPLAYS } from '../../../constants';
 
 export default function OperatorPad() {
   const dispatch = useDispatch();

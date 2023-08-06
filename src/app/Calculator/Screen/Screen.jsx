@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import './Screen.css';
 
-import { DISPLAYS } from '../constants';
+import { DISPLAYS } from '../../constants';
 
 const getResult = (keyPad, screen) => {
   switch(screen.display)  {
