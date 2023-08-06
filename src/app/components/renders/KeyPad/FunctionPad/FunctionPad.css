@@ -1,0 +1,6 @@
+.function_container {
+  background-color: #D6D6D6;
+  display: flex;
+  flex-direction: row;
+  grid-area: fonction;
+}

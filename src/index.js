@@ -6,8 +6,7 @@ import { createStore } from 'redux';
 import './index.css';
 
 import reduceurCalculatrice from './app/redux/reducers/reducer';
-import Calculatrice from './app/Calculatrice';
-import registerServiceWorker from './registerServiceWorker';
+import App from './app';
 
 /* eslint-disable no-underscore-dangle */
 const store = createStore(
@@ -18,8 +17,7 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    <Calculatrice />
+    <App />
   </Provider>,
   document.getElementById('root')
 );
-registerServiceWorker();

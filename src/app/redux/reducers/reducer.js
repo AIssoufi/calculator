@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-import pavé from './pavé';
-import écran from './écran';
+import keyPadReducer from './keyPadReducer';
+import screenReducer from './screenReducer';
 
-const reduceurCalculatrice = combineReducers({
-  pavé,
-  écran
+const calculatorReducer = combineReducers({
+  keyPad: keyPadReducer,
+  screen: screenReducer
 });
 
-export default reduceurCalculatrice;
+export default calculatorReducer;
