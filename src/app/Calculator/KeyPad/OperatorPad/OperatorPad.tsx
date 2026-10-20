@@ -1,5 +1,4 @@
-import { useDispatch } from 'react-redux';
-
+import { useAppDispatch } from '../../../hooks';
 import { Button } from '../shared';
 import './OperatorPad.css';
 
@@ -19,7 +18,7 @@ const OPERATOR_KEYS = [
  * Must be rendered inside a react-redux `<Provider>`.
  */
 export default function OperatorPad() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const pressEqualKey = () => {
     dispatch(pressEquals());

@@ -1,5 +1,4 @@
-import { useDispatch } from 'react-redux';
-
+import { useAppDispatch } from '../../../hooks';
 import { Button } from '../shared';
 import './NumberPad.css';
 
@@ -10,7 +9,7 @@ import { pressDecimalPoint, pressDigit } from "../../../../features/calculator/c
  * Must be rendered inside a react-redux `<Provider>`.
  */
 export default function NumberPad() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const pressDigitKey = (digit: string) => {
     dispatch(pressDigit(digit));

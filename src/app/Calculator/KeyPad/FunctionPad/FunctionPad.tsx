@@ -1,5 +1,4 @@
-import { useSelector, useDispatch } from 'react-redux';
-
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { Button } from '../shared';
 import './FunctionPad.css';
 
@@ -20,9 +19,9 @@ const CLEAR_ENTRY_LABEL = 'C';
  * everything. Must be rendered inside a react-redux `<Provider>`.
  */
 const FunctionPad = () => {
-  const canClearEntry = useSelector(selectCanClearEntry);
+  const canClearEntry = useAppSelector(selectCanClearEntry);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return (
     <div className="function_container">

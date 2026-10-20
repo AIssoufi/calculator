@@ -1,5 +1,4 @@
-import { useSelector } from 'react-redux';
-
+import { useAppSelector } from '../../hooks';
 import './Screen.css';
 
 import { selectDisplayValue } from '../../../features/calculator/calculatorSlice';
@@ -11,7 +10,7 @@ import { getTextLengthStyle } from './utils';
  * Must be rendered inside a react-redux `<Provider>`.
  */
 export function Screen() {
-  const result = useSelector(selectDisplayValue);
+  const result = useAppSelector(selectDisplayValue);
 
   return (
     <div className="screen_wrapper">
