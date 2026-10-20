@@ -34,19 +34,23 @@ The logic lives in a pure, framework-free engine, [`src/features/calculator/engi
 ## Tests
 
 ```bash
+pnpm lint        # ESLint, as in the CI
 pnpm test        # a single run of every test, as in the CI
 pnpm test:watch  # watch mode: re-runs the tests of the changed files
 ```
+
+[ESLint](https://eslint.org/) applies its recommended rules, and the React and Rules of Hooks rules to `src/`; its settings are in [`eslint.config.js`](eslint.config.js).
 
 Tests sit next to the code they cover and are named `*.spec.js` or `*.spec.jsx`. [Vitest](https://vitest.dev/) runs them in [jsdom](https://github.com/jsdom/jsdom), with [Testing Library](https://testing-library.com/) and the [jest-dom](https://github.com/testing-library/jest-dom) matchers; its settings are in [`vite.config.js`](vite.config.js). `pnpm test` first runs the tests of the commit tooling once, `scripts/**/*.spec.mjs`, with the Node.js test runner.
 
 The [CI workflow](.github/workflows/ci.yml) runs on every pull request and every push to `master`:
 
 1. it installs the dependencies with `pnpm install --frozen-lockfile`, which fails when `pnpm-lock.yaml` does not match `package.json`;
-2. it runs the tests once;
-3. it builds the app.
+2. it lints the code;
+3. it runs the tests once;
+4. it builds the app.
 
-A failing test or build fails the check. On a pull request, a second job checks the commit messages and the title (see [Commit messages](#commit-messages)).
+A lint error, a failing test or a failed build fails the check. On a pull request, a second job checks the commit messages and the title (see [Commit messages](#commit-messages)).
 
 ## Commit messages
 

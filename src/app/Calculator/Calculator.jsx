@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Screen } from './Screen';
 import { KeyPad } from './KeyPad';
 import { Author }  from './Author';
