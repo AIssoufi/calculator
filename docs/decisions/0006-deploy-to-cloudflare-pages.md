@@ -27,5 +27,5 @@ The `gh-pages` branch now holds a page that redirects the old GitHub Pages URL t
 
 - Every push to `master` deploys, and every pull request gets a preview.
 - The build no longer depends on the repository name.
-- On 2026-10-20, Lighthouse 12.8.2 in its mobile setting gave the production site 100 for performance, 90 for accessibility, 100 for best practices and 82 for SEO (see [the baseline](../evolution.md#current-baseline)).
+- On 2026-10-20, Lighthouse 12.8.2 in its mobile setting gave the production site 100 for performance, 90 for accessibility, 100 for best practices and 82 for SEO (see [the baseline](../evolution.md#baseline-of-the-npm-eras)).
 - The build settings live in the Cloudflare dashboard, not in the repository; the README lists them.

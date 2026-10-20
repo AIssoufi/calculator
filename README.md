@@ -6,9 +6,19 @@
 ## [Démo](https://calculator.issoufi.fr)
 
 ## Lancer le projet
+
+The project uses Node.js 24, pinned in `.nvmrc` (`nvm use` selects it), and [pnpm](https://pnpm.io/installation) 12.14.0, pinned by the `packageManager` field of `package.json`: an installed pnpm switches to that version by itself.
+
+```bash
+pnpm install  # install the dependencies from pnpm-lock.yaml, and the git hooks
+pnpm start    # dev server on http://localhost:5173/
+pnpm build    # production build in build/
+pnpm preview  # serves the production build on http://localhost:4173/
 ```
-npm start
-```
+
+[Vite](https://vite.dev/) serves and builds the app from [`index.html`](index.html), with the settings of [`vite.config.js`](vite.config.js). The files of `public/` are copied as they are to `build/`.
+
+[`pnpm-workspace.yaml`](pnpm-workspace.yaml) holds the pnpm settings: pnpm only installs versions published at least 7 days ago, and runs no install script of a dependency unless it is listed in `allowBuilds` (none needs one).
 
 ## How it computes
 
@@ -23,23 +33,27 @@ The logic lives in a pure, framework-free engine, [`src/features/calculator/engi
 
 ## Tests
 
-Use the Node.js version pinned in `.nvmrc` (`nvm use` selects it), then:
-
 ```bash
-npm ci                        # install the dependencies from package-lock.json, and the git hooks
-npm test                      # watch mode: re-runs the tests of the changed files
-npm test -- --watchAll=false  # a single run of every test, as in the CI
+pnpm lint        # ESLint, as in the CI
+pnpm test        # a single run of every test, as in the CI
+pnpm test:watch  # watch mode: re-runs the tests of the changed files
 ```
 
-Tests sit next to the code they cover and are named `*.spec.js` or `*.spec.jsx`. `npm test` first runs the tests of the commit tooling once, `scripts/**/*.spec.mjs`, with the Node.js test runner.
+[ESLint](https://eslint.org/) applies its recommended rules, and the React and Rules of Hooks rules to `src/`; its settings are in [`eslint.config.js`](eslint.config.js).
+
+Tests sit next to the code they cover and are named `*.spec.js`, `*.spec.jsx` or, for the commit tooling, `*.spec.mjs`:
+
+- [Vitest](https://vitest.dev/) runs the app tests in [jsdom](https://github.com/jsdom/jsdom), with [Testing Library](https://testing-library.com/) and the [jest-dom](https://github.com/testing-library/jest-dom) matchers; its settings are in [`vite.config.js`](vite.config.js).
+- `pnpm test` first runs the tests of the commit tooling once, `scripts/**/*.spec.mjs`, with the Node.js test runner.
 
 The [CI workflow](.github/workflows/ci.yml) runs on every pull request and every push to `master`:
 
-1. it installs the dependencies with `npm ci`;
-2. it runs the tests once;
-3. it builds the app.
+1. it installs the dependencies with `pnpm install --frozen-lockfile`, which fails when `pnpm-lock.yaml` does not match `package.json`;
+2. it lints the code;
+3. it runs the tests once;
+4. it builds the app.
 
-A failing test or build fails the check. On a pull request, a second job checks the commit messages and the title (see [Commit messages](#commit-messages)).
+A lint error, a failing test or a failed build fails the check. On a pull request, a second job checks the commit messages and the title (see [Commit messages](#commit-messages)).
 
 ## Commit messages
 
@@ -52,7 +66,7 @@ Refs: CALC-17
 Co-Authored-By: Jane Doe <jane@example.com>
 ```
 
-- `npm ci` installs two [husky](https://typicode.github.io/husky/) hooks. `commit-msg` runs [commitlint](https://commitlint.js.org/), which refuses a message without a conventional header or a valid `Refs:` trailer. On a `CALC-<n>` branch, `prepare-commit-msg` adds `Refs: CALC-<n>` when the message has no `Refs:` trailer.
+- `pnpm install` installs two [husky](https://typicode.github.io/husky/) hooks. `commit-msg` runs [commitlint](https://commitlint.js.org/), which refuses a message without a conventional header or a valid `Refs:` trailer. On a `CALC-<n>` branch, `prepare-commit-msg` adds `Refs: CALC-<n>` when the message has no `Refs:` trailer.
 - On every pull request, the CI checks each commit, and checks that the title is a conventional header.
 - Write a breaking change as a `BREAKING-CHANGE:` trailer, with a dash, or in a paragraph of its own above the trailers: git does not read `BREAKING CHANGE:` as a trailer, since its key has a space, so a `Refs:` line in the same paragraph is usually not found.
 - Merge commits, reverts and the commits of release-please and Dependabot are ignored. The rule applies from now on: older commits are not rewritten.
@@ -66,19 +80,22 @@ The rules live in [`commitlint.config.mjs`](commitlint.config.mjs) and [`scripts
 - every push to `master` deploys the production site;
 - every other branch, pull requests included, gets a preview deployment with its own URL.
 
-The Cloudflare Pages project uses these build settings, and needs no environment variable:
+The Cloudflare Pages project uses these build settings:
 
-| Setting                | Value                                 |
-| ---------------------- | ------------------------------------- |
-| Build command          | `npm run build`                       |
-| Build output directory | `build`                               |
-| Node.js version        | read from `.nvmrc` by the build image |
+| Setting                | Value                                                   |
+| ---------------------- | ------------------------------------------------------- |
+| Build command          | `pnpm build`                                            |
+| Build output directory | `build`                                                 |
+| Node.js version        | read from `.nvmrc` by the build image                   |
+| Environment variables  | `PNPM_VERSION=12.14.0`, the version of `packageManager` |
+
+The build image installs the dependencies with pnpm, since it finds `pnpm-lock.yaml`, but it reads the pnpm version from `PNPM_VERSION` only: update the variable whenever `packageManager` changes.
 
 Two files make the build fit Cloudflare Pages:
 
-- `package.json` sets `homepage` to `.`: the built `index.html` loads its assets with relative paths, so the app works from the root of any domain, previews included.
+- [`vite.config.js`](vite.config.js) sets `base` to `./`: the built `index.html` loads its assets with relative paths, so the app works from the root of any domain, previews included.
 - [`public/_headers`](public/_headers) is copied into `build/` and sets the cache headers:
-  - the hashed files under `/static/` are cached for a year;
+  - the hashed files under `/assets/` are cached for a year;
   - the page is revalidated on every visit, so a new deployment shows at once.
 
 ## History

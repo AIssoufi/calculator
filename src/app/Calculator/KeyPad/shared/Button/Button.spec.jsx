@@ -9,7 +9,7 @@ const getKey = label => screen.getByText(label, { selector: KEY_SELECTOR });
 
 describe('Button', () => {
   it('passes its label to onClick when it is pressed', () => {
-    const onClick = jest.fn();
+    const onClick = vi.fn();
     render(<Button onClick={onClick} label="7" />);
 
     fireEvent.click(getKey('7'));
@@ -34,7 +34,7 @@ describe('Button', () => {
   });
 
   it('passes an empty label to onClick when it has no label', () => {
-    const onClick = jest.fn();
+    const onClick = vi.fn();
     const { container } = render(<Button onClick={onClick} />);
     const key = container.querySelector(KEY_SELECTOR);
 

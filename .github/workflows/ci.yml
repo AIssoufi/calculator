@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   ci:
-    name: Install, test and build
+    name: Install, lint, test and build
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -24,20 +24,27 @@ jobs:
         with:
           persist-credentials: false
 
+      # Reads the pnpm version from the packageManager field of package.json.
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+
       - name: Set up Node.js from .nvmrc
         uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint the code
+        run: pnpm lint
 
       - name: Run the tests once
-        run: npm test -- --watchAll=false
+        run: pnpm test
 
       - name: Build the app
-        run: npm run build
+        run: pnpm build
 
   commitlint:
     name: Check the commit messages and the title
@@ -51,20 +58,24 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      # Reads the pnpm version from the packageManager field of package.json.
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+
       - name: Set up Node.js from .nvmrc
         uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Check every commit of the pull request
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: npx --no -- commitlint --from "$BASE_SHA" --to "$HEAD_SHA" --verbose
+        run: pnpm exec commitlint --from "$BASE_SHA" --to "$HEAD_SHA" --verbose
 
       # A bot such as Dependabot chooses its own titles; its commits are ignored by the configuration.
       - name: Check the title of the pull request
@@ -73,4 +84,4 @@ jobs:
           PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
         run: >-
           printf '%s\n' "$PULL_REQUEST_TITLE"
-          | npx --no -- commitlint --config scripts/commits/pull-request-title.config.mjs --verbose
+          | pnpm exec commitlint --config scripts/commits/pull-request-title.config.mjs --verbose

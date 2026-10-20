@@ -1,5 +1,3 @@
-import React from 'react';
-
 // Containers
 import FunctionPad from './FunctionPad';
 import NumberPad from './NumberPad';
