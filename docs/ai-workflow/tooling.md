@@ -9,7 +9,7 @@ The tools that let several agents work on this repository at once. Their shared 
 | [Worktrunk](https://github.com/max-sixty/worktrunk) | One Git worktree per ticket, on the `CALC-<n>` branch, so workers never share files |
 | [GitHub CLI](https://cli.github.com) | Issues, pull requests, CI checks and merges |
 | [commitlint](https://commitlint.js.org/) and husky | Refuse a commit without a conventional header or a `Refs: CALC-<n>` trailer ([#17](https://github.com/AIssoufi/calculator/issues/17), [#19](https://github.com/AIssoufi/calculator/pull/19)) |
-| [GitHub Actions](../../.github/workflows/ci.yml) | Install, lint, test and build every pull request ([#1](https://github.com/AIssoufi/calculator/issues/1), [#13](https://github.com/AIssoufi/calculator/pull/13)) |
+| [GitHub Actions](../../.github/workflows/ci.yml) | Install, lint, check the types, test and build every pull request ([#1](https://github.com/AIssoufi/calculator/issues/1), [#13](https://github.com/AIssoufi/calculator/pull/13), [#5](https://github.com/AIssoufi/calculator/issues/5)) |
 | [Cloudflare Pages](https://pages.cloudflare.com/) | A preview URL for each branch, and the production site on `master` ([#3](https://github.com/AIssoufi/calculator/issues/3), [#14](https://github.com/AIssoufi/calculator/pull/14)) |
 
 ## A new worktree

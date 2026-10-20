@@ -53,10 +53,11 @@ The [CI workflow](.github/workflows/ci.yml) runs on every pull request and every
 
 1. it installs the dependencies with `pnpm install --frozen-lockfile`, which fails when `pnpm-lock.yaml` does not match `package.json`;
 2. it lints the code;
-3. it runs the tests once;
-4. it builds the app.
+3. it checks the types;
+4. it runs the tests once;
+5. it builds the app.
 
-A lint error, a failing test or a failed build fails the check. On a pull request, a second job checks the commit messages and the title (see [Commit messages](#commit-messages)).
+A lint error, a type error, a failing test or a failed build fails the check. On a pull request, a second job checks the commit messages and the title (see [Commit messages](#commit-messages)).
 
 ## Commit messages
 

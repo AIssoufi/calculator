@@ -4,7 +4,7 @@ A pull request is merged only when all of these pass:
 
 | Check | Who | What it proves |
 | --- | --- | --- |
-| [CI](../../.github/workflows/ci.yml) | GitHub Actions | A clean install from the lockfile, lint, every test and the build pass; every commit and the title follow the commit convention |
+| [CI](../../.github/workflows/ci.yml) | GitHub Actions | A clean install from the lockfile, lint, the type check, every test and the build pass; every commit and the title follow the commit convention |
 | Cloudflare Pages preview | Cloudflare | The app builds and runs on the host, at its own URL |
 | Conventions review | Conventions reviewer sub-agent | The change follows the coding conventions (documentation, tests of edge cases, named constants, English code) and keeps the README true |
 | Visual test, for a change that can show | Visual tester sub-agent | The pages look right at phone, tablet, laptop and desktop widths, the change works in the browser, and the console shows no error |

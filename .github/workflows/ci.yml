@@ -40,6 +40,9 @@ jobs:
       - name: Lint the code
         run: pnpm lint
 
+      - name: Check the types
+        run: pnpm typecheck
+
       - name: Run the tests once
         run: pnpm test
 
