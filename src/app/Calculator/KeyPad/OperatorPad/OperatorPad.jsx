@@ -27,7 +27,7 @@ export default function OperatorPad() {
   };
 
   return (
-    <div className="operateur_container">
+    <div className="operator_container">
       {OPERATOR_KEYS.map(({ label, operator }) => (
         <Button key={operator} onClick={() => dispatch(pressOperator(operator))} label={label} />
       ))}

@@ -21,7 +21,7 @@ export default function NumberPad() {
   };
 
   return (
-    <div className="numerique_container">
+    <div className="numeric_container">
       <Button onClick={pressDigitKey} label="9" />
       <Button onClick={pressDigitKey} label="8" />
       <Button onClick={pressDigitKey} label="7" />

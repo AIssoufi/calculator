@@ -1,19 +1,27 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import './Button.css';
 
-export function Button({ onClick, label, value, isLarge }) {
+/**
+ * Renders a key of the keypad, which passes its label to `onClick` when it is pressed.
+ *
+ * @param {object} props
+ * @param {(label: string) => void} [props.onClick] - Called with the label on a press. Without
+ *   it, a press does nothing.
+ * @param {string} [props.label] - Text shown on the key and passed to `onClick`.
+ * @param {boolean} [props.isLarge=false] - Makes the key twice as wide, like the `0` key.
+ */
+export function Button({ onClick, label = '', isLarge = false }) {
   let className = 'btn';
 
   if (isLarge) {
     className += ' btn-large';
   }
-  
+
   return (
     <div
       onClick={() => {
-        onClick(label);
+        onClick?.(label);
       }}
       className={className}
     >
@@ -21,19 +29,3 @@ export function Button({ onClick, label, value, isLarge }) {
     </div>
   );
 };
-
-Button.propTypes = {
-  onClick: PropTypes.func,
-  label: PropTypes.string.isRequired, 
-  value: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]), 
-  isLarge: PropTypes.bool
-};
-
-Button.defaultProps = {
-  onClick: undefined,
-  isLarge: false,
-  value: undefined
-}

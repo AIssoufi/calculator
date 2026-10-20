@@ -2,9 +2,9 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(5, 1fr);
-  grid-template-areas: 'fonction fonction fonction operateur'
-                      'numerique numerique numerique operateur'
-                      'numerique numerique numerique operateur'
-                      'numerique numerique numerique operateur'
-                      'numerique numerique numerique operateur';
+  grid-template-areas: 'function function function operator'
+                      'numeric numeric numeric operator'
+                      'numeric numeric numeric operator'
+                      'numeric numeric numeric operator'
+                      'numeric numeric numeric operator';
 }
