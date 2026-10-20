@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 
 import App from './App';
@@ -14,11 +15,15 @@ const KEY_LABELS = [
   '/', 'X', '—', '+', '='
 ];
 
-const renderApp = () => render(
-  <Provider store={setupStore()}>
-    <App />
-  </Provider>
-);
+// Sets user-event up before the render, as its docs advise, and returns it with the render result.
+const renderApp = () => ({
+  user: userEvent.setup(),
+  ...render(
+    <Provider store={setupStore()}>
+      <App />
+    </Provider>
+  )
+});
 
 const getKey = label => screen.getByText(label, { selector: KEY_SELECTOR });
 
@@ -35,22 +40,20 @@ describe('App', () => {
     expect(getKey(label)).toBeInTheDocument();
   });
 
-  it('shows the pressed digits on the screen', () => {
-    renderApp();
+  it('shows the pressed digits on the screen', async () => {
+    const { user } = renderApp();
 
-    // fireEvent rather than user-event 13: that one loads another copy of @testing-library/dom,
-    // whose events React Testing Library does not wrap in act(), so the screen would not update.
-    fireEvent.click(getKey('7'));
-    fireEvent.click(getKey('3'));
+    await user.click(getKey('7'));
+    await user.click(getKey('3'));
 
     expect(screen.getByText('73', { selector: SCREEN_SELECTOR })).toBeInTheDocument();
   });
 
-  it('turns AC into C after a digit, and C brings the screen back to 0', () => {
-    renderApp();
+  it('turns AC into C after a digit, and C brings the screen back to 0', async () => {
+    const { user } = renderApp();
 
-    fireEvent.click(getKey('7'));
-    fireEvent.click(getKey('C'));
+    await user.click(getKey('7'));
+    await user.click(getKey('C'));
 
     expect(screen.getByText('0', { selector: SCREEN_SELECTOR })).toBeInTheDocument();
     expect(getKey('AC')).toBeInTheDocument();
@@ -77,10 +80,12 @@ describe('App', () => {
     ['+/- 5', '-5'],
     ['2 + 3 C 4 =', '6'],
     ['5 0 %', '0.5']
-  ])('shows %j as %j on the screen', (sequence, expected) => {
-    renderApp();
+  ])('shows %j as %j on the screen', async (sequence, expected) => {
+    const { user } = renderApp();
 
-    sequence.split(' ').forEach(label => fireEvent.click(getKey(label)));
+    for (const label of sequence.split(' ')) {
+      await user.click(getKey(label));
+    }
 
     expect(screen.getByText(expected, { selector: SCREEN_SELECTOR })).toBeInTheDocument();
   });
