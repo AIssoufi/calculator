@@ -6,9 +6,13 @@
 ## [Démo](https://calculator.issoufi.fr)
 
 ## Lancer le projet
+```bash
+npm start        # dev server on http://localhost:5173/
+npm run build    # production build in build/
+npm run preview  # serves the production build on http://localhost:4173/
 ```
-npm start
-```
+
+[Vite](https://vite.dev/) serves and builds the app from [`index.html`](index.html), with the settings of [`vite.config.js`](vite.config.js). The files of `public/` are copied as they are to `build/`.
 
 ## How it computes
 
@@ -76,9 +80,9 @@ The Cloudflare Pages project uses these build settings, and needs no environment
 
 Two files make the build fit Cloudflare Pages:
 
-- `package.json` sets `homepage` to `.`: the built `index.html` loads its assets with relative paths, so the app works from the root of any domain, previews included.
+- [`vite.config.js`](vite.config.js) sets `base` to `./`: the built `index.html` loads its assets with relative paths, so the app works from the root of any domain, previews included.
 - [`public/_headers`](public/_headers) is copied into `build/` and sets the cache headers:
-  - the hashed files under `/static/` are cached for a year;
+  - the hashed files under `/assets/` are cached for a year;
   - the page is revalidated on every visit, so a new deployment shows at once.
 
 ## History
