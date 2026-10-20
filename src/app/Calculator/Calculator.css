@@ -1,5 +1,9 @@
 :root {
-  --largeur: 300px;
+  /* Room for the vertical copyright on the right edge of the page, kept on both sides so the
+     calculator stays centered. */
+  --copyright-gutter: 2.5rem;
+  /* 300px, or the width of the screen less the copyright gutters on a narrower phone. */
+  --largeur: min(300px, calc(100vw - 2 * var(--copyright-gutter)));
 }
 
 .main_wrapper {
@@ -7,8 +11,9 @@
   box-shadow: 0px 0px 20px 0px;
   display: grid;
   grid-auto-flow: row;
+  /* A single column that a long number on the screen cannot widen. */
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: 80px auto;
-  max-width: var(--largeur);
-  margin: 25vh auto;
   overflow: hidden;
+  width: var(--largeur);
 }
