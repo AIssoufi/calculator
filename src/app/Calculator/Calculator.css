@@ -3,7 +3,7 @@
      calculator stays centered. */
   --copyright-gutter: 2.5rem;
   /* 300px, or the width of the screen less the copyright gutters on a narrower phone. */
-  --largeur: min(300px, calc(100vw - 2 * var(--copyright-gutter)));
+  --calculator-width: min(300px, calc(100vw - 2 * var(--copyright-gutter)));
 }
 
 .main_wrapper {
@@ -15,5 +15,5 @@
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: 80px auto;
   overflow: hidden;
-  width: var(--largeur);
+  width: var(--calculator-width);
 }

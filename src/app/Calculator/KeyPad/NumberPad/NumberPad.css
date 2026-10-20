@@ -1,7 +1,7 @@
-.numerique_container {
+.numeric_container {
   background-color: rgb(224, 224, 224);
   display: flex;
   flex-direction: row-reverse;
   flex-wrap: wrap;
-  grid-area: numerique;
+  grid-area: numeric;
 }

@@ -9,7 +9,7 @@
 }
 
 /* A footer below the calculator, so it never covers a key on a phone. */
-.réseaux-sociaux {
+.social-links {
   display: flex;
   align-items: center;
   margin-top: 1rem;
@@ -17,7 +17,7 @@
 
 /* In the bottom left corner of a screen wide and tall enough to keep it away from the keys. */
 @media (min-width: 768px) and (min-height: 600px) {
-  .réseaux-sociaux {
+  .social-links {
     position: fixed;
     bottom: 20px;
     left: 20px;
@@ -25,26 +25,26 @@
   }
 }
 
-  .réseaux-sociaux svg {
+  .social-links svg {
     fill: #ffffff70;
     height: 3rem;
     width: 3rem;
     margin-right: 1.2rem;
   }
 
-  .réseaux-sociaux svg:hover {
+  .social-links svg:hover {
     fill: currentColor;
   }
 
-.technos {
+.tech-stack {
   border-left: 2px solid #ffffff70;
   padding-left: 1.2rem;
 }
-.technos p {
+.tech-stack p {
   color: #ffffff70;
   margin: 0;
 }
-.technos svg {
+.tech-stack svg {
   height: 2rem;
   width: 3rem;
   margin-right: 1.2rem;

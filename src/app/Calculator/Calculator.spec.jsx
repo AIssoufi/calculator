@@ -7,7 +7,7 @@ import Calculator from './Calculator';
 const CALCULATOR_SELECTOR = '.main_wrapper';
 const RESULT_SELECTOR = '.result';
 const KEY_SELECTOR = '.btn';
-const SOCIAL_LINKS_SELECTOR = '.réseaux-sociaux';
+const SOCIAL_LINKS_SELECTOR = '.social-links';
 
 const renderCalculator = () => render(
   <Provider store={setupStore()}>
