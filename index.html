@@ -1,1 +1,32 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name="theme-color" content="#000000"><link rel="manifest" href="/calculatrice/manifest.json"><link rel="shortcut icon" href="/calculatrice/favicon.ico"><title>Calculatrice</title><link href="/calculatrice/static/css/main.e3964627.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div><script type="text/javascript" src="/calculatrice/static/js/main.c216ec7b.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>Calculator has moved</title>
+    <link rel="canonical" href="https://calculator.issoufi.fr/">
+    <!-- Without JavaScript, send visitors to the home page of the new site. -->
+    <noscript>
+      <meta http-equiv="refresh" content="0; url=https://calculator.issoufi.fr/">
+    </noscript>
+  </head>
+  <body>
+    <p>
+      The calculator has moved to
+      <a id="new-location" href="https://calculator.issoufi.fr/">calculator.issoufi.fr</a>.
+    </p>
+    <script>
+      // Keep the path, query and hash: /calculator/xyz?a=1 leads to https://calculator.issoufi.fr/xyz?a=1.
+      (function () {
+        const NEW_ORIGIN = 'https://calculator.issoufi.fr';
+        const OLD_BASE_PATH = /^\/calculator(?=\/|$)/i;
+        const newPath = location.pathname.replace(OLD_BASE_PATH, '') || '/';
+        const newLocation = NEW_ORIGIN + newPath + location.search + location.hash;
+
+        document.getElementById('new-location').href = newLocation;
+        location.replace(newLocation);
+      })();
+    </script>
+  </body>
+</html>
