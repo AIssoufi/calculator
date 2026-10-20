@@ -8,12 +8,21 @@
   transform: rotate(180deg);
 }
 
+/* A footer below the calculator, so it never covers a key on a phone. */
 .réseaux-sociaux {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
   display: flex;
   align-items: center;
+  margin-top: 1rem;
+}
+
+/* In the bottom left corner of a screen wide and tall enough to keep it away from the keys. */
+@media (min-width: 768px) and (min-height: 600px) {
+  .réseaux-sociaux {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    margin-top: 0;
+  }
 }
 
   .réseaux-sociaux svg {

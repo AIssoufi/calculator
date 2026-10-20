@@ -6,12 +6,18 @@ import { Author }  from './Author';
 
 import './Calculator.css';
 
+/**
+ * Renders the calculator, its screen above its keypad, followed by the author's links, which sit
+ * outside the calculator so they never cover a key.
+ */
 const Calculator = () => (
-  <div className="main_wrapper">
-    <Screen />
-    <KeyPad  />
+  <>
+    <div className="main_wrapper">
+      <Screen />
+      <KeyPad  />
+    </div>
     <Author />
-  </div>
+  </>
 );
 
 export default Calculator;

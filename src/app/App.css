@@ -1,12 +1,21 @@
+:root {
+    --page-margin: 1rem;
+}
+
 html {
     height: 100%;
     width: 100%;
 }
 
+/* Centers the calculator, with its author footer below it on small screens, in a page that never
+   scrolls: 100vh is the fallback of browsers without the dynamic viewport unit. */
 .app_container {
-    display: flex;
-    justify-content: center;
     align-items: center;
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: var(--page-margin);
     width: 100%;
 }
