@@ -5,7 +5,7 @@
   "homepage": ".",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
-    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "react": "^18.2.0",
@@ -17,7 +17,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "node --test \"scripts/**/*.spec.mjs\" && react-scripts test",
+    "test": "node --test \"scripts/**/*.spec.mjs\" && vitest run",
+    "test:watch": "vitest",
     "eject": "react-scripts eject",
     "prepare": "husky"
   },
@@ -44,6 +45,10 @@
     "@commitlint/config-conventional": "^21.2.3",
     "@commitlint/lint": "^21.2.3",
     "@commitlint/load": "^21.2.3",
-    "husky": "^9.1.7"
+    "@vitejs/plugin-react": "^6.1.2",
+    "husky": "^9.1.7",
+    "jsdom": "^30.1.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.4"
   }
 }

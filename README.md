@@ -26,12 +26,12 @@ The logic lives in a pure, framework-free engine, [`src/features/calculator/engi
 Use the Node.js version pinned in `.nvmrc` (`nvm use` selects it), then:
 
 ```bash
-npm ci                        # install the dependencies from package-lock.json, and the git hooks
-npm test                      # watch mode: re-runs the tests of the changed files
-npm test -- --watchAll=false  # a single run of every test, as in the CI
+npm ci              # install the dependencies from package-lock.json, and the git hooks
+npm test            # a single run of every test, as in the CI
+npm run test:watch  # watch mode: re-runs the tests of the changed files
 ```
 
-Tests sit next to the code they cover and are named `*.spec.js` or `*.spec.jsx`. `npm test` first runs the tests of the commit tooling once, `scripts/**/*.spec.mjs`, with the Node.js test runner.
+Tests sit next to the code they cover and are named `*.spec.js` or `*.spec.jsx`. [Vitest](https://vitest.dev/) runs them in [jsdom](https://github.com/jsdom/jsdom), with [Testing Library](https://testing-library.com/) and the [jest-dom](https://github.com/testing-library/jest-dom) matchers; its settings are in [`vite.config.js`](vite.config.js). `npm test` first runs the tests of the commit tooling once, `scripts/**/*.spec.mjs`, with the Node.js test runner.
 
 The [CI workflow](.github/workflows/ci.yml) runs on every pull request and every push to `master`:
 
