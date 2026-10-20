@@ -25,16 +25,16 @@
   }
 }
 
-  .social-links svg {
-    fill: #ffffff70;
-    height: 3rem;
-    width: 3rem;
-    margin-right: 1.2rem;
-  }
+.social-links svg {
+  fill: #ffffff70;
+  height: 3rem;
+  width: 3rem;
+  margin-right: 1.2rem;
+}
 
-  .social-links svg:hover {
-    fill: currentColor;
-  }
+.social-links svg:hover {
+  fill: currentColor;
+}
 
 .tech-stack {
   border-left: 2px solid #ffffff70;
