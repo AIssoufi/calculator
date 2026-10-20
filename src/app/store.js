@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import keyPadReducer from "../features/keyPad/keyPadSlice";
-import screenReducer from "../features/screen/screenSlice";
+import calculatorReducer from "../features/calculator/calculatorSlice";
 
 /**
  * Creates a store holding the calculator state at its initial values.
@@ -10,8 +9,7 @@ import screenReducer from "../features/screen/screenSlice";
  */
 export const setupStore = () => configureStore({
     reducer: {
-        keyPad: keyPadReducer,
-        screen: screenReducer
+        calculator: calculatorReducer
     },
 });
 

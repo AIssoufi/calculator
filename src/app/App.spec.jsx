@@ -55,4 +55,33 @@ describe('App', () => {
     expect(screen.getByText('0', { selector: SCREEN_SELECTOR })).toBeInTheDocument();
     expect(getKey('AC')).toBeInTheDocument();
   });
+
+  // Labels of the keys to click, separated by spaces: `X` multiplies and `—` subtracts.
+  it.each([
+    ['5 =', '5'],
+    ['2 + 3 + 4 =', '9'],
+    ['2 + 3 X 4 =', '20'],
+    ['2 + 3 +', '5'],
+    ['0 — 5 — 1 =', '-6'],
+    ['5 X 0 + 2 =', '2'],
+    // After `=` the clear key reads C, and AC once the result is cleared.
+    ['9 — 3 = C AC 5 =', '5'],
+    ['2 + 3 = 7 + 1 =', '8'],
+    ['2 + 3 = 4 =', '4'],
+    ['1 . 0 5', '1.05'],
+    ['0 . 0 5', '0.05'],
+    ['1 . 2 . 3', '1.23'],
+    ['5 + 1 . =', '6'],
+    ['6 / 0 =', 'Erreur'],
+    ['0 . 1 + 0 . 2 =', '0.3'],
+    ['+/- 5', '-5'],
+    ['2 + 3 C 4 =', '6'],
+    ['5 0 %', '0.5']
+  ])('shows %j as %j on the screen', (sequence, expected) => {
+    renderApp();
+
+    sequence.split(' ').forEach(label => fireEvent.click(getKey(label)));
+
+    expect(screen.getByText(expected, { selector: SCREEN_SELECTOR })).toBeInTheDocument();
+  });
 });
