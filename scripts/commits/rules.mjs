@@ -1,5 +1,6 @@
 import { TICKET_KEY, TICKET_TRAILER_KEY } from './constants.mjs';
-import { getTicketReferences, isNonEmptyString, isTicketReference } from './utils.mjs';
+import { isNonEmptyString } from './utils/strings.mjs';
+import { getTicketReferences, isTicketReference } from './utils/tickets.mjs';
 
 const NEVER = 'never';
 

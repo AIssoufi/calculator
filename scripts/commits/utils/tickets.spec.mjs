@@ -1,15 +1,7 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { describe, it } from 'node:test';
-import {
-  addTicketReference,
-  getFooterTrailers,
-  getTicketReferences,
-  isBotCommit,
-  isNonEmptyString,
-  isTicketReference,
-  prepareCommitMessage
-} from './utils.mjs';
+import { addTicketReference, getTicketReferences, isTicketReference, prepareCommitMessage } from './tickets.mjs';
 
 const CO_AUTHOR = 'Co-Authored-By: Claude <noreply@anthropic.com>';
 const SCISSORS = '# ------------------------ >8 ------------------------';
@@ -19,20 +11,6 @@ const parseWithGit = message =>
   execFileSync('git', ['interpret-trailers', '--parse'], { input: message, encoding: 'utf8' })
     .split('\n')
     .filter(line => line !== '');
-
-const formatTrailers = trailers => trailers.map(({ key, value }) => `${key}: ${value}`);
-
-describe('isNonEmptyString', () => {
-  it('accepts a string with a character', () => {
-    assert.equal(isNonEmptyString('a'), true);
-  });
-
-  for (const value of ['', null, undefined, 0, ['a'], {}]) {
-    it(`rejects ${JSON.stringify(value)}`, () => {
-      assert.equal(isNonEmptyString(value), false);
-    });
-  }
-});
 
 describe('isTicketReference', () => {
   for (const value of ['CALC-1', 'CALC-17', 'CALC-1234']) {
@@ -55,6 +33,7 @@ describe('isTicketReference', () => {
     'CALC-17 ',
     '#17',
     'ISF-17',
+    'XCALC-17',
     'CALC-17-fix',
     'master',
     '',
@@ -82,88 +61,6 @@ describe('isTicketReference', () => {
   it('rejects a call without parameters', () => {
     assert.equal(isTicketReference(), false);
   });
-});
-
-describe('getFooterTrailers', () => {
-  it('reads the trailer block of the last paragraph', () => {
-    const message = `feat: add a key\n\nWhy it changes.\n\nRefs: CALC-1\n${CO_AUTHOR}\n`;
-
-    assert.deepEqual(getFooterTrailers(message), [
-      { key: 'Refs', value: 'CALC-1' },
-      { key: 'Co-Authored-By', value: 'Claude <noreply@anthropic.com>' }
-    ]);
-  });
-
-  it('also reads a Refs: line followed by a blank line above the last block', () => {
-    const message = `feat: add a key\n\nWhy it changes.\n\nRefs: CALC-1\n\n${CO_AUTHOR}\n`;
-
-    assert.deepEqual(formatTrailers(getFooterTrailers(message)), ['Refs: CALC-1', CO_AUTHOR]);
-  });
-
-  it('stops at the first paragraph of text above the footer', () => {
-    const message = `feat: add a key\n\nRefs: CALC-1\n\nWhy it changes.\n\n${CO_AUTHOR}\n`;
-
-    assert.deepEqual(formatTrailers(getFooterTrailers(message)), [CO_AUTHOR]);
-  });
-
-  it('reads nothing when a paragraph of text comes last', () => {
-    assert.deepEqual(getFooterTrailers('feat: add a key\n\nRefs: CALC-1\n\nWhy it changes.\n'), []);
-  });
-
-  it('never reads the header paragraph', () => {
-    assert.deepEqual(getFooterTrailers('feat: add a key\nRefs: CALC-1\n'), []);
-    assert.deepEqual(getFooterTrailers('Refs: CALC-1\n'), []);
-  });
-
-  it('skips the comment lines of the message file', () => {
-    const message = 'feat: add a key\n\nRefs: CALC-1\n# On branch CALC-1\nCo-Authored-By: A <a@example.com>\n#\n';
-
-    assert.deepEqual(formatTrailers(getFooterTrailers(message)), ['Refs: CALC-1', 'Co-Authored-By: A <a@example.com>']);
-  });
-
-  it('ignores the diff below the scissors line of git commit --verbose', () => {
-    const message = `feat: add a key\n${SCISSORS}\n# Do not modify the line above.\ndiff --git a/x b/x\n\nRefs: CALC-9\n`;
-
-    assert.deepEqual(getFooterTrailers(message), []);
-  });
-
-  it('reads a message with Windows line breaks', () => {
-    assert.deepEqual(formatTrailers(getFooterTrailers('feat: add a key\r\n\r\nRefs: CALC-1\r\n')), ['Refs: CALC-1']);
-  });
-
-  it('reads nothing from a message without trailers', () => {
-    assert.deepEqual(getFooterTrailers('feat: add a key\n\nWhy it changes.\n'), []);
-    assert.deepEqual(getFooterTrailers(''), []);
-  });
-
-  for (const message of [null, undefined, 42, {}]) {
-    it(`reads nothing from ${JSON.stringify(message)}`, () => {
-      assert.deepEqual(getFooterTrailers(message), []);
-    });
-  }
-
-  const gitMessages = [
-    `feat: add a key\n\nWhy it changes.\n\nRefs: CALC-1\n${CO_AUTHOR}\n`,
-    'feat: add a key\n\nRefs:CALC-1\nCo-Authored-By: A <a@example.com>\n  wrapped name\n',
-    'feat: add a key\n\nRefs : CALC-1\n',
-    'feat: add a key\n\nrefs: CALC-1\n',
-    'feat!: drop a key\n\nBREAKING CHANGE: the key is gone\nRefs: CALC-1\n',
-    'feat!: drop a key\n\nBREAKING-CHANGE: the key is gone\nRefs: CALC-1\n',
-    'feat: add a key\n\nsee https://example.com/a: b\nRefs: CALC-1\n',
-    'feat: add a key\n\n  indented text\nRefs: CALC-1\n',
-    'feat: add a key\n\nRefs: CALC-1\n(cherry picked from commit 0123456)\n',
-    'feat: add a key\n\nOne\nTwo\nThree\nRefs: CALC-1\nSigned-off-by: A <a@example.com>\n',
-    'feat: add a key\n\n1\n2\n3\n4\n5\n6\n7\nRefs: CALC-1\nSigned-off-by: A <a@example.com>\n',
-    'feat: add a key\n\nRefs: CALC-1\n# comment\n',
-    'feat: add a key\nRefs: CALC-1\n',
-    'Refs: CALC-1\n'
-  ];
-
-  for (const message of gitMessages) {
-    it(`reads the same trailers as git interpret-trailers in ${JSON.stringify(message)}`, () => {
-      assert.deepEqual(formatTrailers(getFooterTrailers(message)), parseWithGit(message));
-    });
-  }
 });
 
 describe('getTicketReferences', () => {
@@ -313,44 +210,4 @@ describe('prepareCommitMessage', () => {
   it('gives an empty message for a call without parameters', () => {
     assert.equal(prepareCommitMessage(), '');
   });
-});
-
-describe('isBotCommit', () => {
-  const dependabotBody =
-    'Bumps [react](https://github.com/facebook/react) from 18.2.0 to 18.3.1.\n\n---\n' +
-    'updated-dependencies:\n- dependency-name: react\n  dependency-type: direct:production\n...\n\n' +
-    'Signed-off-by: dependabot[bot] <support@github.com>\n';
-
-  const botMessages = [
-    `chore(deps): bump react from 18.2.0 to 18.3.1\n\n${dependabotBody}`,
-    `Bump react from 18.2.0 to 18.3.1\n\n${dependabotBody}`,
-    'chore(master): release 1.2.0',
-    'chore(master): release 1.2.0 (#20)\n\n:robot: I have created a release *beep* *boop*\n',
-    'chore(main): release calculator 1.2.0',
-    'chore: release v2.0.0'
-  ];
-
-  for (const message of botMessages) {
-    it(`recognizes ${JSON.stringify(message.split('\n')[0])}`, () => {
-      assert.equal(isBotCommit(message), true);
-    });
-  }
-
-  const humanMessages = [
-    'feat: add a key\n\nRefs: CALC-1\n',
-    'chore: release notes',
-    'chore(master): release the kraken',
-    'docs: explain chore(master): release 1.2.0',
-    'chore: configure dependabot\n\nSigned-off-by: A <a@example.com>\n',
-    '',
-    null,
-    undefined,
-    42
-  ];
-
-  for (const message of humanMessages) {
-    it(`does not recognize ${JSON.stringify(message)}`, () => {
-      assert.equal(isBotCommit(message), false);
-    });
-  }
 });

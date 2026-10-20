@@ -1,6 +1,6 @@
 import { TICKET_KEY, TICKET_RULE_NAME } from './scripts/commits/constants.mjs';
 import { footerTicketReference } from './scripts/commits/rules.mjs';
-import { isBotCommit } from './scripts/commits/utils.mjs';
+import { isBotCommit } from './scripts/commits/utils/bots.mjs';
 
 /** Level of a commitlint rule that fails the check. */
 const ERROR = 2;

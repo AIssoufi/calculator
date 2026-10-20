@@ -3,7 +3,7 @@
 // Usage: node scripts/commits/prepare-commit-msg.mjs <message file> [<source> [<commit>]]
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
-import { prepareCommitMessage } from './utils.mjs';
+import { prepareCommitMessage } from './utils/tickets.mjs';
 
 const [messageFile, source] = process.argv.slice(2);
 

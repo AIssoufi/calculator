@@ -7,8 +7,23 @@ export const TICKET_TRAILER_KEY = 'Refs';
 /** Name of the commitlint rule that requires a `Refs: CALC-<n>` trailer. */
 export const TICKET_RULE_NAME = 'footer-ticket-reference';
 
+/** Number of a ticket: digits without a leading zero, as in the `17` of `CALC-17`. */
+export const TICKET_NUMBER_PATTERN = /^[1-9]\d*$/;
+
 /** Value of `$2` in `prepare-commit-msg` when git prepares the message of a merge commit. */
 export const MERGE_SOURCE = 'merge';
+
+/** Line break that the hook writes back to the message file. */
+export const LINE_BREAK = '\n';
+
+/** Line breaks of a message file, Windows ones included: git cleans them up anyway. */
+export const LINE_BREAK_PATTERN = /\r?\n/;
+
+/** A trailer line as git reads it: a token of letters, digits and dashes, then `:`. */
+export const TRAILER_LINE_PATTERN = /^([A-Za-z0-9-]+)[ \t]*:(.*)$/;
+
+/** A line that starts with a blank continues the trailer above it. */
+export const CONTINUATION_LINE_PATTERN = /^[ \t]/;
 
 /** First character of the comment lines git writes in the message file and strips after editing. */
 export const COMMENT_PREFIX = '#';
