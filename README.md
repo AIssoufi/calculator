@@ -81,6 +81,10 @@ Two files make the build fit Cloudflare Pages:
   - the hashed files under `/static/` are cached for a year;
   - the page is revalidated on every visit, so a new deployment shows at once.
 
+## History
+
+[`docs/evolution.md`](docs/evolution.md) tells how the stack changed era by era, with its figures, and [`docs/decisions/`](docs/decisions/) holds one record per tool decision.
+
 ## Technos utilisées
 * [ReactJS](http://redux.js.org)
 * [ReduxJS](http://redux.js.org)
