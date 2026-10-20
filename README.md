@@ -1,9 +1,9 @@
 # Calculatrice
 <p align="center">
-  <img src="https://raw.githubusercontent.com/AIssoufi/calculatrice/master/public/images/capture.png " alt="capture d'écran">
+  <img src="public/images/capture.png" alt="capture d'écran">
 </p>
 
-## [Démo](https://aissoufi.github.io/calculatrice)
+## [Démo](https://calculator.issoufi.fr)
 
 ## Lancer le projet
 ```
@@ -30,12 +30,34 @@ The [CI workflow](.github/workflows/ci.yml) runs on every pull request and every
 
 A failing test or build fails the check.
 
+## Deployment
+
+[Cloudflare Pages](https://pages.cloudflare.com/) builds and hosts the app at https://calculator.issoufi.fr:
+
+- every push to `master` deploys the production site;
+- every other branch, pull requests included, gets a preview deployment with its own URL.
+
+The Cloudflare Pages project uses these build settings, and needs no environment variable:
+
+| Setting                | Value                                 |
+| ---------------------- | ------------------------------------- |
+| Build command          | `npm run build`                       |
+| Build output directory | `build`                               |
+| Node.js version        | read from `.nvmrc` by the build image |
+
+Two files make the build fit Cloudflare Pages:
+
+- `package.json` sets `homepage` to `.`: the built `index.html` loads its assets with relative paths, so the app works from the root of any domain, previews included.
+- [`public/_headers`](public/_headers) is copied into `build/` and sets the cache headers:
+  - the hashed files under `/static/` are cached for a year;
+  - the page is revalidated on every visit, so a new deployment shows at once.
+
 ## Technos utilisées
 * [ReactJS](http://redux.js.org)
 * [ReduxJS](http://redux.js.org)
 
 ## Autres captures d'écran
 <p align="center">
-<img src="https://raw.githubusercontent.com/AIssoufi/calculatrice/master/public/images/redux.png" alt="redux">
-<img src="https://raw.githubusercontent.com/AIssoufi/calculatrice/master/public/images/react.png" alt="react">
+<img src="public/images/redux.png" alt="redux">
+<img src="public/images/react.png" alt="react">
 </p>
