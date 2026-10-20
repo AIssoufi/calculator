@@ -26,12 +26,12 @@ The logic lives in a pure, framework-free engine, [`src/features/calculator/engi
 Use the Node.js version pinned in `.nvmrc` (`nvm use` selects it), then:
 
 ```bash
-npm ci                        # install the dependencies from package-lock.json
+npm ci                        # install the dependencies from package-lock.json, and the git hooks
 npm test                      # watch mode: re-runs the tests of the changed files
 npm test -- --watchAll=false  # a single run of every test, as in the CI
 ```
 
-Tests sit next to the code they cover and are named `*.spec.js` or `*.spec.jsx`.
+Tests sit next to the code they cover and are named `*.spec.js` or `*.spec.jsx`. `npm test` first runs the tests of the commit tooling once, `scripts/**/*.spec.mjs`, with the Node.js test runner.
 
 The [CI workflow](.github/workflows/ci.yml) runs on every pull request and every push to `master`:
 
@@ -40,6 +40,22 @@ The [CI workflow](.github/workflows/ci.yml) runs on every pull request and every
 3. it builds the app.
 
 A failing test or build fails the check.
+
+## Commit messages
+
+Every commit follows [Conventional Commits](https://www.conventionalcommits.org/) and names its ticket with a `Refs: CALC-<n>` git trailer, in the last paragraph of the message, next to `Co-Authored-By`:
+
+```text
+feat: add a percent key
+
+Refs: CALC-17
+Co-Authored-By: Jane Doe <jane@example.com>
+```
+
+- `npm ci` installs two [husky](https://typicode.github.io/husky/) hooks. `commit-msg` runs [commitlint](https://commitlint.js.org/), which refuses a message without a conventional header or a valid `Refs:` trailer. On a `CALC-<n>` branch, `prepare-commit-msg` adds `Refs: CALC-<n>` when the message has no `Refs:` trailer.
+- Merge commits, reverts and the commits of release-please and Dependabot are ignored. The rule applies from now on: older commits are not rewritten.
+
+The rules live in [`commitlint.config.mjs`](commitlint.config.mjs) and [`scripts/commits/`](scripts/commits/).
 
 ## Deployment
 
