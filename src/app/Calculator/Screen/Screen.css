@@ -3,14 +3,27 @@
   background-color: rgba(153, 153, 153, 0.2);
   display: flex;
   justify-content: flex-end;
-  padding: 5px;
+  --screen-padding: 5px;
+  padding: var(--screen-padding);
 }
 
+/* The font shrinks below 3em when the text, of --screen-text-length characters counted as
+   0.65em each, would be wider than the screen less its padding. Digits are about 0.56em wide in
+   Helvetica or Arial: the margin covers wider system fonts. */
 .result {
+  --digit-width-em: 0.65;
+  --text-width: calc(var(--largeur) - 2 * var(--screen-padding));
+
   color: #fff;
   font-size: 3em;
+  font-size: min(
+    3em,
+    calc(var(--text-width) / (var(--digit-width-em) * var(--screen-text-length, 1)))
+  );
   font-weight: 100;
+  overflow: hidden;
   text-align: right;
+  white-space: nowrap;
 }
 
 #result {

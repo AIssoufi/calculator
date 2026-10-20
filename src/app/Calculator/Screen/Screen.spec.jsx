@@ -1,0 +1,58 @@
+import { act, render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
+
+import { setupStore } from '../../store';
+import { pressDigit, pressOperator, pressEquals } from '../../../features/calculator/calculatorSlice';
+import { OPERATORS } from '../../../features/calculator/constants';
+import { TEXT_LENGTH_PROPERTY } from './constants';
+import { Screen } from './Screen';
+
+const RESULT_SELECTOR = '.result';
+
+const renderScreen = () => {
+  const store = setupStore();
+  render(
+    <Provider store={store}>
+      <Screen />
+    </Provider>
+  );
+  return store;
+};
+
+const getResult = text => screen.getByText(text, { selector: RESULT_SELECTOR });
+
+const getTextLength = element => element.style.getPropertyValue(TEXT_LENGTH_PROPERTY);
+
+describe('Screen', () => {
+  it('shows 0 with a text length of 1 before any key press', () => {
+    renderScreen();
+
+    expect(getTextLength(getResult('0'))).toBe('1');
+  });
+
+  it('gives a 15-digit result its length, so the font shrinks to fit it', () => {
+    const store = renderScreen();
+
+    act(() => {
+      '999999999'.split('').forEach(digit => store.dispatch(pressDigit(digit)));
+      store.dispatch(pressOperator(OPERATORS.MULTIPLY));
+      '999999'.split('').forEach(digit => store.dispatch(pressDigit(digit)));
+      store.dispatch(pressEquals());
+    });
+
+    expect(getTextLength(getResult('999998999000000'))).toBe('15');
+  });
+
+  it('gives the error message its length', () => {
+    const store = renderScreen();
+
+    act(() => {
+      store.dispatch(pressDigit('6'));
+      store.dispatch(pressOperator(OPERATORS.DIVIDE));
+      store.dispatch(pressDigit('0'));
+      store.dispatch(pressEquals());
+    });
+
+    expect(getTextLength(getResult('Erreur'))).toBe('6');
+  });
+});
