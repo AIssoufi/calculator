@@ -1,7 +1,7 @@
 # 0001. Bootstrap the app with Create React App
 
 - Date: 2018-04-19
-- Status: Accepted
+- Status: Superseded by [0008](0008-move-to-vite.md)
 
 ## Context
 
@@ -21,4 +21,4 @@ The commits record no other option. Writing the webpack and Babel configuration 
 
 - One dependency, `react-scripts`, brings the whole toolchain, and the project has no build configuration file.
 - The configuration can only be changed by ejecting (`npm run eject`), which the project never did.
-- Create React App is no longer maintained, and `npm audit` reports 99 vulnerable packages on `master` on 2026-10-20 (see [the baseline](../evolution.md#current-baseline)).
+- Create React App is no longer maintained, and `npm audit` reports 99 vulnerable packages on `master` on 2026-10-20 (see [the baseline](../evolution.md#baseline-of-the-npm-eras)).

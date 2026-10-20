@@ -41,7 +41,10 @@ pnpm test:watch  # watch mode: re-runs the tests of the changed files
 
 [ESLint](https://eslint.org/) applies its recommended rules, and the React and Rules of Hooks rules to `src/`; its settings are in [`eslint.config.js`](eslint.config.js).
 
-Tests sit next to the code they cover and are named `*.spec.js` or `*.spec.jsx`. [Vitest](https://vitest.dev/) runs them in [jsdom](https://github.com/jsdom/jsdom), with [Testing Library](https://testing-library.com/) and the [jest-dom](https://github.com/testing-library/jest-dom) matchers; its settings are in [`vite.config.js`](vite.config.js). `pnpm test` first runs the tests of the commit tooling once, `scripts/**/*.spec.mjs`, with the Node.js test runner.
+Tests sit next to the code they cover and are named `*.spec.js`, `*.spec.jsx` or, for the commit tooling, `*.spec.mjs`:
+
+- [Vitest](https://vitest.dev/) runs the app tests in [jsdom](https://github.com/jsdom/jsdom), with [Testing Library](https://testing-library.com/) and the [jest-dom](https://github.com/testing-library/jest-dom) matchers; its settings are in [`vite.config.js`](vite.config.js).
+- `pnpm test` first runs the tests of the commit tooling once, `scripts/**/*.spec.mjs`, with the Node.js test runner.
 
 The [CI workflow](.github/workflows/ci.yml) runs on every pull request and every push to `master`:
 

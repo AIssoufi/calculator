@@ -19,5 +19,5 @@ Pull request #13 added `.github/workflows/ci.yml`. On every pull request and eve
 ## Consequences
 
 - A failing test or build fails the check of the pull request.
-- On `master` on 2026-10-20, the CI ran in 45 s (run 39388860605, from `createdAt` to `updatedAt`), and the suite holds 445 tests (see [the baseline](../evolution.md#current-baseline)).
+- On `master` on 2026-10-20, the CI ran in 45 s (run 39388860605, from `createdAt` to `updatedAt`), and the suite holds 445 tests (see [the baseline](../evolution.md#baseline-of-the-npm-eras)).
 - The workflow uses npm; the move to pnpm (#4) will update it.
