@@ -11,9 +11,13 @@ import {
   inputDigit,
   toggleSign
 } from './engine';
+import type { CalculatorState } from './types';
+import { isOperator } from './utils';
+
+type KeyHandler = (state: CalculatorState) => CalculatorState;
 
 /** Engine function of each key, as the tables below write the keys. */
-const KEY_HANDLERS = {
+const KEY_HANDLERS: Record<string, KeyHandler> = {
   '.': inputDecimalPoint,
   '=': evaluate,
   '±': toggleSign,
@@ -23,19 +27,19 @@ const KEY_HANDLERS = {
 };
 
 /** Presses each key of a space-separated sequence, from the initial state. */
-const pressKeys = sequence => sequence.split(' ').reduce((state, key) => {
+const pressKeys = (sequence: string) => sequence.split(' ').reduce<CalculatorState>((state, key) => {
   if (KEY_HANDLERS[key]) {
     return KEY_HANDLERS[key](state);
   }
 
-  if ('+-*/'.includes(key)) {
+  if (isOperator(key)) {
     return chooseOperator({ state, operator: key });
   }
 
   return inputDigit({ state, digit: key });
 }, INITIAL_STATE);
 
-const display = sequence => getDisplayValue(pressKeys(sequence));
+const display = (sequence: string) => getDisplayValue(pressKeys(sequence));
 
 describe('engine', () => {
   describe('sequences of the bug report', () => {
@@ -81,6 +85,7 @@ describe('engine', () => {
     it.each(['', '.', '12', 'x', 5, null, undefined])('ignores the invalid digit %j', digit => {
       const state = pressKeys('4');
 
+      // @ts-expect-error -- a digit of another type can still reach the engine at run time
       expect(inputDigit({ state, digit })).toBe(state);
     });
 
@@ -135,6 +140,7 @@ describe('engine', () => {
     it.each(['', 'x', '=', 'toString', null, undefined])('ignores the invalid operator %j', operator => {
       const state = pressKeys('4');
 
+      // @ts-expect-error -- an unknown operator can still reach the engine at run time
       expect(chooseOperator({ state, operator })).toBe(state);
     });
 
@@ -261,7 +267,7 @@ describe('engine', () => {
   });
 
   describe('a malformed state with an operator but no running total', () => {
-    const state = { ...INITIAL_STATE, pendingOperator: '-', entry: '3' };
+    const state: CalculatorState = { ...INITIAL_STATE, pendingOperator: '-', entry: '3' };
 
     it('takes 0 as the running total on an operator', () => {
       expect(getDisplayValue(chooseOperator({ state, operator: '+' }))).toBe('-3');
@@ -274,7 +280,7 @@ describe('engine', () => {
 
   it('never mutates the state it receives', () => {
     const state = Object.freeze(pressKeys('2 + 3'));
-    const handlers = [
+    const handlers: KeyHandler[] = [
       ...Object.values(KEY_HANDLERS),
       frozenState => inputDigit({ state: frozenState, digit: '4' }),
       frozenState => chooseOperator({ state: frozenState, operator: '*' })

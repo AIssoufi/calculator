@@ -8,44 +8,39 @@ import {
     PERCENT_DIVISOR,
     ZERO_ENTRY
 } from './constants';
+import type { CalculatorState, Digit, Operator } from './types';
 import { applyOperator, countDigits, formatNumber, isDigit, isOperator, parseEntry } from './utils';
 
-/**
- * State of a pocket calculator that evaluates from left to right: `2 + 3 × 4 =` gives `20`.
- * The engine is framework-free: each key press is a pure function from a state to the next one.
- *
- * @typedef {object} CalculatorState
- * @property {number | null} accumulator - Running total, the left operand of the next operator;
- * `null` until an operator is pressed.
- * @property {string | null} pendingOperator - Operator waiting for its right operand, one of
- * `OPERATORS`, or `null`.
- * @property {string} entry - Number being typed, kept as text so `0.` and `1.0` show as typed;
- * `''` when nothing has been typed since the last operator.
- * @property {boolean} justEvaluated - Whether the entry holds a computed value, after `=` or `%`:
- * the next digit or decimal point replaces it instead of extending it.
- * @property {boolean} hasError - Whether the last operation gave no finite result; only a digit,
- * a decimal point, `C` or `AC` leave this state.
- */
+/** Parameters of {@link inputDigit}. */
+interface InputDigitParams {
+    /** Current state. Defaults to the initial state. */
+    state?: CalculatorState;
+    /** Digit pressed, from `'0'` to `'9'`; any other value is ignored. */
+    digit?: string;
+}
 
-/**
- * @typedef {object} InputDigitParams
- * @property {CalculatorState} [state] - Current state. Defaults to the initial state.
- * @property {string} digit - Digit pressed, from `'0'` to `'9'`; any other value is ignored.
- */
+/** Parameters of {@link chooseOperator}. */
+interface ChooseOperatorParams {
+    /** Current state. Defaults to the initial state. */
+    state?: CalculatorState;
+    /** Operator pressed; any other value is ignored. */
+    operator?: Operator;
+}
 
-/**
- * @typedef {object} ChooseOperatorParams
- * @property {CalculatorState} [state] - Current state. Defaults to the initial state.
- * @property {string} operator - Operator pressed, one of `OPERATORS`; any other value is ignored.
- */
+/** Parameters of {@link appendDigit}. */
+interface AppendDigitParams {
+    /** Entry the digit is typed into. */
+    entry: string;
+    /** Digit added at the end of the entry, replacing a lone `0` or `-0`. */
+    digit: Digit;
+}
 
-/** @type {Readonly<CalculatorState>} */
-const ERROR_STATE = Object.freeze({ ...INITIAL_STATE, hasError: true });
+const ERROR_STATE: Readonly<CalculatorState> = Object.freeze({ ...INITIAL_STATE, hasError: true });
 
 const NEGATIVE_ZERO_ENTRY = MINUS_SIGN + ZERO_ENTRY;
 
 /** Gives the state a typed character starts from: an error or a computed entry is dropped first. */
-const getEditableState = state => {
+const getEditableState = (state: CalculatorState): CalculatorState => {
     if (state.hasError) {
         return INITIAL_STATE;
     }
@@ -58,13 +53,13 @@ const getEditableState = state => {
 };
 
 /** Appends a digit to an entry, replacing a lone leading zero so `0` then `7` gives `7`, not `07`. */
-const appendDigit = ({ entry, digit }) => {
+const appendDigit = ({ entry, digit }: AppendDigitParams): string => {
     const isZeroEntry = entry === ZERO_ENTRY || entry === NEGATIVE_ZERO_ENTRY;
     return isZeroEntry ? entry.slice(0, -ZERO_ENTRY.length) + digit : entry + digit;
 };
 
 /** Gives the state holding a result as its entry, or the error state when the result is not finite. */
-const toResultState = result => {
+const toResultState = (result: number): CalculatorState => {
     if (!Number.isFinite(result)) {
         return ERROR_STATE;
     }
@@ -77,10 +72,11 @@ const toResultState = result => {
  * After `=` or `%` it starts a new entry, and after an error it starts a new calculation.
  * A digit beyond {@link MAX_ENTRY_DIGITS} is ignored.
  *
- * @param {InputDigitParams} [params] - The current state and the digit pressed.
- * @returns {CalculatorState} The next state, or the same one for an invalid digit.
+ * @returns The next state, or the same one for an invalid digit.
  */
-export const inputDigit = ({ state = INITIAL_STATE, digit } = {}) => {
+export const inputDigit = (
+    { state = INITIAL_STATE, digit }: InputDigitParams = {}
+): CalculatorState => {
     if (!isDigit(digit)) {
         return state;
     }
@@ -97,10 +93,10 @@ export const inputDigit = ({ state = INITIAL_STATE, digit } = {}) => {
 /**
  * Types the decimal point: an empty entry becomes `0.`, and a second point is ignored.
  *
- * @param {CalculatorState} [state] - Current state. Defaults to the initial state.
- * @returns {CalculatorState} The next state.
+ * @param state - Current state. Defaults to the initial state.
+ * @returns The next state.
  */
-export const inputDecimalPoint = (state = INITIAL_STATE) => {
+export const inputDecimalPoint = (state: CalculatorState = INITIAL_STATE): CalculatorState => {
     const editableState = getEditableState(state);
 
     if (editableState.entry.includes(DECIMAL_POINT)) {
@@ -116,11 +112,12 @@ export const inputDecimalPoint = (state = INITIAL_STATE) => {
  * new total, then waits for the next operand. Pressed right after another operator, it replaces it.
  * After `=`, it continues from the result.
  *
- * @param {ChooseOperatorParams} [params] - The current state and the operator pressed.
- * @returns {CalculatorState} The next state, the error state when the total is not finite, or the
+ * @returns The next state, the error state when the total is not finite, or the
  * same state for an invalid operator or during an error.
  */
-export const chooseOperator = ({ state = INITIAL_STATE, operator } = {}) => {
+export const chooseOperator = (
+    { state = INITIAL_STATE, operator }: ChooseOperatorParams = {}
+): CalculatorState => {
     if (state.hasError || !isOperator(operator)) {
         return state;
     }
@@ -145,40 +142,41 @@ export const chooseOperator = ({ state = INITIAL_STATE, operator } = {}) => {
  * Presses `=`: applies the pending operator and shows the result, which the next operator continues
  * from. With no operand after the operator, or no operator at all, the shown value becomes the result.
  *
- * @param {CalculatorState} [state] - Current state. Defaults to the initial state.
- * @returns {CalculatorState} The next state, the error state when the result is not finite, or the
+ * @param state - Current state. Defaults to the initial state.
+ * @returns The next state, the error state when the result is not finite, or the
  * same state when there is nothing to evaluate.
  */
-export const evaluate = (state = INITIAL_STATE) => {
+export const evaluate = (state: CalculatorState = INITIAL_STATE): CalculatorState => {
     const hasEntry = state.entry !== EMPTY_ENTRY;
-    const hasValueToShow = hasEntry || state.accumulator !== null;
-    const canEvaluate = !state.hasError && hasValueToShow;
+    const shownValue = hasEntry ? parseEntry(state.entry) : state.accumulator;
+    const canEvaluate = !state.hasError && shownValue !== null;
 
     if (!canEvaluate) {
         return state;
     }
 
-    const isOperationComplete = hasEntry && state.pendingOperator !== null;
+    const { pendingOperator } = state;
+    const isOperationComplete = hasEntry && pendingOperator !== null;
 
     if (isOperationComplete) {
         return toResultState(applyOperator({
             left: state.accumulator ?? 0,
-            operator: state.pendingOperator,
+            operator: pendingOperator,
             right: parseEntry(state.entry)
         }));
     }
 
-    return toResultState(hasEntry ? parseEntry(state.entry) : state.accumulator);
+    return toResultState(shownValue);
 };
 
 /**
  * Presses `±`: flips the sign of the entry. An empty entry becomes `-0`, so the digits typed next
  * are negative.
  *
- * @param {CalculatorState} [state] - Current state. Defaults to the initial state.
- * @returns {CalculatorState} The next state, or the same one during an error.
+ * @param state - Current state. Defaults to the initial state.
+ * @returns The next state, or the same one during an error.
  */
-export const toggleSign = (state = INITIAL_STATE) => {
+export const toggleSign = (state: CalculatorState = INITIAL_STATE): CalculatorState => {
     if (state.hasError) {
         return state;
     }
@@ -194,10 +192,10 @@ export const toggleSign = (state = INITIAL_STATE) => {
 /**
  * Presses `%`: divides the entry by {@link PERCENT_DIVISOR}. The next digit then starts a new entry.
  *
- * @param {CalculatorState} [state] - Current state. Defaults to the initial state.
- * @returns {CalculatorState} The next state, or the same one with no entry or during an error.
+ * @param state - Current state. Defaults to the initial state.
+ * @returns The next state, or the same one with no entry or during an error.
  */
-export const applyPercent = (state = INITIAL_STATE) => {
+export const applyPercent = (state: CalculatorState = INITIAL_STATE): CalculatorState => {
     const canApplyPercent = !state.hasError && state.entry !== EMPTY_ENTRY;
 
     if (!canApplyPercent) {
@@ -215,10 +213,10 @@ export const applyPercent = (state = INITIAL_STATE) => {
  * Presses `C`: clears the entry and keeps the running total and the pending operator, so
  * `2 + 3 C 4 =` gives `6`. During an error, it resets everything.
  *
- * @param {CalculatorState} [state] - Current state. Defaults to the initial state.
- * @returns {CalculatorState} The next state.
+ * @param state - Current state. Defaults to the initial state.
+ * @returns The next state.
  */
-export const clearEntry = (state = INITIAL_STATE) => {
+export const clearEntry = (state: CalculatorState = INITIAL_STATE): CalculatorState => {
     if (state.hasError) {
         return INITIAL_STATE;
     }
@@ -229,17 +227,17 @@ export const clearEntry = (state = INITIAL_STATE) => {
 /**
  * Presses `AC`: resets everything.
  *
- * @returns {CalculatorState} The initial state.
+ * @returns The initial state.
  */
-export const clearAll = () => INITIAL_STATE;
+export const clearAll = (): CalculatorState => INITIAL_STATE;
 
 /**
  * Gives the text of the screen: the error message, else the entry as typed, else the running total.
  *
- * @param {CalculatorState} [state] - Current state. Defaults to the initial state.
- * @returns {string} The text to show, `'0'` when there is nothing else to show.
+ * @param state - Current state. Defaults to the initial state.
+ * @returns The text to show, `'0'` when there is nothing else to show.
  */
-export const getDisplayValue = (state = INITIAL_STATE) => {
+export const getDisplayValue = (state: CalculatorState = INITIAL_STATE): string => {
     if (state.hasError) {
         return ERROR_MESSAGE;
     }
@@ -255,7 +253,8 @@ export const getDisplayValue = (state = INITIAL_STATE) => {
  * Tells whether `C` has something to clear: an entry or an error. When it has not, the clear key
  * becomes `AC` and resets everything.
  *
- * @param {CalculatorState} [state] - Current state. Defaults to the initial state.
- * @returns {boolean} Whether the entry or an error can be cleared.
+ * @param state - Current state. Defaults to the initial state.
+ * @returns Whether the entry or an error can be cleared.
  */
-export const canClearEntry = (state = INITIAL_STATE) => state.hasError || state.entry !== EMPTY_ENTRY;
+export const canClearEntry = (state: CalculatorState = INITIAL_STATE): boolean =>
+    state.hasError || state.entry !== EMPTY_ENTRY;

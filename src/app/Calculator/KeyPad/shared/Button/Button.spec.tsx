@@ -5,7 +5,7 @@ import { Button } from './Button';
 const KEY_SELECTOR = '.btn';
 const LARGE_KEY_CLASS = 'btn-large';
 
-const getKey = label => screen.getByText(label, { selector: KEY_SELECTOR });
+const getKey = (label: string) => screen.getByText(label, { selector: KEY_SELECTOR });
 
 describe('Button', () => {
   it('passes its label to onClick when it is pressed', () => {
@@ -27,6 +27,7 @@ describe('Button', () => {
   it('renders an empty regular key that does nothing when pressed with no props', () => {
     const { container } = render(<Button />);
     const key = container.querySelector(KEY_SELECTOR);
+    assert(key, 'the key is rendered');
 
     expect(key).toBeEmptyDOMElement();
     expect(key).not.toHaveClass(LARGE_KEY_CLASS);
@@ -37,6 +38,7 @@ describe('Button', () => {
     const onClick = vi.fn();
     const { container } = render(<Button onClick={onClick} />);
     const key = container.querySelector(KEY_SELECTOR);
+    assert(key, 'the key is rendered');
 
     expect(key).toBeEmptyDOMElement();
 

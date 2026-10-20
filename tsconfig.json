@@ -1,0 +1,22 @@
+// TypeScript checks the app, `src/`, in strict mode with `pnpm typecheck`, and emits nothing: Vite
+// strips the types for the dev server, the build and the tests.
+{
+  "compilerOptions": {
+    // The syntax and the built-in APIs of the browsers Vite builds for, Baseline Widely available
+    // (Chrome and Edge 111, Firefox 114, Safari 16.4): ES2023 adds methods that Firefox 114 lacks.
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    // Global types: the CSS imports and `import.meta.env` of Vite, and the globals of Vitest.
+    "types": ["vite/client", "vitest/globals"],
+    "strict": true,
+    // Vite transforms each file alone, so an import or export of a type only must say so.
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": ["src"]
+}

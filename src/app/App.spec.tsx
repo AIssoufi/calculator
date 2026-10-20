@@ -25,7 +25,7 @@ const renderApp = () => ({
   )
 });
 
-const getKey = label => screen.getByText(label, { selector: KEY_SELECTOR });
+const getKey = (label: string) => screen.getByText(label, { selector: KEY_SELECTOR });
 
 describe('App', () => {
   it('renders the screen showing 0', () => {

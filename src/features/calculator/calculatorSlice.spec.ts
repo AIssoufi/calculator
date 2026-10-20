@@ -1,3 +1,5 @@
+import type { AnyAction } from '@reduxjs/toolkit';
+
 import calculatorReducer, {
   calculatorSlice,
   pressAllClear,
@@ -13,7 +15,9 @@ import calculatorReducer, {
 } from './calculatorSlice';
 import { ERROR_MESSAGE, INITIAL_STATE, OPERATORS } from './constants';
 
-const reduce = actions => ({ calculator: actions.reduce(calculatorReducer, undefined) });
+const reduce = (actions: AnyAction[]) => ({
+  calculator: actions.reduce(calculatorReducer, calculatorSlice.getInitialState())
+});
 
 describe('calculatorSlice', () => {
   it('starts with the initial state of the engine', () => {
@@ -39,7 +43,15 @@ describe('calculatorSlice', () => {
     expect(selectCanClearEntry(reduce(actions))).toBe(expected);
   });
 
-  it.each([pressDigit('x'), pressDigit(), pressOperator('='), pressOperator()])('ignores the invalid key press %j', action => {
+  it.each([
+    pressDigit('x'),
+    // @ts-expect-error -- an action with no digit can still be dispatched at run time
+    pressDigit(),
+    // @ts-expect-error -- `=` is not an operator: it has its own action, `pressEquals`
+    pressOperator('='),
+    // @ts-expect-error -- an action with no operator can still be dispatched at run time
+    pressOperator()
+  ])('ignores the invalid key press %j', action => {
     expect(calculatorReducer(INITIAL_STATE, action)).toBe(INITIAL_STATE);
   });
 });

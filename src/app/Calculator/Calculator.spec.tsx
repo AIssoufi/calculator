@@ -26,8 +26,9 @@ describe('Calculator', () => {
 
   it('renders the author links after the calculator, outside it, so they never cover a key', () => {
     const { container } = renderCalculator();
-    const calculator = container.querySelector(CALCULATOR_SELECTOR);
-    const socialLinks = container.querySelector(SOCIAL_LINKS_SELECTOR);
+    const calculator = container.querySelector<HTMLElement>(CALCULATOR_SELECTOR);
+    const socialLinks = container.querySelector<HTMLElement>(SOCIAL_LINKS_SELECTOR);
+    assert(calculator && socialLinks, 'the calculator and the author links are rendered');
 
     expect(socialLinks).toBeInTheDocument();
     expect(calculator).not.toContainElement(socialLinks);

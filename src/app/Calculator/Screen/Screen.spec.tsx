@@ -19,9 +19,9 @@ const renderScreen = () => {
   return store;
 };
 
-const getResult = text => screen.getByText(text, { selector: RESULT_SELECTOR });
+const getResult = (text: string) => screen.getByText(text, { selector: RESULT_SELECTOR });
 
-const getTextLength = element => element.style.getPropertyValue(TEXT_LENGTH_PROPERTY);
+const getTextLength = (element: HTMLElement) => element.style.getPropertyValue(TEXT_LENGTH_PROPERTY);
 
 describe('Screen', () => {
   it('shows 0 with a text length of 1 before any key press', () => {

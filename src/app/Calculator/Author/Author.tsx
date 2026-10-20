@@ -1,5 +1,9 @@
 import './Author.css';
 
+/**
+ * Renders the credits of the page: the copyright, the links to the author's GitHub repository and
+ * LinkedIn profile, and the technologies the app is built with.
+ */
 export function Author () {
   return (
     <div>

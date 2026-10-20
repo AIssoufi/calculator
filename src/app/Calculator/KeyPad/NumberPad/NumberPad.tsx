@@ -12,7 +12,7 @@ import { pressDecimalPoint, pressDigit } from "../../../../features/calculator/c
 export default function NumberPad() {
   const dispatch = useDispatch();
 
-  const pressDigitKey = digit => {
+  const pressDigitKey = (digit: string) => {
     dispatch(pressDigit(digit));
   };
   const pressDecimalPointKey = () => {
