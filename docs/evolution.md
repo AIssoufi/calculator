@@ -83,10 +83,10 @@ The Before column is `6b36056`, the last commit of the previous era, measured in
 | Install time                              | 5.89 s (`npm ci`)                                   | 0.94 s (`pnpm install --frozen-lockfile`)            |
 | Build time                                | 4.08 s (`npm run build`)                            | 0.23 s (`pnpm build`)                                |
 | Dev server start                          | 3.17 s (`npm start`)                                | 0.26 s (`pnpm start`)                                |
-| JavaScript, raw / gzipped                 | 188,498 B / 61,168 B                                | 184,641 B / 60,821 B                                 |
+| JavaScript, raw / gzipped                 | 188,498 B / 61,168 B                                | 184,646 B / 60,829 B                                 |
 | CSS, raw / gzipped                        | 3,036 B / 1,175 B                                   | 2,733 B / 1,080 B                                    |
 | Direct dependencies                       | 14 (9 + 5 development)                              | 23 (5 + 18 development)                              |
-| Audit (low / moderate / high / critical)  | `npm audit`: 14 / 47 / 33 / 5 (99 packages)         | `pnpm audit`: 0 / 1 / 0 / 0 (1 advisory)             |
+| Audit (low / moderate / high / critical)  | `npm audit`: 14 / 47 / 33 / 5 (99 packages)         | `pnpm audit`: 0 / 1 / 0 / 0 (1 advisory), then 0     |
 | Tests                                     | 451: 187 Node.js test runner, 264 Jest              | 451: 187 Node.js test runner, 264 Vitest             |
 | Test suite time                           | 3.26 s                                              | 3.94 s                                               |
 | CI duration                               | 29 s                                                | 30 s, with the lint step added                       |
@@ -96,7 +96,7 @@ The Before column is `6b36056`, the last commit of the previous era, measured in
 - The test suite takes 0.7 s longer: Vitest reports that setting jsdom up for the 9 test files takes about 70% of its run.
 - Lighthouse's performance score went from 99 to 97: Chrome fetches the module script of Vite at a high priority, where the deferred script of Create React App had a low one, and the simulated throttling of Lighthouse counts its download before the first paint (0.75 s before, 1.80 s after). The largest paint is unchanged, at 2.25 s.
 - The CSS lost its `-webkit-` prefixes and the `100vh` fallback of `100dvh`: the build targets the browsers of [Baseline Widely available](https://web.dev/baseline) (Chrome and Edge 111, Firefox 114, Safari 16.4), where Create React App followed the `browserslist` query `>0.2%, not dead`.
-- The one advisory left is a moderate one of `@babel/runtime`, a dependency of Redux and Testing Library.
+- After the migration, `pnpm audit` reported one moderate advisory, in `@babel/runtime`, a dependency of Redux and Testing Library. The last commit of the pull request refreshed that transitive dependency in the lockfile, which brings the advisories to 0.
 
 Decisions:
 - [0008. Build the app with Vite](decisions/0008-move-to-vite.md), which supersedes 0001
@@ -112,12 +112,12 @@ Measured on 2026-10-20 on the last commit of the pull request of #4, on an Apple
 | Install time                 | 0.94 s (runs: 0.83, 0.94, 0.94 s)                          | `pnpm install --frozen-lockfile` after deleting `node_modules`, with a warm pnpm store                              |
 | Build time                   | 0.23 s (runs: 1.37, 0.23, 0.21 s)                          | `pnpm build` after deleting `build/` and `node_modules/.vite`                                                      |
 | Dev server start             | 0.26 s (runs: 0.29, 0.26, 0.23 s)                          | a Node.js script that polls the server every 50 ms, from the launch of `vite` until it serves the page and `src/index.jsx`; `node_modules/.vite` kept between the runs |
-| JavaScript                   | 184,641 B raw, 60,821 B gzipped                            | `wc -c` and `gzip -c <file> \| wc -c` on `build/assets/index-*.js`, the only script                                |
+| JavaScript                   | 184,646 B raw, 60,829 B gzipped                            | `wc -c` and `gzip -c <file> \| wc -c` on `build/assets/index-*.js`, the only script                                |
 | CSS                          | 2,733 B raw, 1,080 B gzipped                               | the same on `build/assets/index-*.css`, the only stylesheet                                                        |
 | Test suite                   | 451 tests: 187 Node.js test runner, 264 Vitest (9 files)   | `pnpm test`                                                                                                        |
 | Test suite time              | 3.94 s (runs: 3.55, 3.94, 4.26 s)                          | the same command, nothing deleted between the runs (warm caches)                                                   |
 | Direct dependencies          | 5 dependencies, 18 development dependencies                | the keys of `package.json`                                                                                         |
-| `pnpm audit` advisories      | 1 moderate                                                 | `pnpm audit --json`, `metadata.vulnerabilities`                                                                    |
+| `pnpm audit` advisories      | none                                                       | `pnpm audit --json`, `metadata.vulnerabilities`                                                                    |
 | CI duration                  | 30 s, of which 26 s for the job that installs, lints, tests and builds | `gh run view`: run 39395917112 of the pull request of #4, from `createdAt` to `updatedAt`, and the times of its jobs |
 | Lighthouse (mobile)          | performance 97, accessibility 90, best practices 100, SEO 90 | `npx lighthouse@12.8.2` on `build/` served by `python3 -m http.server`, default mobile settings; the three runs gave the same scores |
 

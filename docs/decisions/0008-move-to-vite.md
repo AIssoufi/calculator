@@ -29,8 +29,8 @@ The pull request of #4 replaced `react-scripts` with Vite 8 and `@vitejs/plugin-
 Measured on 2026-10-20, in alternation with `6b36056`, the last commit with Create React App (see [the evolution](../evolution.md#2026-vite-vitest-pnpm-and-eslint)):
 
 - the build went from 4.08 s to 0.23 s, and the dev server serves the page in 0.26 s instead of 3.17 s, though Vite compiles each module when the browser asks for it;
-- the gzipped JavaScript went from 61,168 B to 60,821 B, and the gzipped CSS from 1,175 B to 1,080 B;
-- with Jest gone too ([0009](0009-move-to-vitest.md)), the audit went from 99 vulnerable packages to 1 moderate advisory, in a dependency of Redux and Testing Library.
+- the gzipped JavaScript went from 61,168 B to 60,829 B, and the gzipped CSS from 1,175 B to 1,080 B;
+- with Jest gone too ([0009](0009-move-to-vitest.md)), the audit went from 99 vulnerable packages to 1 moderate advisory, in a dependency of Redux and Testing Library, then to none once the lockfile refreshed that dependency.
 
 What it costs:
 
