@@ -39,7 +39,7 @@ The [CI workflow](.github/workflows/ci.yml) runs on every pull request and every
 2. it runs the tests once;
 3. it builds the app.
 
-A failing test or build fails the check.
+A failing test or build fails the check. On a pull request, a second job checks the commit messages and the title (see [Commit messages](#commit-messages)).
 
 ## Commit messages
 
@@ -53,6 +53,7 @@ Co-Authored-By: Jane Doe <jane@example.com>
 ```
 
 - `npm ci` installs two [husky](https://typicode.github.io/husky/) hooks. `commit-msg` runs [commitlint](https://commitlint.js.org/), which refuses a message without a conventional header or a valid `Refs:` trailer. On a `CALC-<n>` branch, `prepare-commit-msg` adds `Refs: CALC-<n>` when the message has no `Refs:` trailer.
+- On every pull request, the CI checks each commit, and checks that the title is a conventional header.
 - Merge commits, reverts and the commits of release-please and Dependabot are ignored. The rule applies from now on: older commits are not rewritten.
 
 The rules live in [`commitlint.config.mjs`](commitlint.config.mjs) and [`scripts/commits/`](scripts/commits/).
