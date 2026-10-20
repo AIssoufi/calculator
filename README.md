@@ -104,7 +104,9 @@ Two files make the build fit Cloudflare Pages:
 
 ## How AI agents work here
 
-Most issues and pull requests of this repository are written by Claude Code agents: a master agent keeps the board and merges, and one worker agent per ticket works in its own worktree. [`docs/ai-workflow/`](docs/ai-workflow/overview.md) explains their roles, how a ticket moves from an issue to a merge, how changes are reviewed, where actions are logged, and the tools they use.
+Most issues and pull requests of this repository are written by Claude Code agents: a master agent keeps the board and merges, and one worker agent per ticket works in its own worktree.
+
+See [`docs/ai-workflow/`](docs/ai-workflow/overview.md) for their roles, the ticket lifecycle, the reviews, the journal and the tooling.
 
 ## Technos utilisées
 * [ReactJS](http://redux.js.org)

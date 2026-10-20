@@ -7,9 +7,8 @@ Every action can be traced back to the agent that did it, from two places.
 The ticket reference ties everything together:
 
 - the branch is named `CALC-<n>`;
-- every commit carries a `Refs: CALC-<n>` trailer, checked by commitlint since [#19](https://github.com/AIssoufi/calculator/pull/19);
-- the pull request says `Closes #<n>`, and its body records the test plan and the review verdicts;
-- the merge commit names the pull request and its branch, such as `Merge pull request #23 from AIssoufi/CALC-4`.
+- every commit has a `Refs: CALC-<n>` trailer, required since [#19](https://github.com/AIssoufi/calculator/pull/19) (see [Commit messages](../../README.md#commit-messages));
+- the pull request closes the issue, and its body records the test plan and the review verdicts.
 
 To read the history of a ticket:
 
