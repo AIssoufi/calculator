@@ -1,0 +1,22 @@
+# Tooling
+
+The tools that let several agents work on this repository at once. Their shared setup is described on the [Tooling](https://github.com/AIssoufi/AIssoufi/blob/main/docs/agentic-architecture/tooling.md) page of the profile repository; this page says how this repository uses them.
+
+| Tool | Use here |
+| --- | --- |
+| [Claude Code](https://claude.com/claude-code) | Runs the master, each worker and their sub-agents (auditor, conventions reviewer, visual tester) |
+| [cmux](https://github.com/manaflow-ai/cmux) | A terminal with one workspace per agent, named after its ticket (`CALC-8`), and the messages between the master and the workers |
+| [Worktrunk](https://github.com/max-sixty/worktrunk) | One Git worktree per ticket, on the `CALC-<n>` branch, so workers never share files |
+| [GitHub CLI](https://cli.github.com) | Issues, pull requests, CI checks and merges |
+| [commitlint](https://commitlint.js.org/) and husky | Refuse a commit without a conventional header or a `Refs: CALC-<n>` trailer ([#17](https://github.com/AIssoufi/calculator/issues/17), [#19](https://github.com/AIssoufi/calculator/pull/19)) |
+| [GitHub Actions](../../.github/workflows/ci.yml) | Install, lint, test and build every pull request ([#1](https://github.com/AIssoufi/calculator/issues/1), [#13](https://github.com/AIssoufi/calculator/pull/13)) |
+| [Cloudflare Pages](https://pages.cloudflare.com/) | A preview URL for each branch, and the production site on `master` ([#3](https://github.com/AIssoufi/calculator/issues/3), [#14](https://github.com/AIssoufi/calculator/pull/14)) |
+
+## A new worktree
+
+This repository has no Worktrunk project hooks (`.config/wt.toml`), so a fresh worktree has no dependencies. Before any check, a worker:
+
+1. installs them with `pnpm install --frozen-lockfile`, which also installs the git hooks;
+2. runs the app on a port no other worktree uses, with `--strictPort` so a taken port fails instead of serving another worktree's app: `pnpm start --port <port> --strictPort`.
+
+No environment file is needed.

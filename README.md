@@ -102,6 +102,12 @@ Two files make the build fit Cloudflare Pages:
 
 [`docs/evolution.md`](docs/evolution.md) tells how the stack changed era by era, with its figures, and [`docs/decisions/`](docs/decisions/) holds one record per tool decision.
 
+## How AI agents work here
+
+Most issues and pull requests of this repository are written by Claude Code agents: a master agent keeps the board and merges, and one worker agent per ticket works in its own worktree.
+
+See [`docs/ai-workflow/`](docs/ai-workflow/overview.md) for their roles, the ticket lifecycle, the reviews, the journal and the tooling.
+
 ## Technos utilisées
 * [ReactJS](http://redux.js.org)
 * [ReduxJS](http://redux.js.org)
