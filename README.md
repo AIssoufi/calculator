@@ -10,6 +10,17 @@
 npm start
 ```
 
+## How it computes
+
+The calculator works like a basic pocket calculator: it evaluates from left to right, so `2 + 3 × 4 =` gives `20`.
+
+- An operator applies the previous one and shows the running total; two operators in a row keep the last one.
+- `=` shows the result: an operator continues from it, a digit starts a new calculation.
+- `C` clears the number being typed, then the key turns into `AC`, which resets everything.
+- Results are rounded to 12 significant digits, and a division by zero shows `Erreur`.
+
+The logic lives in a pure, framework-free engine, [`src/features/calculator/engine.js`](src/features/calculator/engine.js): each key press is a function from one state to the next. The Redux slice next to it only hands the key presses to the engine.
+
 ## Tests
 
 Use the Node.js version pinned in `.nvmrc` (`nvm use` selects it), then:

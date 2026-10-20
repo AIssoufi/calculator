@@ -4,38 +4,44 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '../shared';
 import './FunctionPad.css';
 
-import { percentage, reverseSign, deleteAll } from "../../../../features/keyPad/keyPadSlice";
+import {
+  pressAllClear,
+  pressClearEntry,
+  pressPercent,
+  pressToggleSign,
+  selectCanClearEntry
+} from "../../../../features/calculator/calculatorSlice";
 
+const ALL_CLEAR_LABEL = 'AC';
+const CLEAR_ENTRY_LABEL = 'C';
+
+/**
+ * Renders the function keys of the keypad: clear, sign and percent.
+ * The clear key reads `C` and clears the entry while there is one, then reads `AC` and resets
+ * everything. Must be rendered inside a react-redux `<Provider>`.
+ */
 const FunctionPad = () => {
-  const { keyPad, display } = useSelector(state => ({
-    keyPad: state.keyPad,
-    display: state.screen.display
-  }));
+  const canClearEntry = useSelector(selectCanClearEntry);
 
   const dispatch = useDispatch();
 
-  const getDeleteLabel = (keyPad) => {
-    const { result, input, operand1, operand2 } = keyPad;
-    return (!result && !input && !operand1 && !operand2) ? 'AC' : 'C';
-  }
-
   return (
-    <div className="function_container"> 
+    <div className="function_container">
       <Button
         onClick={() => {
-          dispatch(deleteAll());
+          dispatch(canClearEntry ? pressClearEntry() : pressAllClear());
         }}
-        label={getDeleteLabel(keyPad)}
+        label={canClearEntry ? CLEAR_ENTRY_LABEL : ALL_CLEAR_LABEL}
       />
       <Button
         onClick={() => {
-          dispatch(reverseSign(display));
+          dispatch(pressToggleSign());
         }}
         label="+/-"
       />
       <Button
         onClick={() => {
-          dispatch(percentage(display));
+          dispatch(pressPercent());
         }}
         label="%"
       />

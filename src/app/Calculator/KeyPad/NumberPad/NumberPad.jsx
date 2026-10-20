@@ -4,31 +4,35 @@ import { useDispatch } from 'react-redux';
 import { Button } from '../shared';
 import './NumberPad.css';
 
-import { pressNumericButton } from "../../../../features/keyPad/keyPadSlice";
-import { display } from "../../../../features/screen/screenSlice";
-import { DISPLAYS } from '../../../constants';
+import { pressDecimalPoint, pressDigit } from "../../../../features/calculator/calculatorSlice";
 
+/**
+ * Renders the digit keys and the decimal point key of the keypad, which type the entry.
+ * Must be rendered inside a react-redux `<Provider>`.
+ */
 export default function NumberPad() {
   const dispatch = useDispatch();
 
-  const pressKeyNumber = number => {
-    dispatch(pressNumericButton(number));
-    dispatch(display(DISPLAYS.INPUT))
+  const pressDigitKey = digit => {
+    dispatch(pressDigit(digit));
+  };
+  const pressDecimalPointKey = () => {
+    dispatch(pressDecimalPoint());
   };
 
   return (
     <div className="numerique_container">
-      <Button onClick={pressKeyNumber} label="9" />
-      <Button onClick={pressKeyNumber} label="8" />
-      <Button onClick={pressKeyNumber} label="7" />
-      <Button onClick={pressKeyNumber} label="6" />
-      <Button onClick={pressKeyNumber} label="5" />
-      <Button onClick={pressKeyNumber} label="4" />
-      <Button onClick={pressKeyNumber} label="3" />
-      <Button onClick={pressKeyNumber} label="2" />
-      <Button onClick={pressKeyNumber} label="1" />
-      <Button onClick={pressKeyNumber} label="." />
-      <Button onClick={pressKeyNumber} label="0" isLarge />
+      <Button onClick={pressDigitKey} label="9" />
+      <Button onClick={pressDigitKey} label="8" />
+      <Button onClick={pressDigitKey} label="7" />
+      <Button onClick={pressDigitKey} label="6" />
+      <Button onClick={pressDigitKey} label="5" />
+      <Button onClick={pressDigitKey} label="4" />
+      <Button onClick={pressDigitKey} label="3" />
+      <Button onClick={pressDigitKey} label="2" />
+      <Button onClick={pressDigitKey} label="1" />
+      <Button onClick={pressDecimalPointKey} label="." />
+      <Button onClick={pressDigitKey} label="0" isLarge />
     </div>
   );
 };

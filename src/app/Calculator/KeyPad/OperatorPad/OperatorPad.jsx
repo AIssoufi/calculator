@@ -4,40 +4,33 @@ import { useDispatch } from 'react-redux';
 import { Button } from '../shared';
 import './OperatorPad.css';
 
-import { add, divide, multiply, substract, validate } from "../../../../features/keyPad/keyPadSlice";
-import { display } from "../../../../features/screen/screenSlice";
-import { DISPLAYS } from '../../../constants';
+import { pressEquals, pressOperator } from "../../../../features/calculator/calculatorSlice";
+import { OPERATORS } from "../../../../features/calculator/constants";
 
+/** Operator keys from top to bottom: the label shown and the operator it presses. */
+const OPERATOR_KEYS = [
+  { label: '/', operator: OPERATORS.DIVIDE },
+  { label: 'X', operator: OPERATORS.MULTIPLY },
+  { label: '—', operator: OPERATORS.SUBTRACT },
+  { label: '+', operator: OPERATORS.ADD }
+];
+
+/**
+ * Renders the column of operator keys and the `=` key of the keypad.
+ * Must be rendered inside a react-redux `<Provider>`.
+ */
 export default function OperatorPad() {
   const dispatch = useDispatch();
 
-  const pressAddKey = () => {
-    dispatch(add());
-    dispatch(display(DISPLAYS.OPERAND_1));
-  };
-  const pressDivideKey = () => {
-    dispatch(divide());
-    dispatch(display(DISPLAYS.OPERAND_1));
-  };
-  const pressMultiplyKey = () => {
-    dispatch(multiply());
-    dispatch(display(DISPLAYS.OPERAND_1));
-  };
-  const pressSubstractKey = () => {
-    dispatch(substract());
-    dispatch(display(DISPLAYS.OPERAND_1));
-  };
   const pressEqualKey = () => {
-    dispatch(validate());
-    dispatch(display(DISPLAYS.RESULT));
-  }
+    dispatch(pressEquals());
+  };
 
   return (
     <div className="operateur_container">
-      <Button onClick={pressDivideKey} label="/" />
-      <Button onClick={pressMultiplyKey} label="X" />
-      <Button onClick={pressSubstractKey} label="—" />
-      <Button onClick={pressAddKey} label="+" />
+      {OPERATOR_KEYS.map(({ label, operator }) => (
+        <Button key={operator} onClick={() => dispatch(pressOperator(operator))} label={label} />
+      ))}
       <Button onClick={pressEqualKey} label="=" />
     </div>
   );

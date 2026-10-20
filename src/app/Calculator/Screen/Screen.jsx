@@ -3,27 +3,15 @@ import { useSelector } from 'react-redux';
 
 import './Screen.css';
 
-import { DISPLAYS } from '../../constants';
+import { selectDisplayValue } from '../../../features/calculator/calculatorSlice';
 
-const getResult = (keyPad, screen) => {
-  switch(screen.display)  {
-    case DISPLAYS.RESULT:
-      return keyPad.result;
-    case DISPLAYS.INPUT:
-      return keyPad.input;
-    case DISPLAYS.OPERAND_1:
-      return keyPad.operand1;
-    case DISPLAYS.OPERAND_2:
-      return keyPad.operand2;
-    default:
-      return keyPad.input;
-  }
-};
-
+/**
+ * Renders the screen of the calculator: the entry, the running total, the result or an error
+ * message, plus a large faded copy in the background. Must be rendered inside a react-redux
+ * `<Provider>`.
+ */
 export function Screen() {
-  const result = useSelector(state => {
-    return getResult(state.keyPad, state.screen);
-  });
+  const result = useSelector(selectDisplayValue);
 
   return (
     <div className="screen_wrapper">
