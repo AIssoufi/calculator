@@ -2,7 +2,7 @@
 
 How the project's stack changed, era by era, oldest first. Each tool change has its Architecture Decision Record in [`decisions/`](decisions/).
 
-The figures of the npm eras were measured on 2026-10-20 from the last commit of each era, rebuilt in a detached worktree with the method of the [baseline of the npm eras](#baseline-of-the-npm-eras); the Vite era uses the method of the [current baseline](#current-baseline). Each table compares the last commit of the previous era (Before) with the last commit of the era (After). `npm audit` and `pnpm audit` read today's advisory database, so they count what is known to be vulnerable today, not what was known at the time.
+The figures of the npm eras were measured on 2026-10-20 from the last commit of each era, rebuilt in a detached worktree with the method of the [baseline of the npm eras](#baseline-of-the-npm-eras); the Vite and TypeScript eras use the method of the [current baseline](#current-baseline). Each table compares the last commit of the previous era (Before) with the last commit of the era (After). `npm audit` and `pnpm audit` read today's advisory database, so they count what is known to be vulnerable today, not what was known at the time.
 
 ## 2018: a Create React App with Redux, on GitHub Pages
 
@@ -103,22 +103,54 @@ Decisions:
 - [0009. Run the tests with Vitest](decisions/0009-move-to-vitest.md)
 - [0010. Install the dependencies with pnpm](decisions/0010-move-to-pnpm.md)
 
+## 2026: TypeScript
+
+The app was written in JavaScript, and nothing checked the state, the action payloads or the props that cross its modules. Every file of `src/` is now written in TypeScript, checked in strict mode by `pnpm typecheck` in the CI, with typed Redux actions and typed hooks to read and update the store (#5). The app is unchanged: the same tests pass, and the page looks the same.
+
+The Before column is `9aeb689`, the last commit of the previous era, measured in alternation with the After column on the same machine. Other builds loaded the machine during the runs (a load average of 13 to 17 on 8 cores), so the times are higher than those of the previous era: compare the two columns of this table, not the eras.
+
+| Figure                                    | Before                                              | After                                                |
+| ----------------------------------------- | --------------------------------------------------- | ---------------------------------------------------- |
+| Stack                                     | JavaScript, Vite 8.3, Vitest 5.0, pnpm 12.14, ESLint 9.39 | TypeScript 6.0 in strict mode, typescript-eslint 8.71; the rest unchanged |
+| Install time                              | 0.93 s                                              | 1.63 s                                               |
+| Build time                                | 0.28 s                                              | 0.40 s                                               |
+| Dev server start                          | 0.38 s                                              | 0.52 s                                               |
+| Type check time                           | no type check                                       | 1.19 s (`pnpm typecheck`)                            |
+| Lint time                                 | 0.95 s                                              | 1.97 s                                               |
+| JavaScript, raw / gzipped                 | 184,646 B / 60,829 B                                | 184,748 B / 60,919 B                                 |
+| CSS, raw / gzipped                        | 2,733 B / 1,080 B                                   | 2,733 B / 1,080 B                                    |
+| Direct dependencies                       | 23 (5 + 18 development)                             | 27 (5 + 22 development)                              |
+| Audit (`pnpm audit`)                      | 0 advisories                                        | 0 advisories                                         |
+| Tests                                     | 451: 187 Node.js test runner, 264 Vitest            | 454: 187 Node.js test runner, 267 Vitest             |
+| Test suite time                           | 6.00 s                                              | 7.23 s                                               |
+| CI duration                               | 23 s                                                | 33 s, with the type check step added (1 s)           |
+| Lighthouse (mobile, local build)          | 97 / 90 / 100 / 90                                  | 97 / 90 / 100 / 90                                   |
+
+- Vite and Vitest strip the types without checking them, so the build, the dev server and the tests do the same work as before; their runs overlap from one column to the other. The test suite has 2 more files, for the typed hooks, and Vitest sets jsdom up for each one.
+- The CI runs the type check, a new step, and the lint takes twice as long, since typescript-eslint parses each file with the TypeScript parser.
+- The script grows by 102 B, the error that `src/index.tsx` throws when the page has no `#root` element: the types themselves leave nothing in the build.
+- The install takes longer: typescript-eslint adds 17 packages, and TypeScript 6.0, a JavaScript package, replaces the native binary of TypeScript 7.0 that the configuration loader of commitlint pulled before.
+
+Decision: [0011. Write the app in TypeScript, in strict mode](decisions/0011-move-to-typescript.md)
+
 ## Current baseline
 
-Measured on 2026-10-20 on the last commit of the pull request of #4, on an Apple M3 with 8 cores, macOS (Darwin 25.6.0), Node.js 24.22.0 and pnpm 12.14.0. Each timed command ran three times, in alternation with the previous era, with `/usr/bin/time -p` except the dev server (see its row); the table keeps the median.
+Measured on 2026-10-20 on the pull request of #5, on an Apple M3 with 8 cores, macOS (Darwin 25.6.0), Node.js 24.22.0 and pnpm 12.14.0, with a load average of 13 to 17 from other builds. Each timed command ran six times, in two rounds that alternate with the previous era, with `/usr/bin/time -p` except the dev server (see its row); the table keeps the median.
 
 | Figure                       | Value                                                      | How it was measured                                                                                               |
 | ---------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| Install time                 | 0.94 s (runs: 0.83, 0.94, 0.94 s)                          | `pnpm install --frozen-lockfile` after deleting `node_modules`, with a warm pnpm store                              |
-| Build time                   | 0.23 s (runs: 1.37, 0.23, 0.21 s)                          | `pnpm build` after deleting `build/` and `node_modules/.vite`                                                      |
-| Dev server start             | 0.26 s (runs: 0.29, 0.26, 0.23 s)                          | a Node.js script that polls the server every 50 ms, from the launch of `vite` until it serves the page and `src/index.jsx`; `node_modules/.vite` kept between the runs |
-| JavaScript                   | 184,646 B raw, 60,829 B gzipped                            | `wc -c` and `gzip -c <file> \| wc -c` on `build/assets/index-*.js`, the only script                                |
+| Install time                 | 1.63 s (runs: 1.75, 1.90, 1.51, 1.81, 1.03, 1.11 s)        | `pnpm install --frozen-lockfile` after deleting `node_modules`, with a warm pnpm store                              |
+| Build time                   | 0.40 s (runs: 1.75, 0.35, 0.45, 1.22, 0.19, 0.24 s)        | `pnpm build` after deleting `build/` and `node_modules/.vite`                                                      |
+| Dev server start             | 0.52 s (runs: 0.52, 0.62, 0.39, 0.29, 0.52, 0.55 s)        | a Node.js script that polls the server every 50 ms, from the launch of `vite` until it serves the page and `src/index.tsx`; `node_modules/.vite` kept between the runs |
+| Type check time              | 1.19 s (runs: 1.41, 1.13, 1.07, 1.29, 1.25, 1.04 s)        | `pnpm typecheck`                                                                                                   |
+| Lint time                    | 1.97 s (runs: 1.80, 1.60, 1.71, 3.40, 2.14, 2.51 s)        | `pnpm lint`                                                                                                        |
+| JavaScript                   | 184,748 B raw, 60,919 B gzipped                            | `wc -c` and `gzip -c <file> \| wc -c` on `build/assets/index-*.js`, the only script                                |
 | CSS                          | 2,733 B raw, 1,080 B gzipped                               | the same on `build/assets/index-*.css`, the only stylesheet                                                        |
-| Test suite                   | 451 tests: 187 Node.js test runner, 264 Vitest (9 files)   | `pnpm test`                                                                                                        |
-| Test suite time              | 3.94 s (runs: 3.55, 3.94, 4.26 s)                          | the same command, nothing deleted between the runs (warm caches)                                                   |
-| Direct dependencies          | 5 dependencies, 18 development dependencies                | the keys of `package.json`                                                                                         |
+| Test suite                   | 454 tests: 187 Node.js test runner, 267 Vitest (11 files)  | `pnpm test`                                                                                                        |
+| Test suite time              | 7.23 s (runs: 9.79, 7.89, 7.07, 6.18, 7.10, 7.36 s)        | the same command, nothing deleted between the runs (warm caches)                                                   |
+| Direct dependencies          | 5 dependencies, 22 development dependencies                | the keys of `package.json`                                                                                         |
 | `pnpm audit` advisories      | none                                                       | `pnpm audit --json`, `metadata.vulnerabilities`                                                                    |
-| CI duration                  | 30 s, of which 26 s for the job that installs, lints, tests and builds | `gh run view`: run 39395917112 of the pull request of #4, from `createdAt` to `updatedAt`, and the times of its jobs |
+| CI duration                  | 33 s, of which 29 s for the job that lints, checks the types, tests and builds | `gh run view`: run 39406687648 of the pull request of #5, from `createdAt` to `updatedAt`, and the times of its jobs |
 | Lighthouse (mobile)          | performance 97, accessibility 90, best practices 100, SEO 90 | `npx lighthouse@12.8.2` on `build/` served by `python3 -m http.server`, default mobile settings; the three runs gave the same scores |
 
 ## Baseline of the npm eras

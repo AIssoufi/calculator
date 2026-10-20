@@ -1,3 +1,4 @@
+import type { Operator } from './types';
 import { applyOperator, countDigits, formatNumber, isDigit, isOperator, parseEntry } from './utils';
 
 describe('isDigit', () => {
@@ -47,6 +48,7 @@ describe('parseEntry', () => {
   });
 
   it.each(['', '-', '.', 'abc', undefined])('reads %j, which holds no number, as 0', entry => {
+    // @ts-expect-error -- an entry of another type can still reach the helper at run time
     expect(parseEntry(entry)).toBe(0);
   });
 });
@@ -68,12 +70,13 @@ describe('formatNumber', () => {
   });
 
   it.each([Infinity, -Infinity, NaN, '5', null, undefined])('formats %p, which is not a finite number, as "0"', value => {
+    // @ts-expect-error -- a value of another type can still reach the helper at run time
     expect(formatNumber(value)).toBe('0');
   });
 });
 
 describe('applyOperator', () => {
-  it.each([
+  it.each<[number, Operator, number, number]>([
     [2, '+', 3, 5],
     [2, '-', 3, -1],
     [2, '*', 3, 6],
@@ -93,6 +96,7 @@ describe('applyOperator', () => {
   });
 
   it.each(['x', '', 'toString', undefined])('returns the right operand for the unknown operator %j', operator => {
+    // @ts-expect-error -- an unknown operator can still reach the helper at run time
     expect(applyOperator({ left: 2, operator, right: 3 })).toBe(3);
   });
 });

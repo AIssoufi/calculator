@@ -5,7 +5,7 @@ import calculatorReducer from "../features/calculator/calculatorSlice";
  * Creates a store holding the calculator state at its initial values.
  * The app uses the single `store` below; each test creates its own, so no state leaks between tests.
  *
- * @returns {import('@reduxjs/toolkit').EnhancedStore} A new store.
+ * @returns A new store, typed with the state and the actions of its slices.
  */
 export const setupStore = () => configureStore({
     reducer: {
@@ -13,4 +13,5 @@ export const setupStore = () => configureStore({
     },
 });
 
+/** Store of the app, which `index.tsx` provides to the components. */
 export const store = setupStore();

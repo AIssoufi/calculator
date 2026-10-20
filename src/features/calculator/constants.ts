@@ -1,3 +1,5 @@
+import type { CalculatorState } from './types';
+
 /** The four arithmetic operators, as the engine and the `pressOperator` action name them. */
 export const OPERATORS = Object.freeze({
     ADD: '+',
@@ -30,12 +32,8 @@ export const PERCENT_DIVISOR = 100;
 /** Text the screen shows when an operation gives no finite result, such as a division by zero. */
 export const ERROR_MESSAGE = 'Erreur';
 
-/**
- * State of the engine before any key press, and after `AC`.
- *
- * @type {Readonly<import('./engine').CalculatorState>}
- */
-export const INITIAL_STATE = Object.freeze({
+/** State of the engine before any key press, and after `AC`. */
+export const INITIAL_STATE: Readonly<CalculatorState> = Object.freeze({
     accumulator: null,
     pendingOperator: null,
     entry: EMPTY_ENTRY,

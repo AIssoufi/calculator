@@ -29,19 +29,22 @@ The calculator works like a basic pocket calculator: it evaluates from left to r
 - `C` clears the number being typed, then the key turns into `AC`, which resets everything.
 - Results are rounded to 12 significant digits, and a division by zero shows `Erreur`.
 
-The logic lives in a pure, framework-free engine, [`src/features/calculator/engine.js`](src/features/calculator/engine.js): each key press is a function from one state to the next. The Redux slice next to it only hands the key presses to the engine.
+The logic lives in a pure, framework-free engine, [`src/features/calculator/engine.ts`](src/features/calculator/engine.ts): each key press is a function from one state to the next. The Redux slice next to it only hands the key presses to the engine.
 
 ## Tests
 
 ```bash
 pnpm lint        # ESLint, as in the CI
+pnpm typecheck   # TypeScript, as in the CI
 pnpm test        # a single run of every test, as in the CI
 pnpm test:watch  # watch mode: re-runs the tests of the changed files
 ```
 
-[ESLint](https://eslint.org/) applies its recommended rules, and the React and Rules of Hooks rules to `src/`; its settings are in [`eslint.config.js`](eslint.config.js).
+[ESLint](https://eslint.org/) applies its recommended rules, and the [typescript-eslint](https://typescript-eslint.io/), React and Rules of Hooks rules to `src/`; its settings are in [`eslint.config.js`](eslint.config.js).
 
-Tests sit next to the code they cover and are named `*.spec.js`, `*.spec.jsx` or, for the commit tooling, `*.spec.mjs`:
+The app is written in [TypeScript](https://www.typescriptlang.org/), in strict mode. Vite and Vitest strip the types without checking them, so `pnpm typecheck` runs `tsc` on `src/`, with the settings of [`tsconfig.json`](tsconfig.json), and fails on any type error. The configuration files and the commit tooling stay in JavaScript.
+
+Tests sit next to the code they cover and are named `*.spec.ts`, `*.spec.tsx` or, for the commit tooling, `*.spec.mjs`:
 
 - [Vitest](https://vitest.dev/) runs the app tests in [jsdom](https://github.com/jsdom/jsdom), with [Testing Library](https://testing-library.com/) and the [jest-dom](https://github.com/testing-library/jest-dom) matchers; its settings are in [`vite.config.js`](vite.config.js).
 - `pnpm test` first runs the tests of the commit tooling once, `scripts/**/*.spec.mjs`, with the Node.js test runner.
@@ -50,10 +53,11 @@ The [CI workflow](.github/workflows/ci.yml) runs on every pull request and every
 
 1. it installs the dependencies with `pnpm install --frozen-lockfile`, which fails when `pnpm-lock.yaml` does not match `package.json`;
 2. it lints the code;
-3. it runs the tests once;
-4. it builds the app.
+3. it checks the types;
+4. it runs the tests once;
+5. it builds the app.
 
-A lint error, a failing test or a failed build fails the check. On a pull request, a second job checks the commit messages and the title (see [Commit messages](#commit-messages)).
+A lint error, a type error, a failing test or a failed build fails the check. On a pull request, a second job checks the commit messages and the title (see [Commit messages](#commit-messages)).
 
 ## Commit messages
 
@@ -111,6 +115,7 @@ See [`docs/ai-workflow/`](docs/ai-workflow/overview.md) for their roles, the tic
 ## Technos utilisées
 * [ReactJS](http://redux.js.org)
 * [ReduxJS](http://redux.js.org)
+* [TypeScript](https://www.typescriptlang.org/)
 
 ## Autres captures d'écran
 <p align="center">
