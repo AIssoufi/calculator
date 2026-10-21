@@ -15,3 +15,16 @@ body {
 a {
   color: #802d5e;
 }
+
+/* Hides an element from the eye but keeps it for screen readers, such as the heading of the page. */
+.visually-hidden {
+  border: 0;
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
