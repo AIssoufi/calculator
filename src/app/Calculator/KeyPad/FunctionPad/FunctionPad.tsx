@@ -9,24 +9,13 @@ import {
   pressToggleSign,
   selectCanClearEntry
 } from "../../../../features/calculator/calculatorSlice";
-
-/** Clear key that resets everything: its label, and its name read by screen readers. */
-const ALL_CLEAR_KEY = { label: 'AC', name: 'AC, tout effacer' } as const;
-
-/**
- * Clear key while there is an entry. Its name, like the one of {@link ALL_CLEAR_KEY}, starts with
- * the label so that a voice command can say it.
- */
-const CLEAR_ENTRY_KEY = { label: 'C', name: 'C, effacer la saisie' } as const;
-
-/** Name of the `+/-` key read by screen readers. */
-const TOGGLE_SIGN_NAME = 'Changer de signe';
-
-/** Keys that press the clear key, which clears the entry first, then everything. */
-const CLEAR_SHORTCUTS = ['Escape', 'Backspace'];
-
-/** Key that presses the percent key. */
-const PERCENT_SHORTCUTS = ['%'];
+import {
+  ALL_CLEAR_KEY,
+  CLEAR_ENTRY_KEY,
+  CLEAR_SHORTCUTS,
+  PERCENT_SHORTCUTS,
+  TOGGLE_SIGN_NAME
+} from "./constants";
 
 /**
  * Renders the function keys of the keypad: clear, sign and percent.

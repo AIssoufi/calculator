@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 
 import { pressDigit } from '../../../../features/calculator/calculatorSlice';
 import { setupStore } from '../../../store';
+import { ALL_CLEAR_KEY, CLEAR_ENTRY_KEY, TOGGLE_SIGN_NAME } from './constants';
 import FunctionPad from './FunctionPad';
 
 const renderFunctionPad = () => {
@@ -20,8 +21,9 @@ describe('FunctionPad', () => {
   it('names the clear key AC and the sign key for screen readers, before any key press', () => {
     renderFunctionPad();
 
-    expect(screen.getByRole('button', { name: 'AC, tout effacer' })).toHaveTextContent('AC');
-    expect(screen.getByRole('button', { name: 'Changer de signe' })).toHaveTextContent('+/-');
+    expect(screen.getByRole('button', { name: ALL_CLEAR_KEY.name }))
+      .toHaveTextContent(ALL_CLEAR_KEY.label);
+    expect(screen.getByRole('button', { name: TOGGLE_SIGN_NAME })).toHaveTextContent('+/-');
     expect(screen.getByRole('button', { name: '%' })).toBeInTheDocument();
   });
 
@@ -29,12 +31,12 @@ describe('FunctionPad', () => {
     const { store, user } = renderFunctionPad();
     store.dispatch(pressDigit('7'));
 
-    expect(await screen.findByRole('button', { name: 'C, effacer la saisie' })).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: CLEAR_ENTRY_KEY.name })).toBeInTheDocument();
 
     await user.keyboard(key);
 
     expect(store.getState().calculator.entry).toBe('');
-    expect(screen.getByRole('button', { name: 'AC, tout effacer' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: ALL_CLEAR_KEY.name })).toBeInTheDocument();
   });
 
   it('applies the percent with the % key', async () => {

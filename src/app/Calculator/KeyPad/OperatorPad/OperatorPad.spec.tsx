@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 
 import { pressDigit, selectDisplayValue } from '../../../../features/calculator/calculatorSlice';
 import { setupStore } from '../../../store';
+import { OPERATOR_KEYS } from './constants';
 import OperatorPad from './OperatorPad';
 
 const renderOperatorPad = () => {
@@ -18,10 +19,7 @@ const renderOperatorPad = () => {
 
 describe('OperatorPad', () => {
   it.each([
-    ['Diviser', '/'],
-    ['Multiplier', 'X'],
-    ['Moins', '—'],
-    ['+', '+'],
+    ...OPERATOR_KEYS.map(({ label, name }) => [name ?? label, label]),
     ['=', '=']
   ])('names the %s key for screen readers, showing %s', (name, label) => {
     renderOperatorPad();

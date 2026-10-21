@@ -3,18 +3,7 @@ import { Button } from '../shared';
 import './NumberPad.css';
 
 import { pressDecimalPoint, pressDigit } from "../../../../features/calculator/calculatorSlice";
-
-/** Digits of the rows above the `0` key, in the order they are shown and tabbed through. */
-const ROW_DIGITS = ['7', '8', '9', '4', '5', '6', '1', '2', '3'];
-
-/** The `0` key, on the large bottom key of the pad. */
-const ZERO_DIGIT = '0';
-
-/** Keys that type the decimal point: the point, and the comma of French keyboards. */
-const DECIMAL_POINT_SHORTCUTS = ['.', ','];
-
-/** Key that types the `0`. */
-const ZERO_SHORTCUTS = [ZERO_DIGIT];
+import { DECIMAL_POINT_SHORTCUTS, ROW_DIGITS, ZERO_DIGIT, ZERO_SHORTCUTS } from "./constants";
 
 /**
  * Renders the digit keys and the decimal point key of the keypad, which type the entry; the digit
