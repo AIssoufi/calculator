@@ -1,9 +1,17 @@
-import { DISPLAY_PRECISION_DIGITS, OPERATORS, ZERO_ENTRY } from './constants';
+import {
+    DISPLAY_PRECISION_DIGITS,
+    EXPONENT_FRACTION_DIGITS,
+    OPERATORS,
+    ROUNDED_INTEGER_THRESHOLD,
+    ZERO_ENTRY
+} from './constants';
 import type { Digit, Operator } from './types';
 
 const SINGLE_DIGIT_PATTERN = /^[0-9]$/;
 const ANY_DIGIT_PATTERN = /[0-9]/g;
 const OPERATOR_SYMBOLS: readonly unknown[] = Object.values(OPERATORS);
+/** Trailing zeros of a mantissa, with its point when nothing is left after it, as in `1.000e+21`. */
+const MANTISSA_TRAILING_ZEROS_PATTERN = /\.?0+(?=e)/;
 
 /** The two operands of an arithmetic operation. */
 interface Operands {
@@ -66,19 +74,35 @@ export const parseEntry = (entry: string): number => {
 
 /**
  * Formats a number for the screen, rounded to {@link DISPLAY_PRECISION_DIGITS} significant digits
- * so float noise does not show.
+ * so float noise does not show. A safe integer is exact, so it is shown in full; a value that
+ * rounding would turn into an integer of wrong trailing digits is shown in exponent notation, so a
+ * rounded result never looks exact.
  *
  * @param value - Number to show.
- * @returns The rounded number, or `'0'` for a value that is not a finite number: the engine reports
- * those as an error before it formats anything.
+ * @returns A safe integer in full; from {@link ROUNDED_INTEGER_THRESHOLD}, the exponent notation
+ * without trailing zeros; any other value rounded to {@link DISPLAY_PRECISION_DIGITS} significant
+ * digits; or `'0'` for a value that is not a finite number: the engine reports those as an error
+ * before it formats anything.
  * @example formatNumber(0.1 + 0.2) // '0.3'
+ * @example formatNumber(123456789 * 123456789) // '1.52415787502e+16'
  */
 export const formatNumber = (value: number): string => {
     if (!Number.isFinite(value)) {
         return ZERO_ENTRY;
     }
 
-    return String(Number(value.toPrecision(DISPLAY_PRECISION_DIGITS)));
+    if (Number.isSafeInteger(value)) {
+        return String(value);
+    }
+
+    const rounded = Number(value.toPrecision(DISPLAY_PRECISION_DIGITS));
+    const losesIntegerDigits = Math.abs(rounded) >= ROUNDED_INTEGER_THRESHOLD;
+
+    if (losesIntegerDigits) {
+        return value.toExponential(EXPONENT_FRACTION_DIGITS).replace(MANTISSA_TRAILING_ZEROS_PATTERN, '');
+    }
+
+    return String(rounded);
 };
 
 /**

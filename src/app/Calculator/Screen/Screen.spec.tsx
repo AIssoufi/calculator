@@ -55,7 +55,20 @@ describe('Screen', () => {
       store.dispatch(pressEquals());
     });
 
-    expect(getTextLength(getResult('999998999000000'))).toBe('15');
+    expect(getTextLength(getResult('999998999000001'))).toBe('15');
+  });
+
+  it('gives a result in exponent notation its length, so the font shrinks to fit it', () => {
+    const store = renderScreen();
+
+    act(() => {
+      '123456789'.split('').forEach(digit => store.dispatch(pressDigit(digit)));
+      store.dispatch(pressOperator(OPERATORS.MULTIPLY));
+      '123456789'.split('').forEach(digit => store.dispatch(pressDigit(digit)));
+      store.dispatch(pressEquals());
+    });
+
+    expect(getTextLength(getResult('1.52415787502e+16'))).toBe('17');
   });
 
   it('gives the error message its length', () => {
