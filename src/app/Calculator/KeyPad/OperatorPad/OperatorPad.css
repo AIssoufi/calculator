@@ -1,6 +1,7 @@
+/* Black on the orange gives a contrast of 9:1, where white gave 2.3:1. */
 .operator_container {
   background-color: rgb(245, 146, 62);
-  color: #fff;
+  color: #000;
   display: flex;
   flex-direction: column;
   grid-area: operator;
