@@ -23,8 +23,20 @@ export const ZERO_ENTRY = '0';
 /** Most digits an entry can hold, so a typed number stays readable on the screen. */
 export const MAX_ENTRY_DIGITS = 9;
 
-/** Significant digits a result is rounded to, which hides float noise such as `0.30000000000000004`. */
+/**
+ * Significant digits a result that is not a safe integer is rounded to, which hides float noise such
+ * as `0.30000000000000004`.
+ */
 export const DISPLAY_PRECISION_DIGITS = 12;
+
+/**
+ * Smallest magnitude whose integer part holds more digits than {@link DISPLAY_PRECISION_DIGITS}:
+ * past it, a rounded result is shown in exponent notation.
+ */
+export const ROUNDED_INTEGER_THRESHOLD = 10 ** DISPLAY_PRECISION_DIGITS;
+
+/** Digits after the point of a mantissa, so the exponent notation keeps the display precision. */
+export const EXPONENT_FRACTION_DIGITS = DISPLAY_PRECISION_DIGITS - 1;
 
 /** Divisor of the `%` key: it turns the entry into a fraction of 100. */
 export const PERCENT_DIVISOR = 100;
@@ -37,6 +49,7 @@ export const INITIAL_STATE: Readonly<CalculatorState> = Object.freeze({
     accumulator: null,
     pendingOperator: null,
     entry: EMPTY_ENTRY,
+    result: null,
     justEvaluated: false,
     hasError: false
 });
