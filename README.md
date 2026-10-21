@@ -31,6 +31,21 @@ The calculator works like a basic pocket calculator: it evaluates from left to r
 
 The logic lives in a pure, framework-free engine, [`src/features/calculator/engine.ts`](src/features/calculator/engine.ts): each key press is a function from one state to the next. The Redux slice next to it only hands the key presses to the engine.
 
+## Keyboard and screen readers
+
+Every key is a button: Tab reaches it, and Enter or Space presses it. The keyboard also works from anywhere on the page:
+
+| Keyboard | Key |
+| --- | --- |
+| `0` to `9` | the digit |
+| `.` or `,` | `.` |
+| `+`, `-`, `*`, `/` | the operator |
+| `=` or Enter | `=`, unless a button or link has the focus: Enter then presses it |
+| Escape or Backspace | `C`, then `AC` |
+| `%` | `%` |
+
+A key held down on the keyboard shows pressed. A key combined with Ctrl, Cmd or Alt is left to the browser, such as Ctrl and `-` to zoom out. Screen readers announce each change of the screen, and read the symbol keys by their names, such as "Multiplier".
+
 ## Tests
 
 ```bash

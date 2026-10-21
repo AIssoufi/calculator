@@ -10,18 +10,35 @@ import {
   selectCanClearEntry
 } from "../../../../features/calculator/calculatorSlice";
 
-const ALL_CLEAR_LABEL = 'AC';
-const CLEAR_ENTRY_LABEL = 'C';
+/** Clear key that resets everything: its label, and its name read by screen readers. */
+const ALL_CLEAR_KEY = { label: 'AC', name: 'AC, tout effacer' } as const;
+
+/**
+ * Clear key while there is an entry. Its name, like the one of {@link ALL_CLEAR_KEY}, starts with
+ * the label so that a voice command can say it.
+ */
+const CLEAR_ENTRY_KEY = { label: 'C', name: 'C, effacer la saisie' } as const;
+
+/** Name of the `+/-` key read by screen readers. */
+const TOGGLE_SIGN_NAME = 'Changer de signe';
+
+/** Keys that press the clear key, which clears the entry first, then everything. */
+const CLEAR_SHORTCUTS = ['Escape', 'Backspace'];
+
+/** Key that presses the percent key. */
+const PERCENT_SHORTCUTS = ['%'];
 
 /**
  * Renders the function keys of the keypad: clear, sign and percent.
  * The clear key reads `C` and clears the entry while there is one, then reads `AC` and resets
- * everything. Must be rendered inside a react-redux `<Provider>`.
+ * everything. Escape or Backspace presses the clear key, and `%` the percent key.
+ * Must be rendered inside a react-redux `<Provider>`.
  */
 const FunctionPad = () => {
   const canClearEntry = useAppSelector(selectCanClearEntry);
 
   const dispatch = useAppDispatch();
+  const clearKey = canClearEntry ? CLEAR_ENTRY_KEY : ALL_CLEAR_KEY;
 
   return (
     <div className="function_container">
@@ -29,19 +46,23 @@ const FunctionPad = () => {
         onClick={() => {
           dispatch(canClearEntry ? pressClearEntry() : pressAllClear());
         }}
-        label={canClearEntry ? CLEAR_ENTRY_LABEL : ALL_CLEAR_LABEL}
+        label={clearKey.label}
+        ariaLabel={clearKey.name}
+        shortcuts={CLEAR_SHORTCUTS}
       />
       <Button
         onClick={() => {
           dispatch(pressToggleSign());
         }}
         label="+/-"
+        ariaLabel={TOGGLE_SIGN_NAME}
       />
       <Button
         onClick={() => {
           dispatch(pressPercent());
         }}
         label="%"
+        shortcuts={PERCENT_SHORTCUTS}
       />
     </div>
   );

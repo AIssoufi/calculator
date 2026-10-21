@@ -1,8 +1,14 @@
+/* A native button, reset so that it looks like the plain key it replaces. */
 .btn {
   --button-size: calc(var(--calculator-width) / 4);
 
+  appearance: none;
+  background: none;
   border: 1px solid rgb(142, 142, 142);
+  border-radius: 0;
+  color: inherit;
   display: inline-block;
+  font: inherit;
   font-size: 1.5em;
   height: var(--button-size);
   line-height: var(--button-size);
@@ -12,7 +18,9 @@
   width: var(--button-size);
 }
 
-  .btn:active {
+  /* Held down with the pointer, or with a keyboard shortcut. */
+  .btn:active,
+  .btn-pressed {
     background-color: rgb(178, 178, 178);
   }
 
