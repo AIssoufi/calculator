@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 
 import App from './App';
-import { setupStore } from './store';
+import { setupStore } from '../store';
 
 // Labels of the keys in the order Tab reaches them: function keys, digits row by row, operators.
 const KEY_LABELS = [
