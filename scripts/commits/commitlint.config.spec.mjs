@@ -77,6 +77,9 @@ describe('commitlint.config.mjs', () => {
     'chore(deps): bump react from 18.2.0 to 18.3.1\n\n' +
       `Bumps react from 18.2.0 to 18.3.1. ${longLine}\n\nSigned-off-by: dependabot[bot] <support@github.com>\n`,
     `Bump react from 18.2.0 to 18.3.1\n\n${longLine}\n\nSigned-off-by: dependabot[bot] <support@github.com>\n`,
+    'ci(deps): bump the github-actions group with 2 updates\n\n' +
+      `Bumps the github-actions group with 2 updates: ${longLine}\n\n` +
+      'Signed-off-by: dependabot[bot] <support@github.com>\n',
     `chore(master): release 1.2.0 (#20)\n\n:robot: I have created a release *beep* *boop* ${longLine}\n`
   ];
 
@@ -105,6 +108,22 @@ describe('pull-request-title.config.mjs', () => {
 
     assert.deepEqual(report.errors, []);
   });
+
+  // The CI skips the title check for bots, but the prefixes of .github/dependabot.yml make it pass.
+  const dependabotTitles = [
+    'chore(deps): bump the npm-minor-and-patch group with 3 updates',
+    'chore(deps): bump the npm-minor-and-patch group across 1 directory with 12 updates',
+    'chore(deps-dev): bump @testing-library/jest-dom from 7.0.1 to 8.0.0',
+    'ci(deps): bump the github-actions group with 2 updates'
+  ];
+
+  for (const title of dependabotTitles) {
+    it(`passes the Dependabot title ${JSON.stringify(title)}`, async () => {
+      const report = await lintMessage({ message: title, file: TITLE_CONFIG_FILE });
+
+      assert.deepEqual(report.errors, []);
+    });
+  }
 
   // GitHub refuses an empty title, and the commitlint CLI an empty input: no case for them here.
   for (const title of ['Enforce conventional commits', 'feat: Enforce conventional commits', 'feat:', 'feat add a key']) {
