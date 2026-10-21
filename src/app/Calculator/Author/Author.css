@@ -8,8 +8,17 @@
   transform: rotate(180deg);
 }
 
-/* A footer below the calculator, so it never covers a key on a phone. */
+/* Told apart from the text by its underline: the plum of the other links is unreadable on the
+   dark photo. */
+.copyright a {
+  color: inherit;
+}
+
+/* A footer below the calculator, so it never covers a key on a phone. Its translucent white keeps
+   a contrast of at least 6:1 on the photo and on the large copy of the result. */
 .social-links {
+  --footer-color: #ffffffcc;
+
   display: flex;
   align-items: center;
   margin-top: 1rem;
@@ -26,22 +35,22 @@
 }
 
 .social-links svg {
-  fill: #ffffff70;
+  fill: var(--footer-color);
   height: 3rem;
   width: 3rem;
   margin-right: 1.2rem;
 }
 
 .social-links svg:hover {
-  fill: currentColor;
+  fill: #fff;
 }
 
 .tech-stack {
-  border-left: 2px solid #ffffff70;
+  border-left: 2px solid var(--footer-color);
   padding-left: 1.2rem;
 }
 .tech-stack p {
-  color: #ffffff70;
+  color: var(--footer-color);
   margin: 0;
 }
 .tech-stack svg {
