@@ -33,7 +33,7 @@ The logic lives in a pure, framework-free engine, [`src/features/calculator/engi
 
 ## Keyboard and screen readers
 
-Every key is a button: Tab reaches it, and Enter or Space presses it. The keyboard also works from anywhere on the page:
+Every key is a button: Tab reaches it and outlines it, and Enter or Space presses it. The keyboard also works from anywhere on the page:
 
 | Keyboard | Key |
 | --- | --- |
