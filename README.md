@@ -92,6 +92,17 @@ Co-Authored-By: Jane Doe <jane@example.com>
 
 The rules live in [`commitlint.config.mjs`](commitlint.config.mjs) and [`scripts/commits/`](scripts/commits/).
 
+## Dependency updates
+
+[Dependabot](https://docs.github.com/code-security/dependabot) proposes updates every week, with the settings of [`.github/dependabot.yml`](.github/dependabot.yml):
+
+- one pull request for all the minor and patch updates of npm packages;
+- one pull request for each major npm update;
+- one pull request for all the GitHub Actions updates;
+- no release younger than 7 days, like pnpm.
+
+Its titles are conventional (`chore(deps):`, `chore(deps-dev):`, `ci(deps):`), although the CI skips the title check for bots and ignores the commits that Dependabot signs off.
+
 ## Deployment
 
 [Cloudflare Pages](https://pages.cloudflare.com/) builds and hosts the app at https://calculator.issoufi.fr:

@@ -1,0 +1,38 @@
+# Dependabot version updates. Options:
+# https://docs.github.com/code-security/dependabot/working-with-dependabot/dependabot-options-reference
+version: 2
+
+updates:
+  # Reads package.json and pnpm-lock.yaml at the root.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    # Matches minimumReleaseAge of pnpm-workspace.yaml: no release younger than 7 days is proposed.
+    cooldown:
+      default-days: 7
+    # Titles such as "chore(deps): bump the npm-minor-and-patch group with 3 updates" pass the
+    # commitlint check of pull request titles.
+    commit-message:
+      prefix: chore
+      include: scope
+    # Minor and patch updates share one pull request; each major update gets its own.
+    groups:
+      npm-minor-and-patch:
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: ci
+      include: scope
+    groups:
+      github-actions:
+        patterns:
+          - '*'
