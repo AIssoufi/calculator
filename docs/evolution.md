@@ -133,6 +133,31 @@ The Before column is `9aeb689`, the last commit of the previous era, measured in
 
 Decision: [0011. Write the app in TypeScript, in strict mode](decisions/0011-move-to-typescript.md)
 
+## 2026: React 19, Redux Toolkit 2 and React Redux 9
+
+React, Redux Toolkit and React Redux were a major version behind. React and React DOM moved to 19.3, Redux Toolkit to 2.13 and React Redux to 9.3, and the direct `redux` dependency was removed, since Redux Toolkit brings Redux 5 itself (#6). The typed hooks of the store now use the `withTypes` API of React Redux 9. The app is unchanged: the same tests pass, without new warnings, and the page looks the same.
+
+The Before column is `3fa976a`, the last commit of the previous era, measured on 2026-10-21 in alternation with the After column on the same machine by `measure-migration.mjs`: three runs of each figure, median first, `node_modules` deleted before each install and the build output before each build, Lighthouse on the built `build/` with its default mobile settings.
+
+| Figure                                    | Before                                              | After                                                |
+| ----------------------------------------- | --------------------------------------------------- | ---------------------------------------------------- |
+| Stack                                     | React 18.2, Redux Toolkit 1.9, React Redux 8.1, Redux 4 | React 19.3, Redux Toolkit 2.13, React Redux 9.3 (Redux 5 through Redux Toolkit) |
+| Install time                              | 0.9 s (0.9, 0.9, 1.1)                               | 1.0 s (1.0, 0.9, 1.1)                                |
+| Build time                                | 0.2 s (2.0, 0.2, 0.2)                               | 0.2 s (1.4, 0.2, 0.2)                                |
+| Dev server start                          | 0.2 s (0.2, 0.2, 0.2)                               | 0.2 s (0.2, 0.2, 0.2)                                |
+| JavaScript, raw / gzipped                 | 184,748 B / 60,946 B                                | 253,823 B / 80,752 B                                 |
+| CSS, raw / gzipped                        | 2,733 B / 1,063 B                                   | 2,733 B / 1,063 B                                    |
+| Direct dependencies                       | 27 (5 + 22 development)                             | 26 (4 + 22 development)                              |
+| Audit (`pnpm audit`)                      | 0 advisories                                        | 0 advisories                                         |
+| Tests                                     | 454                                                 | 454                                                  |
+| Test suite time                           | 3.9 s (3.9, 7.9, 2.3)                               | 4.3 s (5.8, 4.3, 2.3)                                |
+| CI duration                               | 33 s                                                | see the pull request of #6                           |
+| Lighthouse (mobile, local build)          | 97 / 90 / 100 / 90                                  | 95 / 90 / 100 / 90                                   |
+
+- The script grows by 69,075 B raw and 19,806 B gzipped, mostly from React DOM 19: its share of the mapped code of the source map goes from 72% to 83%, while Redux Toolkit 2 and React Redux 9 shrink and drop `@babel/runtime`, `hoist-non-react-statics` and `react-is` from the build.
+- Lighthouse's performance score goes from 97 to 95 (runs 98, 97, 97 before; 95, 95, 96 after): the simulated throttling of Lighthouse downloads and parses the larger script before the first paint.
+- The install, build, dev server and test times overlap from one column to the other.
+
 ## Current baseline
 
 Measured on 2026-10-20 on the pull request of #5, on an Apple M3 with 8 cores, macOS (Darwin 25.6.0), Node.js 24.22.0 and pnpm 12.14.0, with a load average of 13 to 17 from other builds. Each timed command ran six times, in two rounds that alternate with the previous era, with `/usr/bin/time -p` except the dev server (see its row); the table keeps the median.

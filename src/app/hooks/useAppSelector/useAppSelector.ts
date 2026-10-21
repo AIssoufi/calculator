@@ -1,4 +1,4 @@
-import { useSelector, type TypedUseSelectorHook } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import type { RootState } from '../../types';
 
@@ -7,4 +7,4 @@ import type { RootState } from '../../types';
  * when that value changes. Use it instead of the `useSelector` of React Redux: the selector gets the
  * typed {@link RootState}. Must be called inside a react-redux `<Provider>`.
  */
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+export const useAppSelector = useSelector.withTypes<RootState>();
