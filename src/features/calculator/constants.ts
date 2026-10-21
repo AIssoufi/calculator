@@ -49,6 +49,7 @@ export const INITIAL_STATE: Readonly<CalculatorState> = Object.freeze({
     accumulator: null,
     pendingOperator: null,
     entry: EMPTY_ENTRY,
+    result: null,
     justEvaluated: false,
     hasError: false
 });

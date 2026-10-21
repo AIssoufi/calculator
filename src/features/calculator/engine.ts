@@ -46,11 +46,14 @@ const getEditableState = (state: CalculatorState): CalculatorState => {
     }
 
     if (state.justEvaluated) {
-        return { ...state, entry: EMPTY_ENTRY, justEvaluated: false };
+        return { ...state, entry: EMPTY_ENTRY, result: null, justEvaluated: false };
     }
 
     return state;
 };
+
+/** Reads the value of the entry: the unrounded result of a computed entry, else the typed number. */
+const readEntry = (state: CalculatorState): number => state.result ?? parseEntry(state.entry);
 
 /** Appends a digit to an entry, replacing a lone leading zero so `0` then `7` gives `7`, not `07`. */
 const appendDigit = ({ entry, digit }: AppendDigitParams): string => {
@@ -64,7 +67,7 @@ const toResultState = (result: number): CalculatorState => {
         return ERROR_STATE;
     }
 
-    return { ...INITIAL_STATE, entry: formatNumber(result), justEvaluated: true };
+    return { ...INITIAL_STATE, entry: formatNumber(result), result, justEvaluated: true };
 };
 
 /**
@@ -126,7 +129,7 @@ export const chooseOperator = (
         return { ...state, accumulator: state.accumulator ?? 0, pendingOperator: operator };
     }
 
-    const operand = parseEntry(state.entry);
+    const operand = readEntry(state);
     const total = state.pendingOperator === null
         ? operand
         : applyOperator({ left: state.accumulator ?? 0, operator: state.pendingOperator, right: operand });
@@ -148,7 +151,7 @@ export const chooseOperator = (
  */
 export const evaluate = (state: CalculatorState = INITIAL_STATE): CalculatorState => {
     const hasEntry = state.entry !== EMPTY_ENTRY;
-    const shownValue = hasEntry ? parseEntry(state.entry) : state.accumulator;
+    const shownValue = hasEntry ? readEntry(state) : state.accumulator;
     const canEvaluate = !state.hasError && shownValue !== null;
 
     if (!canEvaluate) {
@@ -162,7 +165,7 @@ export const evaluate = (state: CalculatorState = INITIAL_STATE): CalculatorStat
         return toResultState(applyOperator({
             left: state.accumulator ?? 0,
             operator: pendingOperator,
-            right: parseEntry(state.entry)
+            right: readEntry(state)
         }));
     }
 
@@ -186,7 +189,11 @@ export const toggleSign = (state: CalculatorState = INITIAL_STATE): CalculatorSt
     }
 
     const isNegative = state.entry.startsWith(MINUS_SIGN);
-    return { ...state, entry: isNegative ? state.entry.slice(MINUS_SIGN.length) : MINUS_SIGN + state.entry };
+    return {
+        ...state,
+        entry: isNegative ? state.entry.slice(MINUS_SIGN.length) : MINUS_SIGN + state.entry,
+        result: state.result === null ? null : -state.result
+    };
 };
 
 /**
@@ -202,11 +209,8 @@ export const applyPercent = (state: CalculatorState = INITIAL_STATE): Calculator
         return state;
     }
 
-    return {
-        ...state,
-        entry: formatNumber(parseEntry(state.entry) / PERCENT_DIVISOR),
-        justEvaluated: true
-    };
+    const result = readEntry(state) / PERCENT_DIVISOR;
+    return { ...state, entry: formatNumber(result), result, justEvaluated: true };
 };
 
 /**
@@ -221,7 +225,7 @@ export const clearEntry = (state: CalculatorState = INITIAL_STATE): CalculatorSt
         return INITIAL_STATE;
     }
 
-    return { ...state, entry: EMPTY_ENTRY, justEvaluated: false };
+    return { ...state, entry: EMPTY_ENTRY, result: null, justEvaluated: false };
 };
 
 /**

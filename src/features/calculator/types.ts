@@ -21,6 +21,11 @@ export interface CalculatorState {
      */
     entry: string;
     /**
+     * Unrounded value of a computed entry, after `=` or `%`, which the next operation reads instead of
+     * the rounded text of the entry; `null` for a typed or empty entry.
+     */
+    result: number | null;
+    /**
      * Whether the entry holds a computed value, after `=` or `%`: the next digit or decimal point
      * replaces it instead of extending it.
      */
