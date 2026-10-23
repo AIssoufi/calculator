@@ -16,9 +16,15 @@ const renderCalculator = () => render(
 );
 
 describe('Calculator', () => {
-  it('renders the screen and the keypad inside the calculator', () => {
+  it('renders the calculator as the only main landmark of the page', () => {
     const { container } = renderCalculator();
-    const calculator = container.querySelector(CALCULATOR_SELECTOR);
+
+    expect(screen.getByRole('main')).toBe(container.querySelector(CALCULATOR_SELECTOR));
+  });
+
+  it('renders the screen and the keypad inside the calculator', () => {
+    renderCalculator();
+    const calculator = screen.getByRole('main');
 
     expect(calculator).toContainElement(screen.getByText('0', { selector: RESULT_SELECTOR }));
     expect(calculator).toContainElement(screen.getByText('=', { selector: KEY_SELECTOR }));
