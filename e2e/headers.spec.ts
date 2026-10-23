@@ -10,12 +10,14 @@ const CONTENT_SECURITY_POLICY_HEADER = 'content-security-policy';
 const PERMISSIONS_POLICY_HEADER = 'permissions-policy';
 const STRICT_TRANSPORT_SECURITY_HEADER = 'strict-transport-security';
 
-// The directives that keep the page to the files of the site, with their only source.
+// The directives that keep the page to the files of the site, and its scripts from writing strings
+// into it as HTML or code, with their only source.
 const REQUIRED_DIRECTIVES = {
   'default-src': ["'self'"],
   'base-uri': ["'none'"],
   'form-action': ["'none'"],
-  'frame-ancestors': ["'none'"]
+  'frame-ancestors': ["'none'"],
+  'require-trusted-types-for': ["'script'"]
 };
 
 // Sources that would let an injected script or style run.
