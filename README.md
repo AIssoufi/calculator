@@ -137,7 +137,9 @@ Three files make the build fit Cloudflare Pages:
     - a Content-Security-Policy that loads only the files of the site, forbids any frame around the page and, with Trusted Types, keeps the scripts from writing strings into the page as HTML or code;
     - HSTS, which keeps the browsers on HTTPS for a year;
     - a Permissions-Policy that turns off the camera, the microphone and the geolocation.
-- [`public/404.html`](public/404.html) is served, with a 404 status, for every path that matches no file of the build, such as a chunk removed by a later deployment. Without it, Pages would answer such paths with `index.html` and a 200. It loads only absolute paths, since it answers at any depth, as [`e2e/not-found.spec.ts`](e2e/not-found.spec.ts) checks.
+- [`public/404.html`](public/404.html) is the page of every path that matches no file of the build, such as a chunk removed by a later deployment:
+  - Pages serves it with a 404 status; without it, Pages would answer such paths with `index.html` and a 200;
+  - it loads only absolute paths, since it answers at any depth, as [`e2e/not-found.spec.ts`](e2e/not-found.spec.ts) checks.
 
 ## History
 
