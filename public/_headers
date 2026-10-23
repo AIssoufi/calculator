@@ -1,5 +1,18 @@
 # Cloudflare Pages response headers: https://developers.cloudflare.com/pages/configuration/headers/
 
+# Every response, the 404 page included, gets the security headers:
+# - the Content-Security-Policy loads scripts, styles, images and the manifest from the site only,
+#   plus the inline style of 404.html by its hash, which every edit of that block changes
+#   (e2e/headers.spec.ts prints the new one). It forbids a <base>, any form target and any frame
+#   around the page, and, with Trusted Types, any string that a script writes into the page as
+#   HTML or code;
+# - HSTS keeps the browsers on HTTPS for a year;
+# - the Permissions-Policy turns off the camera, the microphone and the geolocation.
+/*
+  Content-Security-Policy: default-src 'self'; style-src 'self' 'sha256-dlGtZ/xt/XGJjnZR+rgk7uMeQ/Ktfln7zEUSLqZvkHo='; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; require-trusted-types-for 'script'
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=31536000
+
 # Hashed build assets never change under the same name.
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
