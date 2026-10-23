@@ -1,0 +1,10 @@
+// TypeScript checks the smoke tests of `e2e/` with `pnpm typecheck`, with the settings of the app
+// but without the global types of Vite and Vitest: Playwright runs these tests in Node.js, and
+// they import what they use from `@playwright/test`.
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": []
+  },
+  "include": ["."]
+}
