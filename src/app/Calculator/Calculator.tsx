@@ -1,6 +1,6 @@
 import { Screen } from './Screen';
 import { KeyPad } from './KeyPad';
-import { Author }  from './Author';
+import { Author } from './Author';
 
 import './Calculator.css';
 
@@ -13,7 +13,7 @@ const Calculator = () => (
   <>
     <main className="main_wrapper">
       <Screen />
-      <KeyPad  />
+      <KeyPad />
     </main>
     <Author />
   </>
