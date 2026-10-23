@@ -104,7 +104,7 @@ The rules live in [`commitlint.config.mjs`](commitlint.config.mjs) and [`scripts
 
 - one pull request for all the minor and patch updates of npm packages;
 - one pull request for each major npm update;
-- one pull request for all the GitHub Actions updates;
+- one pull request for all the GitHub Actions updates; the CI pins each action by full commit SHA, with its version in a comment on the same line (Dependabot updates both);
 - no release younger than 7 days, like pnpm.
 
 Its titles are conventional (`chore(deps):`, `chore(deps-dev):`, `ci(deps):`), although the CI skips the title check for bots and ignores the commits that Dependabot signs off.
