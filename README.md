@@ -127,12 +127,13 @@ The Cloudflare Pages project uses these build settings:
 
 The build image installs the dependencies with pnpm, since it finds `pnpm-lock.yaml`, but it reads the pnpm version from `PNPM_VERSION` only: update the variable whenever `packageManager` changes.
 
-Two files make the build fit Cloudflare Pages:
+Three files make the build fit Cloudflare Pages:
 
 - [`vite.config.js`](vite.config.js) sets `base` to `./`: the built `index.html` loads its assets with relative paths, so the app works from the root of any domain, previews included.
 - [`public/_headers`](public/_headers) is copied into `build/` and sets the cache headers:
   - the hashed files under `/assets/` are cached for a year;
   - the page is revalidated on every visit, so a new deployment shows at once.
+- [`public/404.html`](public/404.html) is served, with a 404 status, for every path that matches no file of the build, such as a chunk removed by a later deployment. Without it, Pages would answer such paths with `index.html` and a 200. It loads only absolute paths, since it answers at any depth, as [`e2e/not-found.spec.ts`](e2e/not-found.spec.ts) checks.
 
 ## History
 
