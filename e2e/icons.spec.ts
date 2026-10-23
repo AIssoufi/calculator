@@ -107,7 +107,9 @@ test('lists a PNG icon of each install size and a maskable one', async ({ page, 
   );
 });
 
-test('serves each icon of the manifest at a size it declares', async ({ page, request }) => {
+// Chrome DevTools warns about every declared size that differs from the decoded one, and decodes
+// an ICO file at its largest size only, so each icon declares that single size.
+test('serves each icon of the manifest at the size it declares', async ({ page, request }) => {
   const icons = await readManifestIcons({ page, request });
 
   expect(icons.length, 'the number of icons').toBeGreaterThan(0);
@@ -115,7 +117,7 @@ test('serves each icon of the manifest at a size it declares', async ({ page, re
   for (const icon of icons) {
     const size = await readImageSize({ page, url: icon.url });
 
-    expect(icon.sizes.split(' '), `the sizes declared for ${icon.src}`).toContain(size);
+    expect(icon.sizes, `the sizes declared for ${icon.src}`).toBe(size);
   }
 });
 
