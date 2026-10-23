@@ -75,7 +75,8 @@ The [CI workflow](.github/workflows/ci.yml) runs on every pull request and every
 2. it lints the code;
 3. it checks the types;
 4. it runs the tests once;
-5. it builds the app.
+5. it builds the app;
+6. it runs the smoke tests in Chromium, which it caches between runs until Playwright changes.
 
 A lint error, a type error, a failing test or a failed build fails the check. On a pull request, a second job checks the commit messages and the title (see [Commit messages](#commit-messages)).
 
