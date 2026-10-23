@@ -49,6 +49,28 @@ jobs:
       - name: Build the app
         run: pnpm build
 
+      # The cache of the browser is keyed on the Playwright version, which pins its Chromium build.
+      - name: Read the Playwright version
+        id: playwright
+        run: |
+          version=$(node -p "require('@playwright/test/package.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Restore the Chromium of Playwright
+        id: playwright-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      # The headless shell is enough for headless tests, and the runner image has its libraries.
+      - name: Download the Chromium of Playwright
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --only-shell chromium
+
+      - name: Run the smoke tests in Chromium
+        run: pnpm test:e2e
+
   commitlint:
     name: Check the commit messages and the title
     if: github.event_name == 'pull_request'

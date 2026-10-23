@@ -51,18 +51,23 @@ A key held down on the keyboard shows pressed. A key combined with Ctrl, Cmd or 
 ```bash
 pnpm lint        # ESLint, as in the CI
 pnpm typecheck   # TypeScript, as in the CI
-pnpm test        # a single run of every test, as in the CI
+pnpm test        # a single run of the unit tests, as in the CI
 pnpm test:watch  # watch mode: re-runs the tests of the changed files
+pnpm test:e2e    # the smoke tests of the production build in Chromium, as in the CI
 ```
 
-[ESLint](https://eslint.org/) applies its recommended rules, and the [typescript-eslint](https://typescript-eslint.io/), React and Rules of Hooks rules to `src/`; its settings are in [`eslint.config.js`](eslint.config.js).
+[ESLint](https://eslint.org/) applies its recommended rules, the [typescript-eslint](https://typescript-eslint.io/) rules to `src/` and `e2e/`, and the React and Rules of Hooks rules to `src/`; its settings are in [`eslint.config.js`](eslint.config.js).
 
-The app is written in [TypeScript](https://www.typescriptlang.org/), in strict mode. Vite and Vitest strip the types without checking them, so `pnpm typecheck` runs `tsc` on `src/`, with the settings of [`tsconfig.json`](tsconfig.json), and fails on any type error. The configuration files and the commit tooling stay in JavaScript.
+The app is written in [TypeScript](https://www.typescriptlang.org/), in strict mode. Vite and Vitest strip the types without checking them, so `pnpm typecheck` runs `tsc` on `src/`, with the settings of [`tsconfig.json`](tsconfig.json), then on `e2e/`, with those of [`e2e/tsconfig.json`](e2e/tsconfig.json), and fails on any type error. The configuration files and the commit tooling stay in JavaScript.
 
-Tests sit next to the code they cover and are named `*.spec.ts`, `*.spec.tsx` or, for the commit tooling, `*.spec.mjs`:
+Unit tests sit next to the code they cover and are named `*.spec.ts`, `*.spec.tsx` or, for the commit tooling, `*.spec.mjs`:
 
 - [Vitest](https://vitest.dev/) runs the app tests in [jsdom](https://github.com/jsdom/jsdom), with [Testing Library](https://testing-library.com/) and the [jest-dom](https://github.com/testing-library/jest-dom) matchers; its settings are in [`vite.config.js`](vite.config.js).
 - `pnpm test` first runs the tests of the commit tooling once, `scripts/**/*.spec.mjs`, with the Node.js test runner.
+
+jsdom does no layout, so the smoke tests of [`e2e/`](e2e/) check the production build in a real browser: [Playwright](https://playwright.dev/) runs them in Chromium, with the settings of [`playwright.config.js`](playwright.config.js). `pnpm test:e2e` builds the app, serves the build with `pnpm preview` on port 4173, and checks that it computes with the keyboard and the mouse, and that every key fits the screen of a phone and of a laptop.
+
+Playwright installs no browser by itself: run `pnpm exec playwright install chromium` once. A port already taken fails the run, rather than testing another app: `E2E_PORT=4174 pnpm test:e2e` serves the build on another port.
 
 The [CI workflow](.github/workflows/ci.yml) runs on every pull request and every push to `master`:
 
@@ -70,7 +75,8 @@ The [CI workflow](.github/workflows/ci.yml) runs on every pull request and every
 2. it lints the code;
 3. it checks the types;
 4. it runs the tests once;
-5. it builds the app.
+5. it builds the app;
+6. it runs the smoke tests in Chromium, which it caches between runs until Playwright changes.
 
 A lint error, a type error, a failing test or a failed build fails the check. On a pull request, a second job checks the commit messages and the title (see [Commit messages](#commit-messages)).
 

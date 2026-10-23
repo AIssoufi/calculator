@@ -158,6 +158,26 @@ The Before column is `3fa976a`, the last commit of the previous era, measured on
 - Lighthouse's performance score goes from 97 to 95 (runs 98, 97, 97 before; 95, 95, 96 after): the simulated throttling of Lighthouse downloads and parses the larger script before the first paint.
 - The install, build, dev server and test times overlap from one column to the other.
 
+## 2026: smoke tests of the production build in Chromium
+
+The unit tests run in jsdom, which does no layout, so the layout bugs of #8 and #34 were found by hand. Playwright 1.64 now runs 4 smoke tests in Chromium against the production build served by `vite preview`, locally with `pnpm test:e2e` and on every pull request (#42).
+
+The Before column is `e44fdcf`, the base of the pull request, measured on 2026-10-23 in alternation with the After column on the same machine by `measure-migration.mjs`: three runs of each figure, median first, `node_modules` deleted before each install.
+
+| Figure                                    | Before                                              | After                                                |
+| ----------------------------------------- | --------------------------------------------------- | ---------------------------------------------------- |
+| Stack                                     | React 19.3, Redux Toolkit 2.13, React Redux 9.3     | unchanged, plus Playwright 1.64 with the Chromium headless shell |
+| Install time                              | 0.6 s (0.6, 0.6, 0.6)                               | 0.7 s (0.7, 0.7, 0.6)                                |
+| Direct dependencies                       | 26 (4 + 22 development)                             | 27 (4 + 23 development)                              |
+| Audit (`pnpm audit`)                      | 0 advisories                                        | 0 advisories                                         |
+| Tests                                     | 562: 192 Node.js test runner, 370 Vitest            | the same 562, plus 4 smoke tests in Chromium         |
+| CI duration                               | 43 s, of which 40 s for the job that lints, checks the types, tests and builds (run 39738248551) | see the pull request of #42 |
+
+- The CI caches the 108 MB of the headless shell and its FFmpeg build under the Playwright version: a miss downloads them in about 4 s, a hit restores them in under 2 s.
+- The build, its size and the unit tests are unchanged: Playwright is a development dependency that the app does not import.
+
+Decision: [0012. Smoke test the production build in Chromium with Playwright](decisions/0012-add-playwright-smoke-tests.md)
+
 ## Current baseline
 
 Measured on 2026-10-20 on the pull request of #5, on an Apple M3 with 8 cores, macOS (Darwin 25.6.0), Node.js 24.22.0 and pnpm 12.14.0, with a load average of 13 to 17 from other builds. Each timed command ran six times, in two rounds that alternate with the previous era, with `/usr/bin/time -p` except the dev server (see its row); the table keeps the median.
