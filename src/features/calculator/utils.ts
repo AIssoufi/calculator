@@ -75,8 +75,8 @@ export const parseEntry = (entry: string): number => {
 /**
  * Formats a number for the screen, rounded to {@link DISPLAY_PRECISION_DIGITS} significant digits
  * so float noise does not show. A safe integer is exact, so it is shown in full; a value that
- * rounding would turn into an integer of wrong trailing digits is shown in exponent notation, so a
- * rounded result never looks exact.
+ * rounding leaves without a fraction, or with wrong trailing digits, because its integer part holds
+ * all the significant digits, is shown in exponent notation, so a rounded result never looks exact.
  *
  * @param value - Number to show.
  * @returns A safe integer in full; from {@link ROUNDED_INTEGER_THRESHOLD}, the exponent notation
@@ -96,9 +96,9 @@ export const formatNumber = (value: number): string => {
     }
 
     const rounded = Number(value.toPrecision(DISPLAY_PRECISION_DIGITS));
-    const losesIntegerDigits = Math.abs(rounded) >= ROUNDED_INTEGER_THRESHOLD;
+    const integerPartFillsPrecision = Math.abs(rounded) >= ROUNDED_INTEGER_THRESHOLD;
 
-    if (losesIntegerDigits) {
+    if (integerPartFillsPrecision) {
         return value.toExponential(EXPONENT_FRACTION_DIGITS).replace(MANTISSA_TRAILING_ZEROS_PATTERN, '');
     }
 
