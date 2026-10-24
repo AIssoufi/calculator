@@ -2,7 +2,7 @@
 
 How the project's stack changed, era by era, oldest first. Each tool change has its Architecture Decision Record in [`decisions/`](decisions/).
 
-The figures of the npm eras were measured on 2026-10-20 from the last commit of each era, rebuilt in a detached worktree with the method of the [baseline of the npm eras](#baseline-of-the-npm-eras); the Vite and TypeScript eras use the method of the [baseline of the TypeScript era](#baseline-of-the-typescript-era-5). The [current state](#current-state) gives today's figures. Each table compares the last commit of the previous era (Before) with the last commit of the era (After). `npm audit` and `pnpm audit` read today's advisory database, so they count what is known to be vulnerable today, not what was known at the time.
+The figures of the npm eras were measured on 2026-10-20 from the last commit of each era, rebuilt in a detached worktree with the method of the [baseline of the npm eras](#baseline-of-the-npm-eras); the Vite and TypeScript eras use the method of the [baseline of the TypeScript era](#baseline-of-the-typescript-era-5), and the later eras were measured by `measure-migration.mjs`, with three runs of each figure, as each of their sections tells. The [current state](#current-state) gives today's figures. Each table compares the last commit of the previous era (Before) with the last commit of the era (After). `npm audit` and `pnpm audit` read today's advisory database, so they count what is known to be vulnerable today, not what was known at the time.
 
 ## 2018: a Create React App with Redux, on GitHub Pages
 
