@@ -1,0 +1,28 @@
+name: Live check
+
+# Checks the production site from outside, every hour and on demand from the Actions tab. GitHub
+# runs a schedule on the default branch only, and delays the busy start of each hour, hence the
+# odd minute. It sends a failed run to the last person who changed the cron line.
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-check:
+    name: Check the production site
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out the script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: scripts/live-check
+
+      # Needs curl and jq only, which the runner image provides: nothing to install.
+      - name: Check the production site
+        run: bash scripts/live-check/check-live-site.sh https://calculator.issoufi.fr
