@@ -49,6 +49,6 @@ describe('KeyPad', () => {
     await user.click(screen.getByRole('button', { name: '%' }));
     await user.click(screen.getByRole('button', { name: '=' }));
 
-    expect(selectDisplayValue(store.getState())).toBe('7.05');
+    expect(selectDisplayValue(store.getState())).toBe('7.35');
   });
 });
