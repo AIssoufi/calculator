@@ -259,6 +259,17 @@ describe('engine', () => {
     });
   });
 
+  describe('a result whose integer part fills the display precision', () => {
+    it.each([
+      ['1 2 3 4 5 6 7 8 9 * 1 0 0 0 + 1 2 . 5 =', '1.23456789013e+11'],
+      ['9 9 9 9 9 9 9 9 9 * 1 0 0 0 + 0 . 5 =', '9.99999999001e+11'],
+      ['1 2 3 4 5 6 7 8 9 * 1 0 0 0 + 1 2 =', '123456789012'],
+      ['9 9 9 9 9 9 9 9 9 * 1 0 0 + 9 9 . 5 =', '99999999999.5']
+    ])('shows %j as %j', (sequence, expected) => {
+      expect(display(sequence)).toBe(expected);
+    });
+  });
+
   describe('canClearEntry', () => {
     it.each([
       ['', false],

@@ -30,10 +30,10 @@ export const MAX_ENTRY_DIGITS = 9;
 export const DISPLAY_PRECISION_DIGITS = 12;
 
 /**
- * Smallest magnitude whose integer part holds more digits than {@link DISPLAY_PRECISION_DIGITS}:
- * past it, a rounded result is shown in exponent notation.
+ * Smallest magnitude whose integer part holds {@link DISPLAY_PRECISION_DIGITS} digits, which leaves
+ * no digit to a fraction: from it, a rounded result is shown in exponent notation.
  */
-export const ROUNDED_INTEGER_THRESHOLD = 10 ** DISPLAY_PRECISION_DIGITS;
+export const ROUNDED_INTEGER_THRESHOLD = 10 ** (DISPLAY_PRECISION_DIGITS - 1);
 
 /** Digits after the point of a mantissa, so the exponent notation keeps the display precision. */
 export const EXPONENT_FRACTION_DIGITS = DISPLAY_PRECISION_DIGITS - 1;
