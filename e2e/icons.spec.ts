@@ -9,6 +9,14 @@ const MASKABLE_PURPOSE = 'maskable';
 // The size of the icon that iOS puts on its home screen.
 const APPLE_TOUCH_ICON_SIZE = '180x180';
 
+// The path that the installed app opens on: Cloudflare Pages redirects `/index.html` to it, so a
+// start on `/index.html` would open on a redirect.
+const START_PATH = '/';
+// The path that browsers know the app by. Without an `id`, they took the former `start_url`, so
+// keeping it lets the existing installs take the new one instead of being another app.
+const APP_ID_PATH = '/index.html';
+const HTTP_OK = 200;
+
 const MANIFEST_LINK_SELECTOR = 'link[rel="manifest"]';
 const APPLE_TOUCH_ICON_LINK_SELECTOR = 'link[rel="apple-touch-icon"]';
 
@@ -24,6 +32,24 @@ interface ManifestIcon {
   purpose?: string;
 }
 
+/** The members of the web app manifest that the tests read. */
+interface Manifest {
+  /** The icons that the browser installs the app with. */
+  icons: ManifestIcon[];
+  /** The page that the installed app opens on, relative to the manifest. */
+  start_url?: string;
+  /** The identity of the installed app, relative to the origin of the start URL. */
+  id?: string;
+}
+
+/** A fetched manifest with its own absolute URL. */
+interface FetchedManifest {
+  /** The content of the manifest. */
+  manifest: Manifest;
+  /** Absolute URL of the manifest, which its relative URLs resolve against. */
+  manifestUrl: string;
+}
+
 /** A manifest icon with the absolute URL of its image. */
 interface ManifestIconWithUrl extends ManifestIcon {
   /** Absolute URL of the image, resolved against the manifest. */
@@ -37,7 +63,7 @@ interface ReadLinkedUrlParams {
   selector: string;
 }
 
-interface ReadManifestIconsParams {
+interface ReadManifestParams {
   /** The page of the test. */
   page: Page;
   /** The request context of the test, which fetches the manifest. */
@@ -67,19 +93,21 @@ const readLinkedUrl = async ({ page, selector }: ReadLinkedUrlParams) => {
   return link.evaluate(element => (element as HTMLLinkElement).href);
 };
 
-// Fetches the manifest that the page links and returns its icons.
-const readManifestIcons = async ({
-  page,
-  request
-}: ReadManifestIconsParams): Promise<ManifestIconWithUrl[]> => {
+// Fetches the manifest that the page links and returns it with its URL.
+const readManifest = async ({ page, request }: ReadManifestParams): Promise<FetchedManifest> => {
   const manifestUrl = await readLinkedUrl({ page, selector: MANIFEST_LINK_SELECTOR });
   const response = await request.get(manifestUrl);
 
   expect(response.ok(), `${manifestUrl} is served`).toBe(true);
 
-  const { icons } = (await response.json()) as { icons: ManifestIcon[] };
+  return { manifest: (await response.json()) as Manifest, manifestUrl };
+};
 
-  return icons.map(icon => ({ ...icon, url: new URL(icon.src, manifestUrl).href }));
+// Fetches the manifest that the page links and returns its icons.
+const readManifestIcons = async (params: ReadManifestParams): Promise<ManifestIconWithUrl[]> => {
+  const { manifest, manifestUrl } = await readManifest(params);
+
+  return manifest.icons.map(icon => ({ ...icon, url: new URL(icon.src, manifestUrl).href }));
 };
 
 // Decodes the image in the page and returns its size as the manifest writes it.
@@ -119,6 +147,24 @@ test('serves each icon of the manifest at the size it declares', async ({ page, 
 
     expect(icon.sizes, `the sizes declared for ${icon.src}`).toBe(size);
   }
+});
+
+// The members resolve as browsers resolve them, so an absent or empty one resolves to the manifest
+// itself or to the root of the site, which fails the comparisons below.
+test('starts the installed app on the root of the site, without a redirect', async ({
+  page,
+  request
+}) => {
+  const { manifest, manifestUrl } = await readManifest({ page, request });
+  const startUrl = new URL(manifest.start_url ?? '', manifestUrl).href;
+  const appIdUrl = new URL(manifest.id ?? '', new URL(startUrl).origin).href;
+
+  expect(startUrl, 'the start_url of the manifest').toBe(new URL(START_PATH, manifestUrl).href);
+  expect(appIdUrl, 'the id of the manifest').toBe(new URL(APP_ID_PATH, manifestUrl).href);
+
+  const response = await request.get(startUrl, { maxRedirects: 0 });
+
+  expect(response.status(), `the status of ${startUrl}`).toBe(HTTP_OK);
 });
 
 test('links an Apple touch icon of the size iOS uses', async ({ page }) => {

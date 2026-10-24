@@ -17,9 +17,7 @@
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
-# The page is revalidated on every visit, so a deploy shows at once.
+# The page is revalidated on every visit, so a deploy shows at once. Pages redirects `/index.html`
+# to `/`, so this rule is the only one the page needs.
 /
-  Cache-Control: no-cache
-
-/index.html
   Cache-Control: no-cache
