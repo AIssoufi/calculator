@@ -48,9 +48,9 @@ describe('Button', () => {
   });
 
   it('is named by ariaLabel rather than by its symbol, which it still shows', () => {
-    render(<Button label="X" ariaLabel="Multiplier" />);
+    render(<Button label="×" ariaLabel="Multiplier" />);
 
-    expect(getKey('Multiplier')).toHaveTextContent('X');
+    expect(getKey('Multiplier')).toHaveTextContent('×');
   });
 
   it('passes its label to onClick, and shows it pressed, while a shortcut key is held', async () => {

@@ -9,7 +9,7 @@ import { setupStore } from '../store';
 const KEY_LABELS = [
   'AC', '+/-', '%',
   '7', '8', '9', '4', '5', '6', '1', '2', '3', '0', '.',
-  '/', 'X', '—', '+', '='
+  '÷', '×', '−', '+', '='
 ];
 
 // Accessible names of the keys whose label is a symbol that screen readers misread.
@@ -17,9 +17,9 @@ const KEY_NAMES: Record<string, string> = {
   'AC': 'AC, tout effacer',
   'C': 'C, effacer la saisie',
   '+/-': 'Changer de signe',
-  '/': 'Diviser',
-  'X': 'Multiplier',
-  '—': 'Moins'
+  '÷': 'Diviser',
+  '×': 'Multiplier',
+  '−': 'Moins'
 };
 
 // Sets user-event up before the render, as its docs advise, and returns it with the render result.
@@ -88,23 +88,23 @@ describe('App', () => {
     expect(getKey('AC')).toBeInTheDocument();
   });
 
-  // Labels of the keys to click, separated by spaces: `X` multiplies and `—` subtracts.
+  // Labels of the keys to click, separated by spaces: `×` multiplies and `−` subtracts.
   it.each([
     ['5 =', '5'],
     ['2 + 3 + 4 =', '9'],
-    ['2 + 3 X 4 =', '20'],
+    ['2 + 3 × 4 =', '20'],
     ['2 + 3 +', '5'],
-    ['0 — 5 — 1 =', '-6'],
-    ['5 X 0 + 2 =', '2'],
+    ['0 − 5 − 1 =', '-6'],
+    ['5 × 0 + 2 =', '2'],
     // After `=` the clear key reads C, and AC once the result is cleared.
-    ['9 — 3 = C AC 5 =', '5'],
+    ['9 − 3 = C AC 5 =', '5'],
     ['2 + 3 = 7 + 1 =', '8'],
     ['2 + 3 = 4 =', '4'],
     ['1 . 0 5', '1.05'],
     ['0 . 0 5', '0.05'],
     ['1 . 2 . 3', '1.23'],
     ['5 + 1 . =', '6'],
-    ['6 / 0 =', 'Erreur'],
+    ['6 ÷ 0 =', 'Erreur'],
     ['0 . 1 + 0 . 2 =', '0.3'],
     ['+/- 5', '-5'],
     ['2 + 3 C 4 =', '6'],
