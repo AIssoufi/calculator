@@ -116,7 +116,7 @@ describe('App', () => {
       await user.click(getKey(label));
     }
 
-    expect(getScreen()).toHaveTextContent(expected);
+    expect(getScreen().textContent).toBe(expected);
   });
 
   // Keys typed with user-event: `{Enter}`, `{Escape}` and `{Backspace}` name the special keys.
@@ -139,7 +139,7 @@ describe('App', () => {
 
     await user.keyboard(keys);
 
-    expect(getScreen()).toHaveTextContent(expected);
+    expect(getScreen().textContent).toBe(expected);
   });
 
   it('shows a key pressed while its keyboard shortcut is held', async () => {
