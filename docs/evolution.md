@@ -2,7 +2,7 @@
 
 How the project's stack changed, era by era, oldest first. Each tool change has its Architecture Decision Record in [`decisions/`](decisions/).
 
-The figures of the npm eras were measured on 2026-10-20 from the last commit of each era, rebuilt in a detached worktree with the method of the [baseline of the npm eras](#baseline-of-the-npm-eras); the Vite and TypeScript eras use the method of the [baseline of the TypeScript era](#baseline-of-the-typescript-era-5), and the later eras were measured by `measure-migration.mjs`, with three runs of each figure, as each of their sections tells. The [current state](#current-state) gives today's figures. Each table compares the last commit of the previous era (Before) with the last commit of the era (After). `npm audit` and `pnpm audit` read today's advisory database, so they count what is known to be vulnerable today, not what was known at the time.
+The figures of the npm eras were measured on 2026-10-20 from the last commit of each era, rebuilt in a detached worktree with the method of the [baseline of the npm eras](#baseline-of-the-npm-eras); the Vite and TypeScript eras use the method of the [baseline of the TypeScript era](#baseline-of-the-typescript-era-5), and the later eras were measured by a measuring tool kept outside the repository, as each of their sections tells. That tool times and runs the commands of the [baseline of the TypeScript era](#baseline-of-the-typescript-era-5), with the differences named below, so each figure can be measured again by hand: it checks out the Before and the After commits in detached worktrees on the same machine and measures them in alternation, three runs of each figure, and gives the median first, then the three runs. It times `pnpm install --frozen-lockfile` after deleting `node_modules`, `pnpm build` after deleting `build/` but keeping `node_modules/.vite`, the start of `vite` until it serves the page, and `pnpm test`; it reads the raw and gzipped sizes of the script and the stylesheet of `build/assets/` with `wc -c` and `gzip -c <file> | wc -c`, the number of tests from the summaries of the Node.js test runner, Vitest and Playwright, the direct dependencies from the keys of `package.json`, the advisories from `pnpm audit --json`, and the four scores of Lighthouse on `build/` served locally with its default mobile settings. The CI durations come from the run of each pull request, or of the push of the Before commit to `master`, from `createdAt` to `updatedAt` in `gh run view`, and the job times from the jobs of that run. The [current state](#current-state) gives today's figures. Each table compares the last commit of the previous era (Before) with the last commit of the era (After). `npm audit` and `pnpm audit` read today's advisory database, so they count what is known to be vulnerable today, not what was known at the time.
 
 ## 2018: a Create React App with Redux, on GitHub Pages
 
@@ -137,7 +137,7 @@ Decision: [0011. Write the app in TypeScript, in strict mode](decisions/0011-mov
 
 React, Redux Toolkit and React Redux were a major version behind. React and React DOM moved to 19.3, Redux Toolkit to 2.13 and React Redux to 9.3, and the direct `redux` dependency was removed, since Redux Toolkit brings Redux 5 itself (#6). The typed hooks of the store now use the `withTypes` API of React Redux 9. The app is unchanged: the same tests pass, without new warnings, and the page looks the same.
 
-The Before column is `3fa976a`, the last commit of the previous era, measured on 2026-10-21 in alternation with the After column on the same machine by `measure-migration.mjs`: three runs of each figure, median first, `node_modules` deleted before each install and the build output before each build, Lighthouse on the built `build/` with its default mobile settings.
+The Before column is `3fa976a`, the last commit of the previous era, measured on 2026-10-21 in alternation with the After column on the same machine, with the measuring tool and the method of the [introduction](#evolution).
 
 | Figure                                    | Before                                              | After                                                |
 | ----------------------------------------- | --------------------------------------------------- | ---------------------------------------------------- |
@@ -151,7 +151,7 @@ The Before column is `3fa976a`, the last commit of the previous era, measured on
 | Audit (`pnpm audit`)                      | 0 advisories                                        | 0 advisories                                         |
 | Tests                                     | 454                                                 | 454                                                  |
 | Test suite time                           | 3.9 s (3.9, 7.9, 2.3)                               | 4.3 s (5.8, 4.3, 2.3)                                |
-| CI duration                               | 33 s                                                | see the pull request of #6                           |
+| CI duration                               | 33 s                                                | 29 s, of which 27 s for the job that lints, checks the types, tests and builds (run 39554036750 of the pull request of #6) |
 | Lighthouse (mobile, local build)          | 97 / 90 / 100 / 90                                  | 95 / 90 / 100 / 90                                   |
 
 - The script grows by 69,075 B raw and 19,806 B gzipped, mostly from React DOM 19: its share of the mapped code of the source map goes from 72% to 83%, while Redux Toolkit 2 and React Redux 9 shrink and drop `@babel/runtime`, `hoist-non-react-statics` and `react-is` from the build.
@@ -162,7 +162,7 @@ The Before column is `3fa976a`, the last commit of the previous era, measured on
 
 The unit tests run in jsdom, which does no layout, so the layout bugs of #8 and #34 were found by hand. Playwright 1.64 now runs 4 smoke tests in Chromium against the production build served by `vite preview`, locally with `pnpm test:e2e` and on every pull request (#42).
 
-The Before column is `e44fdcf`, the base of the pull request, measured on 2026-10-23 in alternation with the After column on the same machine by `measure-migration.mjs`: three runs of each figure, median first, `node_modules` deleted before each install.
+The Before column is `e44fdcf`, the base of the pull request, measured on 2026-10-23 in alternation with the After column on the same machine, with the measuring tool and the method of the [introduction](#evolution).
 
 | Figure                                    | Before                                              | After                                                |
 | ----------------------------------------- | --------------------------------------------------- | ---------------------------------------------------- |
@@ -171,7 +171,7 @@ The Before column is `e44fdcf`, the base of the pull request, measured on 2026-1
 | Direct dependencies                       | 26 (4 + 22 development)                             | 27 (4 + 23 development)                              |
 | Audit (`pnpm audit`)                      | 0 advisories                                        | 0 advisories                                         |
 | Tests                                     | 562: 192 Node.js test runner, 370 Vitest            | the same 562, plus 4 smoke tests in Chromium         |
-| CI duration                               | 43 s, of which 40 s for the job that lints, checks the types, tests and builds (run 39738248551) | see the pull request of #42 |
+| CI duration                               | 43 s, of which 40 s for the job that lints, checks the types, tests and builds (run 39738248551) | 49 s, of which 45 s for the job that lints, checks the types, tests, builds and runs the smoke tests (run 39907529315 of the pull request of #42) |
 
 - The CI caches the 108 MB of the headless shell and its FFmpeg build under the Playwright version: a miss downloads them in about 4 s, a hit restores them in under 2 s.
 - The build, its size and the unit tests are unchanged: Playwright is a development dependency that the app does not import.

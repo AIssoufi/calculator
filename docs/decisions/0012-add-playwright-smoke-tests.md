@@ -27,8 +27,8 @@ The pull request of #42 added Playwright 1.64 (`@playwright/test`) and one smoke
 ## Consequences
 
 - The CI now fails when the production build does not load, does not compute `2 + 3 × 4 =` with the keyboard or the mouse, or shows a key outside the viewport of a phone or a laptop.
-- The job "Install, lint, test and build" took 40 s on `e44fdcf`, the base of the pull request (run 39738248551); see the pull request for its duration with the smoke tests.
+- The job "Install, lint, test and build" took 40 s on `e44fdcf`, the base of the pull request (run 39738248551), and 45 s with the smoke tests on `8d13687`, the head of the pull request (run 39907529315).
 - The headless shell and the FFmpeg build that Playwright downloads with it take 108 MB in the cache. When the cache misses, the job downloads them in about 4 s and saves them in about 3 s at its end; when it hits, it restores them in under 2 s and downloads nothing. A throwaway workflow of the pull request measured both cases and checked that a broken expectation fails the step (run 39906220675).
-- The project has one more development dependency, `@playwright/test`, which brings `playwright` and `playwright-core`. The clean install takes 0.6 s before and 0.7 s after (medians of 3 runs by `measure-migration.mjs`), and `pnpm audit` reports no advisory before or after.
+- The project has one more development dependency, `@playwright/test`, which brings `playwright` and `playwright-core`. The clean install takes 0.6 s before and 0.7 s after (medians of 3 runs, measured with the method of the [introduction of `docs/evolution.md`](../evolution.md#evolution)), and `pnpm audit` reports no advisory before or after.
 - The 562 unit tests are unchanged (192 with the Node.js test runner, 370 in Vitest), and the 4 smoke tests run apart, with `pnpm test:e2e`.
 - Firefox, WebKit and the other layouts, such as a phone in landscape (#34), are not tested in a browser.
