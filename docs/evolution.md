@@ -190,7 +190,7 @@ Measured on 2026-10-24 on `master` at `9e44f52`, the merge of pull request #59, 
 | Test suite                   | 563 tests: 192 Node.js test runner, 371 Vitest (18 files)  | `pnpm test`                                                                                                        |
 | Smoke tests                  | 17 Playwright tests in Chromium (4 files)                  | `pnpm exec playwright test --list`, and `pnpm test:e2e`, which passed them all                                     |
 | Direct dependencies          | 4 dependencies, 23 development dependencies                | the keys of `package.json`                                                                                         |
-| `pnpm audit` advisories      | to be measured after the lockfile refresh of #56           | `pnpm audit --json`, `metadata.vulnerabilities`                                                                    |
+| `pnpm audit` advisories      | none, after the lockfile refresh of #56                    | `pnpm audit --json`, `metadata.vulnerabilities`                                                                    |
 | Lighthouse (mobile)          | performance 100, accessibility 100, best practices 100, SEO 100 | `npx lighthouse@12.8.2 https://calculator.issoufi.fr` in headless Chrome, default mobile settings; the three runs gave the same scores |
 
 - Vite prints 82.33 kB for the gzipped script: it compresses at a different level than `gzip -c`, the command of every table of this page.
