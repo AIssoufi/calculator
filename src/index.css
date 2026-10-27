@@ -16,6 +16,12 @@ a {
   color: #802d5e;
 }
 
+/* Shows which element has the keyboard focus: white stands out on the dark photo. */
+:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
 /* Hides an element from the eye but keeps it for screen readers, such as the heading of the page. */
 .visually-hidden {
   border: 0;
