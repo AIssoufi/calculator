@@ -1,4 +1,4 @@
-import type { CalculatorState } from './types';
+import type { CalculatorState, Operator } from './types';
 
 /** The four arithmetic operators, as the engine and the `pressOperator` action name them. */
 export const OPERATORS = Object.freeze({
@@ -41,6 +41,15 @@ export const EXPONENT_FRACTION_DIGITS = DISPLAY_PRECISION_DIGITS - 1;
 /** Divisor of the `%` key: it turns the entry into a fraction of 100. */
 export const PERCENT_DIVISOR = 100;
 
+/**
+ * Pending operators after which `%` takes a share of the running total, so `200 + 10 %` adds `20`;
+ * after any other operator, `%` only divides the entry by {@link PERCENT_DIVISOR}.
+ */
+export const SHARE_OF_TOTAL_OPERATORS: readonly Operator[] = Object.freeze([
+    OPERATORS.ADD,
+    OPERATORS.SUBTRACT
+]);
+
 /** Text the screen shows when an operation gives no finite result, such as a division by zero. */
 export const ERROR_MESSAGE = 'Erreur';
 
@@ -51,5 +60,6 @@ export const INITIAL_STATE: Readonly<CalculatorState> = Object.freeze({
     entry: EMPTY_ENTRY,
     result: null,
     justEvaluated: false,
+    lastOperation: null,
     hasError: false
 });
