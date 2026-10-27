@@ -7,7 +7,7 @@ import './Author.css';
  */
 export function Author () {
   return (
-    <div>
+    <footer>
       <p className="copyright">Copyright © 2018 <a href='https://www.issoufi.fr'>Adam Issoufi</a>, tout droit reservé</p>
       <div className="social-links">
         <a href="https://github.com/AIssoufi/calculatrice" aria-label="Code source sur GitHub">
@@ -39,6 +39,6 @@ export function Author () {
       </div>
       </div>
       
-    </div>
+    </footer>
   );
 };
