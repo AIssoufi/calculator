@@ -29,7 +29,7 @@ The calculator works like a basic pocket calculator: it evaluates from left to r
 - `=` pressed again repeats the last operator and operand on the result: `2 + 3 = =` gives `8`, then `11`.
 - `%` after a pending `+` or `-` takes that share of the running total: `200 + 10 % =` gives `220`, and `100 - 20 % =` gives `80`. Otherwise it divides the number by 100: `50 × 10 % =` gives `5`, and `5 %` gives `0.05`.
 - `C` clears the number being typed, then the key turns into `AC`, which resets everything.
-- Results are rounded to 12 significant digits, and a division by zero shows `Erreur`. An integer is shown in full while it is exact (up to `2^53 - 1`); past that, or when rounding would change the digits of its integer part, a result is shown in exponent notation, such as `1.52415787502e+16`, so a rounded value never looks exact.
+- Results are rounded to 12 significant digits, and a division by zero shows `Erreur`. An integer is shown in full while it is exact (up to `2^53 - 1`); past that, or when its integer part fills the 12 digits, so that rounding drops its fraction, a result is shown in exponent notation, such as `1.52415787502e+16`, so a rounded value never looks exact.
 
 The logic lives in a pure, framework-free engine, [`src/features/calculator/engine.ts`](src/features/calculator/engine.ts): each key press is a function from one state to the next. The Redux slice next to it only hands the key presses to the engine.
 
