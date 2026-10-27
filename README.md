@@ -60,10 +60,10 @@ pnpm test:e2e    # the smoke tests of the production build in Chromium, as in th
 
 The app is written in [TypeScript](https://www.typescriptlang.org/), in strict mode. Vite and Vitest strip the types without checking them, so `pnpm typecheck` runs `tsc` on `src/`, with the settings of [`tsconfig.json`](tsconfig.json), then on `e2e/`, with those of [`e2e/tsconfig.json`](e2e/tsconfig.json), and fails on any type error. The configuration files and the commit tooling stay in JavaScript.
 
-Unit tests sit next to the code they cover and are named `*.spec.ts`, `*.spec.tsx` or, for the commit tooling, `*.spec.mjs`:
+Unit tests sit next to the code they cover and are named `*.spec.ts`, `*.spec.tsx` or, for the scripts of [`scripts/`](scripts/), `*.spec.mjs`:
 
 - [Vitest](https://vitest.dev/) runs the app tests in [jsdom](https://github.com/jsdom/jsdom), with [Testing Library](https://testing-library.com/) and the [jest-dom](https://github.com/testing-library/jest-dom) matchers; its settings are in [`vite.config.js`](vite.config.js).
-- `pnpm test` first runs the tests of the commit tooling once, `scripts/**/*.spec.mjs`, with the Node.js test runner.
+- `pnpm test` first runs the tests of the scripts once, `scripts/**/*.spec.mjs`, those of the commit tooling and of the live check (see [Deployment](#deployment)), with the Node.js test runner.
 
 jsdom does no layout, so the smoke tests of [`e2e/`](e2e/) check the production build in a real browser: [Playwright](https://playwright.dev/) runs them in Chromium, with the settings of [`playwright.config.js`](playwright.config.js). `pnpm test:e2e` builds the app, serves the build with `pnpm preview` on port 4173, and checks that it computes with the keyboard and the mouse, and that every key fits the screen of a phone and of a laptop.
 
@@ -140,6 +140,22 @@ Three files make the build fit Cloudflare Pages:
 - [`public/404.html`](public/404.html) is the page of every path that matches no file of the build, such as a chunk removed by a later deployment:
   - Pages serves it with a 404 status; without it, Pages would answer such paths with `index.html` and a 200;
   - it loads only absolute paths, since it answers at any depth, as [`e2e/not-found.spec.ts`](e2e/not-found.spec.ts) checks.
+
+The [Live check workflow](.github/workflows/live-check.yml) checks the production site every hour, at minute 17, and on demand from the Actions tab. It runs [`scripts/live-check/check-live-site.sh`](scripts/live-check/check-live-site.sh), which requests the site with curl and fails, with one line naming each failed check, unless:
+
+- the page answers 200, holds `<title>Calculatrice</title>` and sends a Content-Security-Policy header;
+- the hashed `assets/index-*.js` and `assets/index-*.css` files that the page references answer 200;
+- `/manifest.json` answers 200 with a JSON object;
+- `/does-not-exist` answers 404.
+
+When a run fails, GitHub notifies the last person who changed the cron line. It also turns off a scheduled workflow after 60 days without activity in a public repository such as this one: turn the Live check back on from the Actions tab, or with `gh workflow enable live-check.yml`.
+
+The script needs curl and jq only, and checks any deployment, a preview included; it adds `https://` to a bare host. `pnpm test` runs its tests, [`check-live-site.spec.mjs`](scripts/live-check/check-live-site.spec.mjs), against a fake site.
+
+```bash
+scripts/live-check/check-live-site.sh https://calculator.issoufi.fr
+scripts/live-check/check-live-site.sh <preview>.calculator-1x0.pages.dev
+```
 
 ## History
 
