@@ -33,8 +33,8 @@ export const SINGLE_DIGIT_PATTERN = /^[0-9]$/;
 export const ANY_DIGIT_PATTERN = /[0-9]/g;
 
 /**
- * Significant digits a result that is not a safe integer is rounded to, which hides float noise such
- * as `0.30000000000000004`.
+ * Significant digits a result that is not a safe integer is rounded to, which hides float noise
+ * such as `0.30000000000000004`.
  */
 export const DISPLAY_PRECISION_DIGITS = 12;
 
