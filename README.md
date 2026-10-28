@@ -1,4 +1,5 @@
 # Calculatrice
+
 <p align="center">
   <img src="public/images/capture.png" alt="capture d'écran">
 </p>
@@ -37,28 +38,32 @@ The logic lives in a pure, framework-free engine, [`src/features/calculator/engi
 
 Every key is a button: Tab reaches it and outlines it, and Enter or Space presses it. The keyboard also works from anywhere on the page:
 
-| Keyboard | Key |
-| --- | --- |
-| `0` to `9` | the digit |
-| `.` or `,` | `.` |
-| `+`, `-`, `*`, `/` | the operator |
-| `=` or Enter | `=`, unless a button or link has the focus: Enter then presses it |
-| Escape or Backspace | `C`, then `AC` |
-| `%` | `%` |
+| Keyboard            | Key                                                               |
+| ------------------- | ----------------------------------------------------------------- |
+| `0` to `9`          | the digit                                                         |
+| `.` or `,`          | `.`                                                               |
+| `+`, `-`, `*`, `/`  | the operator                                                      |
+| `=` or Enter        | `=`, unless a button or link has the focus: Enter then presses it |
+| Escape or Backspace | `C`, then `AC`                                                    |
+| `%`                 | `%`                                                               |
 
 A key held down on the keyboard shows pressed. A key combined with Ctrl, Cmd or Alt is left to the browser, such as Ctrl and `-` to zoom out. Screen readers announce each change of the screen, and read the symbol keys by their names, such as "Multiplier".
 
 ## Tests
 
 ```bash
-pnpm lint        # ESLint, as in the CI
-pnpm typecheck   # TypeScript, as in the CI
-pnpm test        # a single run of the unit tests, as in the CI
-pnpm test:watch  # watch mode: re-runs the tests of the changed files
-pnpm test:e2e    # the smoke tests of the production build in Chromium, as in the CI
+pnpm lint          # ESLint, as in the CI
+pnpm format        # Prettier: formats every file
+pnpm format:check  # Prettier: fails on a file that is not formatted, as in the CI
+pnpm typecheck     # TypeScript, as in the CI
+pnpm test          # a single run of the unit tests, as in the CI
+pnpm test:watch    # watch mode: re-runs the tests of the changed files
+pnpm test:e2e      # the smoke tests of the production build in Chromium, as in the CI
 ```
 
 [ESLint](https://eslint.org/) applies its recommended rules, the [typescript-eslint](https://typescript-eslint.io/) rules to `src/` and `e2e/`, and the React and Rules of Hooks rules to `src/`; its settings are in [`eslint.config.js`](eslint.config.js).
+
+[Prettier](https://prettier.io/) owns the layout of the code and the docs: two-space indents, single quotes in the scripts and double quotes in JSX, semicolons and lines of 100 characters, set in [`prettier.config.mjs`](prettier.config.mjs). `eslint-config-prettier` turns off the ESLint rules that would disagree with it. Run `pnpm format` before a commit, or let your editor format on save with the Prettier extension. The commit that formatted the whole repository is listed in [`.git-blame-ignore-revs`](.git-blame-ignore-revs): `git config blame.ignoreRevsFile .git-blame-ignore-revs` makes `git blame` skip it, as GitHub does.
 
 The app is written in [TypeScript](https://www.typescriptlang.org/), in strict mode. Vite and Vitest strip the types without checking them, so `pnpm typecheck` runs `tsc` on `src/`, with the settings of [`tsconfig.json`](tsconfig.json), then on `e2e/`, with those of [`e2e/tsconfig.json`](e2e/tsconfig.json), and fails on any type error. The configuration files and the commit tooling stay in JavaScript.
 
@@ -75,12 +80,13 @@ The [CI workflow](.github/workflows/ci.yml) runs on every pull request and every
 
 1. it installs the dependencies with `pnpm install --frozen-lockfile`, which fails when `pnpm-lock.yaml` does not match `package.json`;
 2. it lints the code;
-3. it checks the types;
-4. it runs the tests once;
-5. it builds the app;
-6. it runs the smoke tests in Chromium, which it caches between runs until Playwright changes.
+3. it checks the formatting;
+4. it checks the types;
+5. it runs the tests once;
+6. it builds the app;
+7. it runs the smoke tests in Chromium, which it caches between runs until Playwright changes.
 
-A lint error, a type error, a failing test or a failed build fails the check. On a pull request, a second job checks the commit messages and the title (see [Commit messages](#commit-messages)).
+A lint error, a file that Prettier would format, a type error, a failing test or a failed build fails the check. On a pull request, a second job checks the commit messages and the title (see [Commit messages](#commit-messages)).
 
 ## Commit messages
 
@@ -170,11 +176,13 @@ Most issues and pull requests of this repository are written by Claude Code agen
 See [`docs/ai-workflow/`](docs/ai-workflow/overview.md) for their roles, the ticket lifecycle, the reviews, the journal and the tooling.
 
 ## Technos utilisées
-* [ReactJS](http://redux.js.org)
-* [ReduxJS](http://redux.js.org)
-* [TypeScript](https://www.typescriptlang.org/)
+
+- [ReactJS](http://redux.js.org)
+- [ReduxJS](http://redux.js.org)
+- [TypeScript](https://www.typescriptlang.org/)
 
 ## Autres captures d'écran
+
 <p align="center">
 <img src="public/images/redux.png" alt="redux">
 <img src="public/images/react.png" alt="react">

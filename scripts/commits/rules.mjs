@@ -26,32 +26,37 @@ const NEVER = 'never';
  * @returns {[boolean, string]} Whether the commit passes, and the message shown when it fails.
  */
 export const footerTicketReference = (parsed, when, ticketKey) => {
-    const key = isNonEmptyString(ticketKey) ? ticketKey : TICKET_KEY;
-    const expectedTrailer = `${TICKET_TRAILER_KEY}: ${key}-<n>`;
-    const references = getTicketReferences(parsed?.raw);
-    const hasReference = references.length > 0;
+  const key = isNonEmptyString(ticketKey) ? ticketKey : TICKET_KEY;
+  const expectedTrailer = `${TICKET_TRAILER_KEY}: ${key}-<n>`;
+  const references = getTicketReferences(parsed?.raw);
+  const hasReference = references.length > 0;
 
-    if (when === NEVER) {
-        return [!hasReference, `the footer must not name a ticket with a "${TICKET_TRAILER_KEY}:" trailer`];
-    }
+  if (when === NEVER) {
+    return [
+      !hasReference,
+      `the footer must not name a ticket with a "${TICKET_TRAILER_KEY}:" trailer`
+    ];
+  }
 
-    if (!hasReference) {
-        return [
-            false,
-            `the footer must name the ticket of the commit with a git trailer "${expectedTrailer}", ` +
-                'in the last paragraph of the message'
-        ];
-    }
+  if (!hasReference) {
+    return [
+      false,
+      `the footer must name the ticket of the commit with a git trailer "${expectedTrailer}", ` +
+        'in the last paragraph of the message'
+    ];
+  }
 
-    const malformedReference = references.find(value => !isTicketReference({ value, ticketKey: key }));
+  const malformedReference = references.find(
+    value => !isTicketReference({ value, ticketKey: key })
+  );
 
-    if (malformedReference !== undefined) {
-        return [
-            false,
-            `"${TICKET_TRAILER_KEY}: ${malformedReference}" does not name a ticket of this repository: ` +
-                `write "${expectedTrailer}", one ticket per trailer`
-        ];
-    }
+  if (malformedReference !== undefined) {
+    return [
+      false,
+      `"${TICKET_TRAILER_KEY}: ${malformedReference}" does not name a ticket of this repository: ` +
+        `write "${expectedTrailer}", one ticket per trailer`
+    ];
+  }
 
-    return [true, ''];
+  return [true, ''];
 };

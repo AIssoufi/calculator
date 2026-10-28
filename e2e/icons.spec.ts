@@ -126,13 +126,17 @@ test('lists a PNG icon of each install size and a maskable one', async ({ page, 
   const pngIcons = icons.filter(icon => icon.type === PNG_TYPE);
 
   for (const size of INSTALL_ICON_SIZES) {
-    expect(pngIcons.map(icon => icon.sizes), 'the sizes of the PNG icons').toContain(size);
+    expect(
+      pngIcons.map(icon => icon.sizes),
+      'the sizes of the PNG icons'
+    ).toContain(size);
   }
 
   expect(pngIcons.some(hasAnyPurpose), 'a PNG icon that Chrome installs with').toBe(true);
-  expect(pngIcons.map(icon => icon.purpose), 'the purposes of the PNG icons').toContain(
-    MASKABLE_PURPOSE
-  );
+  expect(
+    pngIcons.map(icon => icon.purpose),
+    'the purposes of the PNG icons'
+  ).toContain(MASKABLE_PURPOSE);
 });
 
 // Chrome DevTools warns about every declared size that differs from the decoded one, and decodes

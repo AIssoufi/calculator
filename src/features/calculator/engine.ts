@@ -1,47 +1,47 @@
 import {
-    DECIMAL_POINT,
-    EMPTY_ENTRY,
-    ERROR_MESSAGE,
-    INITIAL_STATE,
-    MAX_ENTRY_DIGITS,
-    MINUS_SIGN,
-    PERCENT_DIVISOR,
-    SHARE_OF_TOTAL_OPERATORS,
-    ZERO_ENTRY
+  DECIMAL_POINT,
+  EMPTY_ENTRY,
+  ERROR_MESSAGE,
+  INITIAL_STATE,
+  MAX_ENTRY_DIGITS,
+  MINUS_SIGN,
+  PERCENT_DIVISOR,
+  SHARE_OF_TOTAL_OPERATORS,
+  ZERO_ENTRY
 } from './constants';
 import type { CalculatorState, Digit, Operator, RepeatableOperation } from './types';
 import { applyOperator, countDigits, formatNumber, isDigit, isOperator, parseEntry } from './utils';
 
 /** Parameters of {@link inputDigit}. */
 interface InputDigitParams {
-    /** Current state. Defaults to the initial state. */
-    state?: CalculatorState;
-    /** Digit pressed, from `'0'` to `'9'`; any other value is ignored. */
-    digit?: string;
+  /** Current state. Defaults to the initial state. */
+  state?: CalculatorState;
+  /** Digit pressed, from `'0'` to `'9'`; any other value is ignored. */
+  digit?: string;
 }
 
 /** Parameters of {@link chooseOperator}. */
 interface ChooseOperatorParams {
-    /** Current state. Defaults to the initial state. */
-    state?: CalculatorState;
-    /** Operator pressed; any other value is ignored. */
-    operator?: Operator;
+  /** Current state. Defaults to the initial state. */
+  state?: CalculatorState;
+  /** Operator pressed; any other value is ignored. */
+  operator?: Operator;
 }
 
 /** Parameters of {@link appendDigit}. */
 interface AppendDigitParams {
-    /** Entry the digit is typed into. */
-    entry: string;
-    /** Digit added at the end of the entry, replacing a lone `0` or `-0`. */
-    digit: Digit;
+  /** Entry the digit is typed into. */
+  entry: string;
+  /** Digit added at the end of the entry, replacing a lone `0` or `-0`. */
+  digit: Digit;
 }
 
 /** Parameters of {@link applyOperation}. */
 interface ApplyOperationParams {
-    /** Left operand: the running total, or the result a repeated `=` starts from. */
-    left: number;
-    /** Operator and right operand to apply, kept for a repeated `=`. */
-    operation: RepeatableOperation;
+  /** Left operand: the running total, or the result a repeated `=` starts from. */
+  left: number;
+  /** Operator and right operand to apply, kept for a repeated `=`. */
+  operation: RepeatableOperation;
 }
 
 const ERROR_STATE: Readonly<CalculatorState> = Object.freeze({ ...INITIAL_STATE, hasError: true });
@@ -53,15 +53,21 @@ const NEGATIVE_ZERO_ENTRY = MINUS_SIGN + ZERO_ENTRY;
  * the operation a repeated `=` would apply.
  */
 const getEditableState = (state: CalculatorState): CalculatorState => {
-    if (state.hasError) {
-        return INITIAL_STATE;
-    }
+  if (state.hasError) {
+    return INITIAL_STATE;
+  }
 
-    if (state.justEvaluated) {
-        return { ...state, entry: EMPTY_ENTRY, result: null, justEvaluated: false, lastOperation: null };
-    }
+  if (state.justEvaluated) {
+    return {
+      ...state,
+      entry: EMPTY_ENTRY,
+      result: null,
+      justEvaluated: false,
+      lastOperation: null
+    };
+  }
 
-    return state;
+  return state;
 };
 
 /** Reads the value of the entry: the unrounded result of a computed entry, else the typed number. */
@@ -69,24 +75,24 @@ const readEntry = (state: CalculatorState): number => state.result ?? parseEntry
 
 /** Appends a digit to an entry, replacing a lone leading zero so `0` then `7` gives `7`, not `07`. */
 const appendDigit = ({ entry, digit }: AppendDigitParams): string => {
-    const isZeroEntry = entry === ZERO_ENTRY || entry === NEGATIVE_ZERO_ENTRY;
-    return isZeroEntry ? entry.slice(0, -ZERO_ENTRY.length) + digit : entry + digit;
+  const isZeroEntry = entry === ZERO_ENTRY || entry === NEGATIVE_ZERO_ENTRY;
+  return isZeroEntry ? entry.slice(0, -ZERO_ENTRY.length) + digit : entry + digit;
 };
 
 /** Gives the state holding a result as its entry, or the error state when the result is not finite. */
 const toResultState = (result: number): CalculatorState => {
-    if (!Number.isFinite(result)) {
-        return ERROR_STATE;
-    }
+  if (!Number.isFinite(result)) {
+    return ERROR_STATE;
+  }
 
-    return { ...INITIAL_STATE, entry: formatNumber(result), result, justEvaluated: true };
+  return { ...INITIAL_STATE, entry: formatNumber(result), result, justEvaluated: true };
 };
 
 /** Applies an operation and gives its result state, which keeps the operation for a repeated `=`. */
 const applyOperation = ({ left, operation }: ApplyOperationParams): CalculatorState => {
-    const { operator, operand } = operation;
-    const resultState = toResultState(applyOperator({ left, operator, right: operand }));
-    return resultState.hasError ? resultState : { ...resultState, lastOperation: operation };
+  const { operator, operand } = operation;
+  const resultState = toResultState(applyOperator({ left, operator, right: operand }));
+  return resultState.hasError ? resultState : { ...resultState, lastOperation: operation };
 };
 
 /**
@@ -94,12 +100,14 @@ const applyOperation = ({ left, operation }: ApplyOperationParams): CalculatorSt
  * `200 + 10 %` gives `20`; otherwise the entry divided by {@link PERCENT_DIVISOR}.
  */
 const computePercent = (state: CalculatorState): number => {
-    const { accumulator, pendingOperator } = state;
-    const fraction = readEntry(state) / PERCENT_DIVISOR;
-    const isShareOfTotal = accumulator !== null && pendingOperator !== null
-        && SHARE_OF_TOTAL_OPERATORS.includes(pendingOperator);
+  const { accumulator, pendingOperator } = state;
+  const fraction = readEntry(state) / PERCENT_DIVISOR;
+  const isShareOfTotal =
+    accumulator !== null &&
+    pendingOperator !== null &&
+    SHARE_OF_TOTAL_OPERATORS.includes(pendingOperator);
 
-    return isShareOfTotal ? accumulator * fraction : fraction;
+  return isShareOfTotal ? accumulator * fraction : fraction;
 };
 
 /**
@@ -109,20 +117,21 @@ const computePercent = (state: CalculatorState): number => {
  *
  * @returns The next state, or the same one for an invalid digit.
  */
-export const inputDigit = (
-    { state = INITIAL_STATE, digit }: InputDigitParams = {}
-): CalculatorState => {
-    if (!isDigit(digit)) {
-        return state;
-    }
+export const inputDigit = ({
+  state = INITIAL_STATE,
+  digit
+}: InputDigitParams = {}): CalculatorState => {
+  if (!isDigit(digit)) {
+    return state;
+  }
 
-    const editableState = getEditableState(state);
+  const editableState = getEditableState(state);
 
-    if (countDigits(editableState.entry) >= MAX_ENTRY_DIGITS) {
-        return editableState;
-    }
+  if (countDigits(editableState.entry) >= MAX_ENTRY_DIGITS) {
+    return editableState;
+  }
 
-    return { ...editableState, entry: appendDigit({ entry: editableState.entry, digit }) };
+  return { ...editableState, entry: appendDigit({ entry: editableState.entry, digit }) };
 };
 
 /**
@@ -132,14 +141,14 @@ export const inputDigit = (
  * @returns The next state.
  */
 export const inputDecimalPoint = (state: CalculatorState = INITIAL_STATE): CalculatorState => {
-    const editableState = getEditableState(state);
+  const editableState = getEditableState(state);
 
-    if (editableState.entry.includes(DECIMAL_POINT)) {
-        return editableState;
-    }
+  if (editableState.entry.includes(DECIMAL_POINT)) {
+    return editableState;
+  }
 
-    const integerPart = editableState.entry === EMPTY_ENTRY ? ZERO_ENTRY : editableState.entry;
-    return { ...editableState, entry: integerPart + DECIMAL_POINT };
+  const integerPart = editableState.entry === EMPTY_ENTRY ? ZERO_ENTRY : editableState.entry;
+  return { ...editableState, entry: integerPart + DECIMAL_POINT };
 };
 
 /**
@@ -150,27 +159,33 @@ export const inputDecimalPoint = (state: CalculatorState = INITIAL_STATE): Calcu
  * @returns The next state, the error state when the total is not finite, or the
  * same state for an invalid operator or during an error.
  */
-export const chooseOperator = (
-    { state = INITIAL_STATE, operator }: ChooseOperatorParams = {}
-): CalculatorState => {
-    if (state.hasError || !isOperator(operator)) {
-        return state;
-    }
+export const chooseOperator = ({
+  state = INITIAL_STATE,
+  operator
+}: ChooseOperatorParams = {}): CalculatorState => {
+  if (state.hasError || !isOperator(operator)) {
+    return state;
+  }
 
-    if (state.entry === EMPTY_ENTRY) {
-        return { ...state, accumulator: state.accumulator ?? 0, pendingOperator: operator };
-    }
+  if (state.entry === EMPTY_ENTRY) {
+    return { ...state, accumulator: state.accumulator ?? 0, pendingOperator: operator };
+  }
 
-    const operand = readEntry(state);
-    const total = state.pendingOperator === null
-        ? operand
-        : applyOperator({ left: state.accumulator ?? 0, operator: state.pendingOperator, right: operand });
+  const operand = readEntry(state);
+  const total =
+    state.pendingOperator === null
+      ? operand
+      : applyOperator({
+          left: state.accumulator ?? 0,
+          operator: state.pendingOperator,
+          right: operand
+        });
 
-    if (!Number.isFinite(total)) {
-        return ERROR_STATE;
-    }
+  if (!Number.isFinite(total)) {
+    return ERROR_STATE;
+  }
 
-    return { ...INITIAL_STATE, accumulator: total, pendingOperator: operator };
+  return { ...INITIAL_STATE, accumulator: total, pendingOperator: operator };
 };
 
 /**
@@ -184,31 +199,31 @@ export const chooseOperator = (
  * same state when there is nothing to evaluate.
  */
 export const evaluate = (state: CalculatorState = INITIAL_STATE): CalculatorState => {
-    const hasEntry = state.entry !== EMPTY_ENTRY;
-    const shownValue = hasEntry ? readEntry(state) : state.accumulator;
-    const canEvaluate = !state.hasError && shownValue !== null;
+  const hasEntry = state.entry !== EMPTY_ENTRY;
+  const shownValue = hasEntry ? readEntry(state) : state.accumulator;
+  const canEvaluate = !state.hasError && shownValue !== null;
 
-    if (!canEvaluate) {
-        return state;
-    }
+  if (!canEvaluate) {
+    return state;
+  }
 
-    const { pendingOperator, lastOperation } = state;
-    const isOperationComplete = hasEntry && pendingOperator !== null;
+  const { pendingOperator, lastOperation } = state;
+  const isOperationComplete = hasEntry && pendingOperator !== null;
 
-    if (isOperationComplete) {
-        return applyOperation({
-            left: state.accumulator ?? 0,
-            operation: { operator: pendingOperator, operand: readEntry(state) }
-        });
-    }
+  if (isOperationComplete) {
+    return applyOperation({
+      left: state.accumulator ?? 0,
+      operation: { operator: pendingOperator, operand: readEntry(state) }
+    });
+  }
 
-    const canRepeatLastOperation = state.justEvaluated && lastOperation !== null;
+  const canRepeatLastOperation = state.justEvaluated && lastOperation !== null;
 
-    if (canRepeatLastOperation) {
-        return applyOperation({ left: shownValue, operation: lastOperation });
-    }
+  if (canRepeatLastOperation) {
+    return applyOperation({ left: shownValue, operation: lastOperation });
+  }
 
-    return toResultState(shownValue);
+  return toResultState(shownValue);
 };
 
 /**
@@ -219,20 +234,20 @@ export const evaluate = (state: CalculatorState = INITIAL_STATE): CalculatorStat
  * @returns The next state, or the same one during an error.
  */
 export const toggleSign = (state: CalculatorState = INITIAL_STATE): CalculatorState => {
-    if (state.hasError) {
-        return state;
-    }
+  if (state.hasError) {
+    return state;
+  }
 
-    if (state.entry === EMPTY_ENTRY) {
-        return { ...state, entry: NEGATIVE_ZERO_ENTRY };
-    }
+  if (state.entry === EMPTY_ENTRY) {
+    return { ...state, entry: NEGATIVE_ZERO_ENTRY };
+  }
 
-    const isNegative = state.entry.startsWith(MINUS_SIGN);
-    return {
-        ...state,
-        entry: isNegative ? state.entry.slice(MINUS_SIGN.length) : MINUS_SIGN + state.entry,
-        result: state.result === null ? null : -state.result
-    };
+  const isNegative = state.entry.startsWith(MINUS_SIGN);
+  return {
+    ...state,
+    entry: isNegative ? state.entry.slice(MINUS_SIGN.length) : MINUS_SIGN + state.entry,
+    result: state.result === null ? null : -state.result
+  };
 };
 
 /**
@@ -244,14 +259,14 @@ export const toggleSign = (state: CalculatorState = INITIAL_STATE): CalculatorSt
  * @returns The next state, or the same one with no entry or during an error.
  */
 export const applyPercent = (state: CalculatorState = INITIAL_STATE): CalculatorState => {
-    const canApplyPercent = !state.hasError && state.entry !== EMPTY_ENTRY;
+  const canApplyPercent = !state.hasError && state.entry !== EMPTY_ENTRY;
 
-    if (!canApplyPercent) {
-        return state;
-    }
+  if (!canApplyPercent) {
+    return state;
+  }
 
-    const result = computePercent(state);
-    return { ...state, entry: formatNumber(result), result, justEvaluated: true };
+  const result = computePercent(state);
+  return { ...state, entry: formatNumber(result), result, justEvaluated: true };
 };
 
 /**
@@ -262,11 +277,11 @@ export const applyPercent = (state: CalculatorState = INITIAL_STATE): Calculator
  * @returns The next state.
  */
 export const clearEntry = (state: CalculatorState = INITIAL_STATE): CalculatorState => {
-    if (state.hasError) {
-        return INITIAL_STATE;
-    }
+  if (state.hasError) {
+    return INITIAL_STATE;
+  }
 
-    return { ...state, entry: EMPTY_ENTRY, result: null, justEvaluated: false, lastOperation: null };
+  return { ...state, entry: EMPTY_ENTRY, result: null, justEvaluated: false, lastOperation: null };
 };
 
 /**
@@ -283,15 +298,15 @@ export const clearAll = (): CalculatorState => INITIAL_STATE;
  * @returns The text to show, `'0'` when there is nothing else to show.
  */
 export const getDisplayValue = (state: CalculatorState = INITIAL_STATE): string => {
-    if (state.hasError) {
-        return ERROR_MESSAGE;
-    }
+  if (state.hasError) {
+    return ERROR_MESSAGE;
+  }
 
-    if (state.entry !== EMPTY_ENTRY) {
-        return state.entry;
-    }
+  if (state.entry !== EMPTY_ENTRY) {
+    return state.entry;
+  }
 
-    return state.accumulator === null ? ZERO_ENTRY : formatNumber(state.accumulator);
+  return state.accumulator === null ? ZERO_ENTRY : formatNumber(state.accumulator);
 };
 
 /**
@@ -302,4 +317,4 @@ export const getDisplayValue = (state: CalculatorState = INITIAL_STATE): string 
  * @returns Whether the entry or an error can be cleared.
  */
 export const canClearEntry = (state: CalculatorState = INITIAL_STATE): boolean =>
-    state.hasError || state.entry !== EMPTY_ENTRY;
+  state.hasError || state.entry !== EMPTY_ENTRY;

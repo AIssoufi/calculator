@@ -27,17 +27,18 @@ const KEY_HANDLERS: Record<string, KeyHandler> = {
 };
 
 /** Presses each key of a space-separated sequence, from the initial state. */
-const pressKeys = (sequence: string) => sequence.split(' ').reduce<CalculatorState>((state, key) => {
-  if (KEY_HANDLERS[key]) {
-    return KEY_HANDLERS[key](state);
-  }
+const pressKeys = (sequence: string) =>
+  sequence.split(' ').reduce<CalculatorState>((state, key) => {
+    if (KEY_HANDLERS[key]) {
+      return KEY_HANDLERS[key](state);
+    }
 
-  if (isOperator(key)) {
-    return chooseOperator({ state, operator: key });
-  }
+    if (isOperator(key)) {
+      return chooseOperator({ state, operator: key });
+    }
 
-  return inputDigit({ state, digit: key });
-}, INITIAL_STATE);
+    return inputDigit({ state, digit: key });
+  }, INITIAL_STATE);
 
 const display = (sequence: string) => getDisplayValue(pressKeys(sequence));
 
@@ -151,15 +152,22 @@ describe('engine', () => {
       expect(display(sequence)).toBe(expected);
     });
 
-    it.each(['', 'x', '=', 'toString', null, undefined])('ignores the invalid operator %j', operator => {
-      const state = pressKeys('4');
+    it.each(['', 'x', '=', 'toString', null, undefined])(
+      'ignores the invalid operator %j',
+      operator => {
+        const state = pressKeys('4');
 
-      // @ts-expect-error -- an unknown operator can still reach the engine at run time
-      expect(chooseOperator({ state, operator })).toBe(state);
-    });
+        // @ts-expect-error -- an unknown operator can still reach the engine at run time
+        expect(chooseOperator({ state, operator })).toBe(state);
+      }
+    );
 
     it('starts from the initial state when none is given', () => {
-      expect(chooseOperator({ operator: '+' })).toEqual({ ...INITIAL_STATE, accumulator: 0, pendingOperator: '+' });
+      expect(chooseOperator({ operator: '+' })).toEqual({
+        ...INITIAL_STATE,
+        accumulator: 0,
+        pendingOperator: '+'
+      });
     });
 
     it('returns the initial state when called with no parameters', () => {
@@ -192,7 +200,9 @@ describe('engine', () => {
     });
 
     it('shows an error once a repeated = overflows', () => {
-      expect(display(`9 9 9 9 9 9 9 9 9 * 9 9 9 9 9 9 9 9 9${' ='.repeat(40)}`)).toBe(ERROR_MESSAGE);
+      expect(display(`9 9 9 9 9 9 9 9 9 * 9 9 9 9 9 9 9 9 9${' ='.repeat(40)}`)).toBe(
+        ERROR_MESSAGE
+      );
     });
 
     it('leaves the initial state unchanged', () => {

@@ -15,7 +15,7 @@ type TextLengthStyle = CSSProperties & Record<typeof TEXT_LENGTH_PROPERTY, numbe
  * @example getTextLengthStyle('-12.5') // { '--screen-text-length': 5 }
  */
 export const getTextLengthStyle = (text: unknown): TextLengthStyle => {
-    const length = typeof text === 'string' ? text.length : 0;
+  const length = typeof text === 'string' ? text.length : 0;
 
-    return { [TEXT_LENGTH_PROPERTY]: Math.max(length, MIN_TEXT_LENGTH) };
+  return { [TEXT_LENGTH_PROPERTY]: Math.max(length, MIN_TEXT_LENGTH) };
 };

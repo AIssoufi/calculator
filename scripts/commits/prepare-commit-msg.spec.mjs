@@ -9,7 +9,14 @@ import { fileURLToPath } from 'node:url';
 const HOOK_SCRIPT = fileURLToPath(new URL('./prepare-commit-msg.mjs', import.meta.url));
 
 /** Identity and hooks of the throwaway repositories, whatever the git configuration of the machine. */
-const GIT_OPTIONS = ['-c', 'user.name=Test', '-c', 'user.email=test@example.com', '-c', 'core.hooksPath=/dev/null'];
+const GIT_OPTIONS = [
+  '-c',
+  'user.name=Test',
+  '-c',
+  'user.email=test@example.com',
+  '-c',
+  'core.hooksPath=/dev/null'
+];
 
 const repositories = [];
 
@@ -17,7 +24,8 @@ after(() => {
   repositories.forEach(repository => rmSync(repository, { recursive: true, force: true }));
 });
 
-const git = ({ cwd, args }) => execFileSync('git', [...GIT_OPTIONS, ...args], { cwd, encoding: 'utf8' });
+const git = ({ cwd, args }) =>
+  execFileSync('git', [...GIT_OPTIONS, ...args], { cwd, encoding: 'utf8' });
 
 /** Creates an empty repository whose current branch is the given one. */
 const createRepository = branch => {
@@ -48,21 +56,33 @@ describe('prepare-commit-msg.mjs', () => {
   it('adds the ticket of the branch to a message without a Refs: trailer', () => {
     const repository = createRepository('CALC-5');
 
-    assert.equal(runHook({ repository, message: 'feat: add a key\n', args: ['message'] }), 'feat: add a key\n\nRefs: CALC-5\n');
+    assert.equal(
+      runHook({ repository, message: 'feat: add a key\n', args: ['message'] }),
+      'feat: add a key\n\nRefs: CALC-5\n'
+    );
   });
 
   it('adds the trailer next to Co-Authored-By', () => {
     const repository = createRepository('CALC-5');
     const message = 'feat: add a key\n\nCo-Authored-By: A <a@example.com>\n';
 
-    assert.equal(runHook({ repository, message }), 'feat: add a key\n\nRefs: CALC-5\nCo-Authored-By: A <a@example.com>\n');
+    assert.equal(
+      runHook({ repository, message }),
+      'feat: add a key\n\nRefs: CALC-5\nCo-Authored-By: A <a@example.com>\n'
+    );
   });
 
   it('prepares the editor template so that the typed header gives a valid message', () => {
     const repository = createRepository('CALC-5');
-    const prepared = runHook({ repository, message: '\n# Please enter the commit message for your changes.\n' });
+    const prepared = runHook({
+      repository,
+      message: '\n# Please enter the commit message for your changes.\n'
+    });
     const typed = prepared.replace(/^/, 'feat: add a key');
-    const cleanedUp = execFileSync('git', ['stripspace', '--strip-comments'], { input: typed, encoding: 'utf8' });
+    const cleanedUp = execFileSync('git', ['stripspace', '--strip-comments'], {
+      input: typed,
+      encoding: 'utf8'
+    });
 
     assert.equal(cleanedUp, 'feat: add a key\n\nRefs: CALC-5\n');
   });
@@ -90,7 +110,10 @@ describe('prepare-commit-msg.mjs', () => {
   it('leaves the message as it is on a detached HEAD', () => {
     const repository = createRepository('CALC-5');
 
-    git({ cwd: repository, args: ['commit', '--quiet', '--allow-empty', '--message', 'chore: start'] });
+    git({
+      cwd: repository,
+      args: ['commit', '--quiet', '--allow-empty', '--message', 'chore: start']
+    });
     git({ cwd: repository, args: ['checkout', '--quiet', '--detach'] });
 
     assert.equal(runHook({ repository, message: 'feat: add a key\n' }), 'feat: add a key\n');

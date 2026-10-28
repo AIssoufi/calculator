@@ -1,0 +1,7 @@
+# Prettier also skips what .gitignore lists: node_modules/, build/, coverage/ and test-results/.
+
+# Written by pnpm.
+pnpm-lock.yaml
+
+# The HTML report of Playwright, if a run writes one.
+playwright-report/

@@ -13,13 +13,13 @@ const ERROR = 2;
  * @type {import('@commitlint/types').UserConfig}
  */
 const config = {
-    extends: ['@commitlint/config-conventional'],
-    plugins: [{ rules: { [TICKET_RULE_NAME]: footerTicketReference } }],
-    rules: {
-        [TICKET_RULE_NAME]: [ERROR, 'always', TICKET_KEY]
-    },
-    ignores: [isBotCommit],
-    helpUrl: 'https://github.com/AIssoufi/calculator#commit-messages'
+  extends: ['@commitlint/config-conventional'],
+  plugins: [{ rules: { [TICKET_RULE_NAME]: footerTicketReference } }],
+  rules: {
+    [TICKET_RULE_NAME]: [ERROR, 'always', TICKET_KEY]
+  },
+  ignores: [isBotCommit],
+  helpUrl: 'https://github.com/AIssoufi/calculator#commit-messages'
 };
 
 export default config;

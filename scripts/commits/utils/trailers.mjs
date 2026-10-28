@@ -1,11 +1,11 @@
 import {
-    COMMENT_PREFIX,
-    CONTINUATION_LINE_PATTERN,
-    GIT_GENERATED_PREFIXES,
-    LINE_BREAK_PATTERN,
-    MAX_OTHER_LINES_PER_TRAILER,
-    SCISSORS_LINE,
-    TRAILER_LINE_PATTERN
+  COMMENT_PREFIX,
+  CONTINUATION_LINE_PATTERN,
+  GIT_GENERATED_PREFIXES,
+  LINE_BREAK_PATTERN,
+  MAX_OTHER_LINES_PER_TRAILER,
+  SCISSORS_LINE,
+  TRAILER_LINE_PATTERN
 } from '../constants.mjs';
 
 /**
@@ -32,34 +32,34 @@ const isGitGeneratedLine = line => GIT_GENERATED_PREFIXES.some(prefix => line.st
  * // [[0], [3]]
  */
 export const getParagraphs = lines => {
-    const paragraphs = [];
-    let paragraph = [];
+  const paragraphs = [];
+  let paragraph = [];
 
-    for (const [index, line] of lines.entries()) {
-        if (line.trimEnd() === SCISSORS_LINE) {
-            break;
-        }
+  for (const [index, line] of lines.entries()) {
+    if (line.trimEnd() === SCISSORS_LINE) {
+      break;
+    }
 
-        if (line.startsWith(COMMENT_PREFIX)) {
-            continue;
-        }
+    if (line.startsWith(COMMENT_PREFIX)) {
+      continue;
+    }
 
-        if (!isBlankLine(line)) {
-            paragraph.push(index);
-            continue;
-        }
-
-        if (paragraph.length > 0) {
-            paragraphs.push(paragraph);
-            paragraph = [];
-        }
+    if (!isBlankLine(line)) {
+      paragraph.push(index);
+      continue;
     }
 
     if (paragraph.length > 0) {
-        paragraphs.push(paragraph);
+      paragraphs.push(paragraph);
+      paragraph = [];
     }
+  }
 
-    return paragraphs;
+  if (paragraph.length > 0) {
+    paragraphs.push(paragraph);
+  }
+
+  return paragraphs;
 };
 
 /**
@@ -74,36 +74,36 @@ export const getParagraphs = lines => {
  * isTrailerBlock(['BREAKING CHANGE: the key is gone', 'Refs: CALC-9']); // false
  */
 export const isTrailerBlock = paragraph => {
-    let trailerCount = 0;
-    let otherCount = 0;
-    let pendingContinuationCount = 0;
-    let hasGitGeneratedLine = false;
+  let trailerCount = 0;
+  let otherCount = 0;
+  let pendingContinuationCount = 0;
+  let hasGitGeneratedLine = false;
 
-    // Read from the bottom, as git does: a continuation line counts only once a trailer sits above it.
-    for (const line of [...paragraph].reverse()) {
-        const isGitLine = isGitGeneratedLine(line);
-        const isTrailerLine = isGitLine || TRAILER_LINE_PATTERN.test(line);
+  // Read from the bottom, as git does: a continuation line counts only once a trailer sits above it.
+  for (const line of [...paragraph].reverse()) {
+    const isGitLine = isGitGeneratedLine(line);
+    const isTrailerLine = isGitLine || TRAILER_LINE_PATTERN.test(line);
 
-        hasGitGeneratedLine ||= isGitLine;
+    hasGitGeneratedLine ||= isGitLine;
 
-        if (isTrailerLine) {
-            trailerCount += 1;
-            pendingContinuationCount = 0;
-        } else if (CONTINUATION_LINE_PATTERN.test(line)) {
-            pendingContinuationCount += 1;
-        } else {
-            otherCount += 1 + pendingContinuationCount;
-            pendingContinuationCount = 0;
-        }
+    if (isTrailerLine) {
+      trailerCount += 1;
+      pendingContinuationCount = 0;
+    } else if (CONTINUATION_LINE_PATTERN.test(line)) {
+      pendingContinuationCount += 1;
+    } else {
+      otherCount += 1 + pendingContinuationCount;
+      pendingContinuationCount = 0;
     }
+  }
 
-    otherCount += pendingContinuationCount;
+  otherCount += pendingContinuationCount;
 
-    const hasOnlyTrailers = trailerCount > 0 && otherCount === 0;
-    const hasEnoughTrailersNextToGitLine =
-        hasGitGeneratedLine && trailerCount * MAX_OTHER_LINES_PER_TRAILER >= otherCount;
+  const hasOnlyTrailers = trailerCount > 0 && otherCount === 0;
+  const hasEnoughTrailersNextToGitLine =
+    hasGitGeneratedLine && trailerCount * MAX_OTHER_LINES_PER_TRAILER >= otherCount;
 
-    return hasOnlyTrailers || hasEnoughTrailersNextToGitLine;
+  return hasOnlyTrailers || hasEnoughTrailersNextToGitLine;
 };
 
 /**
@@ -113,24 +113,24 @@ export const isTrailerBlock = paragraph => {
  * @returns {Trailer[]} Trailers in order; lines such as `(cherry picked from commit …)` are left out.
  */
 const parseTrailers = paragraph => {
-    const trailers = [];
-    let current = null;
+  const trailers = [];
+  let current = null;
 
-    for (const line of paragraph) {
-        const match = TRAILER_LINE_PATTERN.exec(line);
-        const isContinuation = current !== null && CONTINUATION_LINE_PATTERN.test(line);
+  for (const line of paragraph) {
+    const match = TRAILER_LINE_PATTERN.exec(line);
+    const isContinuation = current !== null && CONTINUATION_LINE_PATTERN.test(line);
 
-        if (match) {
-            current = { key: match[1], value: match[2].trim() };
-            trailers.push(current);
-        } else if (isContinuation) {
-            current.value = `${current.value} ${line.trim()}`.trim();
-        } else {
-            current = null;
-        }
+    if (match) {
+      current = { key: match[1], value: match[2].trim() };
+      trailers.push(current);
+    } else if (isContinuation) {
+      current.value = `${current.value} ${line.trim()}`.trim();
+    } else {
+      current = null;
     }
+  }
 
-    return trailers;
+  return trailers;
 };
 
 /**
@@ -146,14 +146,14 @@ const parseTrailers = paragraph => {
  * // [{ key: 'Refs', value: 'CALC-9' }, { key: 'Co-Authored-By', value: 'A <a@example.com>' }]
  */
 export const getFooterTrailers = message => {
-    if (typeof message !== 'string') {
-        return [];
-    }
+  if (typeof message !== 'string') {
+    return [];
+  }
 
-    const lines = message.split(LINE_BREAK_PATTERN);
-    const paragraphs = getParagraphs(lines).map(paragraph => paragraph.map(index => lines[index]));
-    const [, ...bodyParagraphs] = paragraphs;
-    const footerStart = bodyParagraphs.findLastIndex(paragraph => !isTrailerBlock(paragraph)) + 1;
+  const lines = message.split(LINE_BREAK_PATTERN);
+  const paragraphs = getParagraphs(lines).map(paragraph => paragraph.map(index => lines[index]));
+  const [, ...bodyParagraphs] = paragraphs;
+  const footerStart = bodyParagraphs.findLastIndex(paragraph => !isTrailerBlock(paragraph)) + 1;
 
-    return bodyParagraphs.slice(footerStart).flatMap(parseTrailers);
+  return bodyParagraphs.slice(footerStart).flatMap(parseTrailers);
 };

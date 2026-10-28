@@ -18,6 +18,8 @@
     "test:e2e": "playwright test",
     "prepare": "husky",
     "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit && tsc --noEmit --project e2e"
   },
   "devDependencies": {
@@ -35,11 +37,13 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
     "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.13.0",
     "husky": "^9.1.7",
     "jsdom": "^30.1.2",
+    "prettier": "3.9.10",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.71.2",
     "vite": "^8.3.4",

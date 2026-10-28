@@ -12,12 +12,12 @@ A typical round: an audit found that the author links covered the bottom keys on
 
 ## Read more
 
-| Page | What it covers |
-| --- | --- |
-| [Roles](roles.md) | Who does what, and what the owner decides |
-| [Ticket lifecycle](ticket-lifecycle.md) | From a finding to a merged pull request |
-| [Reviews](reviews.md) | What is checked before a merge |
-| [Journal](journal.md) | Where actions are logged, and how to read the history |
-| [Tooling](tooling.md) | The tools that let the agents work in parallel |
+| Page                                    | What it covers                                        |
+| --------------------------------------- | ----------------------------------------------------- |
+| [Roles](roles.md)                       | Who does what, and what the owner decides             |
+| [Ticket lifecycle](ticket-lifecycle.md) | From a finding to a merged pull request               |
+| [Reviews](reviews.md)                   | What is checked before a merge                        |
+| [Journal](journal.md)                   | Where actions are logged, and how to read the history |
+| [Tooling](tooling.md)                   | The tools that let the agents work in parallel        |
 
 The setup shared by all the owner's repositories is described in the [agentic architecture docs](https://github.com/AIssoufi/AIssoufi/tree/main/docs/agentic-architecture) of the profile repository.

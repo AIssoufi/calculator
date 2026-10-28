@@ -8,13 +8,14 @@ import { prepareCommitMessage } from './utils/tickets.mjs';
 const [messageFile, source] = process.argv.slice(2);
 
 /** Gives the current branch, or `''` on a detached HEAD, as during a rebase. */
-const getCurrentBranch = () => execFileSync('git', ['branch', '--show-current'], { encoding: 'utf8' }).trim();
+const getCurrentBranch = () =>
+  execFileSync('git', ['branch', '--show-current'], { encoding: 'utf8' }).trim();
 
 if (messageFile) {
-    const message = readFileSync(messageFile, 'utf8');
-    const preparedMessage = prepareCommitMessage({ message, branch: getCurrentBranch(), source });
+  const message = readFileSync(messageFile, 'utf8');
+  const preparedMessage = prepareCommitMessage({ message, branch: getCurrentBranch(), source });
 
-    if (preparedMessage !== message) {
-        writeFileSync(messageFile, preparedMessage);
-    }
+  if (preparedMessage !== message) {
+    writeFileSync(messageFile, preparedMessage);
+  }
 }

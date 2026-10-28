@@ -7,15 +7,31 @@ import { setupStore } from '../store';
 
 // Labels of the keys in the order Tab reaches them: function keys, digits row by row, operators.
 const KEY_LABELS = [
-  'AC', '+/-', '%',
-  '7', '8', '9', '4', '5', '6', '1', '2', '3', '0', '.',
-  '÷', '×', '−', '+', '='
+  'AC',
+  '+/-',
+  '%',
+  '7',
+  '8',
+  '9',
+  '4',
+  '5',
+  '6',
+  '1',
+  '2',
+  '3',
+  '0',
+  '.',
+  '÷',
+  '×',
+  '−',
+  '+',
+  '='
 ];
 
 // Accessible names of the keys whose label is a symbol that screen readers misread.
 const KEY_NAMES: Record<string, string> = {
-  'AC': 'AC, tout effacer',
-  'C': 'C, effacer la saisie',
+  AC: 'AC, tout effacer',
+  C: 'C, effacer la saisie',
   '+/-': 'Changer de signe',
   '÷': 'Diviser',
   '×': 'Multiplier',

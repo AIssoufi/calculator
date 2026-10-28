@@ -16,22 +16,32 @@ const formatTrailers = trailers => trailers.map(({ key, value }) => `${key}: ${v
 
 describe('getParagraphs', () => {
   it('gives the line indices of each paragraph', () => {
-    assert.deepEqual(getParagraphs(['feat: add a key', '', 'Why.', 'More.', '', 'Refs: CALC-1']), [[0], [2, 3], [5]]);
-  });
-
-  it('merges the blank lines between two paragraphs, blanks with spaces included', () => {
-    assert.deepEqual(getParagraphs(['', 'feat: add a key', '', '  ', '\t', 'Refs: CALC-1', '']), [[1], [5]]);
-  });
-
-  it('skips the comment lines without splitting the paragraph around them', () => {
-    assert.deepEqual(getParagraphs(['feat: add a key', '', 'Refs: CALC-1', '# comment', 'Co-Authored-By: A']), [
+    assert.deepEqual(getParagraphs(['feat: add a key', '', 'Why.', 'More.', '', 'Refs: CALC-1']), [
       [0],
-      [2, 4]
+      [2, 3],
+      [5]
     ]);
   });
 
+  it('merges the blank lines between two paragraphs, blanks with spaces included', () => {
+    assert.deepEqual(getParagraphs(['', 'feat: add a key', '', '  ', '\t', 'Refs: CALC-1', '']), [
+      [1],
+      [5]
+    ]);
+  });
+
+  it('skips the comment lines without splitting the paragraph around them', () => {
+    assert.deepEqual(
+      getParagraphs(['feat: add a key', '', 'Refs: CALC-1', '# comment', 'Co-Authored-By: A']),
+      [[0], [2, 4]]
+    );
+  });
+
   it('stops at the scissors line, trailing blanks included', () => {
-    assert.deepEqual(getParagraphs(['feat: add a key', `${SCISSORS}  `, '', 'diff --git a/x b/x']), [[0]]);
+    assert.deepEqual(
+      getParagraphs(['feat: add a key', `${SCISSORS}  `, '', 'diff --git a/x b/x']),
+      [[0]]
+    );
   });
 
   it('gives nothing for lines without text', () => {
@@ -62,7 +72,10 @@ describe('isTrailerBlock', () => {
     const signOff = 'Signed-off-by: A <a@example.com>';
 
     assert.equal(isTrailerBlock(['1', '2', '3', '4', '5', '6', 'Refs: CALC-1', signOff]), true);
-    assert.equal(isTrailerBlock(['1', '2', '3', '4', '5', '6', '7', 'Refs: CALC-1', signOff]), false);
+    assert.equal(
+      isTrailerBlock(['1', '2', '3', '4', '5', '6', '7', 'Refs: CALC-1', signOff]),
+      false
+    );
   });
 
   it('rejects a paragraph of text and an empty paragraph', () => {
@@ -103,9 +116,13 @@ describe('getFooterTrailers', () => {
   });
 
   it('skips the comment lines of the message file', () => {
-    const message = 'feat: add a key\n\nRefs: CALC-1\n# On branch CALC-1\nCo-Authored-By: A <a@example.com>\n#\n';
+    const message =
+      'feat: add a key\n\nRefs: CALC-1\n# On branch CALC-1\nCo-Authored-By: A <a@example.com>\n#\n';
 
-    assert.deepEqual(formatTrailers(getFooterTrailers(message)), ['Refs: CALC-1', 'Co-Authored-By: A <a@example.com>']);
+    assert.deepEqual(formatTrailers(getFooterTrailers(message)), [
+      'Refs: CALC-1',
+      'Co-Authored-By: A <a@example.com>'
+    ]);
   });
 
   it('ignores the diff below the scissors line of git commit --verbose', () => {
@@ -115,7 +132,9 @@ describe('getFooterTrailers', () => {
   });
 
   it('reads a message with Windows line breaks', () => {
-    assert.deepEqual(formatTrailers(getFooterTrailers('feat: add a key\r\n\r\nRefs: CALC-1\r\n')), ['Refs: CALC-1']);
+    assert.deepEqual(formatTrailers(getFooterTrailers('feat: add a key\r\n\r\nRefs: CALC-1\r\n')), [
+      'Refs: CALC-1'
+    ]);
   });
 
   it('reads nothing from a message without trailers', () => {

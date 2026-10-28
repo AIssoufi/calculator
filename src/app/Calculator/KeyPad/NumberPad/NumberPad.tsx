@@ -2,8 +2,8 @@ import { useAppDispatch } from '../../../hooks';
 import { Button } from '../shared';
 import './NumberPad.css';
 
-import { pressDecimalPoint, pressDigit } from "../../../../features/calculator/calculatorSlice";
-import { DECIMAL_POINT_SHORTCUTS, ROW_DIGITS, ZERO_DIGIT, ZERO_SHORTCUTS } from "./constants";
+import { pressDecimalPoint, pressDigit } from '../../../../features/calculator/calculatorSlice';
+import { DECIMAL_POINT_SHORTCUTS, ROW_DIGITS, ZERO_DIGIT, ZERO_SHORTCUTS } from './constants';
 
 /**
  * Renders the digit keys and the decimal point key of the keypad, which type the entry; the digit
@@ -29,4 +29,4 @@ export default function NumberPad() {
       <Button onClick={pressDecimalPointKey} label="." shortcuts={DECIMAL_POINT_SHORTCUTS} />
     </div>
   );
-};
+}

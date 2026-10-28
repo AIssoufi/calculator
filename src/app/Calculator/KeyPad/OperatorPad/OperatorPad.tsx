@@ -2,8 +2,8 @@ import { useAppDispatch } from '../../../hooks';
 import { Button } from '../shared';
 import './OperatorPad.css';
 
-import { pressEquals, pressOperator } from "../../../../features/calculator/calculatorSlice";
-import { EQUALS_SHORTCUTS, OPERATOR_KEYS } from "./constants";
+import { pressEquals, pressOperator } from '../../../../features/calculator/calculatorSlice';
+import { EQUALS_SHORTCUTS, OPERATOR_KEYS } from './constants';
 
 /**
  * Renders the column of operator keys and the `=` key of the keypad.
@@ -30,4 +30,4 @@ export default function OperatorPad() {
       <Button onClick={pressEqualKey} label="=" shortcuts={EQUALS_SHORTCUTS} />
     </div>
   );
-};
+}

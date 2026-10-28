@@ -85,10 +85,9 @@ describe('useKeyboardShortcut', () => {
     const firstOnPress = vi.fn();
     const latestOnPress = vi.fn();
     const addListener = vi.spyOn(document, 'addEventListener');
-    const { rerender } = renderHook(
-      ({ keys, onPress }) => useKeyboardShortcut({ keys, onPress }),
-      { initialProps: { keys: ['1'], onPress: firstOnPress } }
-    );
+    const { rerender } = renderHook(({ keys, onPress }) => useKeyboardShortcut({ keys, onPress }), {
+      initialProps: { keys: ['1'], onPress: firstOnPress }
+    });
     const listenerCount = addListener.mock.calls.length;
 
     rerender({ keys: ['2'], onPress: latestOnPress });

@@ -18,14 +18,14 @@ const renderOperatorPad = () => {
 };
 
 describe('OperatorPad', () => {
-  it.each([
-    ...OPERATOR_KEYS.map(({ label, name }) => [name ?? label, label]),
-    ['=', '=']
-  ])('names the %s key for screen readers, showing %s', (name, label) => {
-    renderOperatorPad();
+  it.each([...OPERATOR_KEYS.map(({ label, name }) => [name ?? label, label]), ['=', '=']])(
+    'names the %s key for screen readers, showing %s',
+    (name, label) => {
+      renderOperatorPad();
 
-    expect(screen.getByRole('button', { name })).toHaveTextContent(label);
-  });
+      expect(screen.getByRole('button', { name })).toHaveTextContent(label);
+    }
+  );
 
   it.each([
     ['+', '9'],

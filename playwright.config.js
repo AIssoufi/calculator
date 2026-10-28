@@ -13,20 +13,20 @@ const BASE_URL = `http://localhost:${PORT}/`;
  * left in a spec fails the run too.
  */
 export default defineConfig({
-    testDir: 'e2e',
-    forbidOnly: Boolean(process.env.CI),
-    reporter: 'list',
-    use: {
-        baseURL: BASE_URL
-    },
-    projects: [
-        {
-            name: 'chromium',
-            use: { ...devices['Desktop Chrome'] }
-        }
-    ],
-    webServer: {
-        command: `pnpm build && pnpm preview --port ${PORT} --strictPort`,
-        url: BASE_URL
+  testDir: 'e2e',
+  forbidOnly: Boolean(process.env.CI),
+  reporter: 'list',
+  use: {
+    baseURL: BASE_URL
+  },
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] }
     }
+  ],
+  webServer: {
+    command: `pnpm build && pnpm preview --port ${PORT} --strictPort`,
+    url: BASE_URL
+  }
 });

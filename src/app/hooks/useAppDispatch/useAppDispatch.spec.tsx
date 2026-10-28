@@ -10,7 +10,9 @@ describe('useAppDispatch', () => {
   it('dispatches to the store it is rendered in', () => {
     const store = setupStore();
     const { result } = renderHook(() => useAppDispatch(), {
-      wrapper: ({ children }: { children: ReactNode }) => <Provider store={store}>{children}</Provider>
+      wrapper: ({ children }: { children: ReactNode }) => (
+        <Provider store={store}>{children}</Provider>
+      )
     });
 
     act(() => {

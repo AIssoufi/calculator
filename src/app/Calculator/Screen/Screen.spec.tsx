@@ -2,7 +2,11 @@ import { act, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 
 import { setupStore } from '../../store';
-import { pressDigit, pressOperator, pressEquals } from '../../../features/calculator/calculatorSlice';
+import {
+  pressDigit,
+  pressOperator,
+  pressEquals
+} from '../../../features/calculator/calculatorSlice';
 import { OPERATORS } from '../../../features/calculator/constants';
 import { TEXT_LENGTH_PROPERTY } from './constants';
 import { Screen } from './Screen';
@@ -22,7 +26,8 @@ const renderScreen = () => {
 
 const getResult = (text: string) => screen.getByText(text, { selector: RESULT_SELECTOR });
 
-const getTextLength = (element: HTMLElement) => element.style.getPropertyValue(TEXT_LENGTH_PROPERTY);
+const getTextLength = (element: HTMLElement) =>
+  element.style.getPropertyValue(TEXT_LENGTH_PROPERTY);
 
 describe('Screen', () => {
   it('announces its text to screen readers as a polite status', () => {

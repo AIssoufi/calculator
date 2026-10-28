@@ -9,11 +9,12 @@ const RESULT_SELECTOR = '.result';
 const KEY_SELECTOR = '.btn';
 const SOCIAL_LINKS_SELECTOR = '.social-links';
 
-const renderCalculator = () => render(
-  <Provider store={setupStore()}>
-    <Calculator />
-  </Provider>
-);
+const renderCalculator = () =>
+  render(
+    <Provider store={setupStore()}>
+      <Calculator />
+    </Provider>
+  );
 
 describe('Calculator', () => {
   it('renders the calculator as the only main landmark of the page', () => {
@@ -38,7 +39,6 @@ describe('Calculator', () => {
 
     expect(socialLinks).toBeInTheDocument();
     expect(calculator).not.toContainElement(socialLinks);
-    expect(calculator.compareDocumentPosition(socialLinks))
-      .toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(calculator.compareDocumentPosition(socialLinks)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });
 });

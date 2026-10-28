@@ -89,10 +89,13 @@ describe('formatNumber', () => {
     expect(formatNumber(value)).toBe(expected);
   });
 
-  it.each([Infinity, -Infinity, NaN, '5', null, undefined])('formats %p, which is not a finite number, as "0"', value => {
-    // @ts-expect-error -- a value of another type can still reach the helper at run time
-    expect(formatNumber(value)).toBe('0');
-  });
+  it.each([Infinity, -Infinity, NaN, '5', null, undefined])(
+    'formats %p, which is not a finite number, as "0"',
+    value => {
+      // @ts-expect-error -- a value of another type can still reach the helper at run time
+      expect(formatNumber(value)).toBe('0');
+    }
+  );
 });
 
 describe('applyOperator', () => {
@@ -115,8 +118,11 @@ describe('applyOperator', () => {
     expect(applyOperator({ left: 0, operator: '/', right: 0 })).toBeNaN();
   });
 
-  it.each(['x', '', 'toString', undefined])('returns the right operand for the unknown operator %j', operator => {
-    // @ts-expect-error -- an unknown operator can still reach the helper at run time
-    expect(applyOperator({ left: 2, operator, right: 3 })).toBe(3);
-  });
+  it.each(['x', '', 'toString', undefined])(
+    'returns the right operand for the unknown operator %j',
+    operator => {
+      // @ts-expect-error -- an unknown operator can still reach the helper at run time
+      expect(applyOperator({ left: 2, operator, right: 3 })).toBe(3);
+    }
+  );
 });
