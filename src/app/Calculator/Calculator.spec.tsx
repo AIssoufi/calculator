@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { Provider } from 'react-redux';
 
 import { setupStore } from '../store';
@@ -8,6 +8,8 @@ const CALCULATOR_SELECTOR = '.main_wrapper';
 const RESULT_SELECTOR = '.result';
 const KEY_SELECTOR = '.btn';
 const SOCIAL_LINKS_SELECTOR = '.social-links';
+// Class of `src/index.css` that hides an element from the eye but keeps it for screen readers.
+const VISUALLY_HIDDEN_CLASS = 'visually-hidden';
 
 const renderCalculator = () =>
   render(
@@ -21,6 +23,20 @@ describe('Calculator', () => {
     const { container } = renderCalculator();
 
     expect(screen.getByRole('main')).toBe(container.querySelector(CALCULATOR_SELECTOR));
+  });
+
+  it('renders the heading of the page as the first child of the main landmark', () => {
+    renderCalculator();
+    const calculator = screen.getByRole('main');
+    const heading = within(calculator).getByRole('heading', { level: 1, name: 'Calculatrice' });
+
+    expect(calculator.firstElementChild).toBe(heading);
+  });
+
+  it('hides the heading from the eye, for screen readers only', () => {
+    renderCalculator();
+
+    expect(screen.getByRole('heading', { level: 1 })).toHaveClass(VISUALLY_HIDDEN_CLASS);
   });
 
   it('renders the screen and the keypad inside the calculator', () => {

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 
@@ -53,10 +53,12 @@ const getKey = (label: string) => screen.getByRole('button', { name: KEY_NAMES[l
 const getScreen = () => screen.getByRole('status');
 
 describe('App', () => {
-  it('has a heading for screen readers', () => {
+  it('has a heading for screen readers inside the main landmark', () => {
     renderApp();
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Calculatrice' })).toBeInTheDocument();
+    expect(
+      within(screen.getByRole('main')).getByRole('heading', { level: 1, name: 'Calculatrice' })
+    ).toBeInTheDocument();
   });
 
   it('renders the screen showing 0', () => {
