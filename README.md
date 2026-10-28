@@ -81,14 +81,17 @@ Playwright installs no browser by itself: run `pnpm exec playwright install chro
 The [CI workflow](.github/workflows/ci.yml) runs on every pull request and every push to `master`:
 
 1. it installs the dependencies with `pnpm install --frozen-lockfile`, which fails when `pnpm-lock.yaml` does not match `package.json`;
-2. it lints the code;
-3. it checks the formatting;
-4. it checks the types;
-5. it runs the tests once;
-6. it builds the app;
-7. it runs the smoke tests in Chromium, which it caches between runs until Playwright changes.
+2. it audits the dependencies with `pnpm audit --audit-level=moderate`;
+3. it lints the code;
+4. it checks the formatting;
+5. it checks the types;
+6. it runs the tests once;
+7. it builds the app;
+8. it runs the smoke tests in Chromium, which it caches between runs until Playwright changes.
 
-A lint error, a file that Prettier would format, a type error, a failing test or a failed build fails the check. On a pull request, a second job checks the commit messages and the title (see [Commit messages](#commit-messages)).
+A moderate or higher advisory against the lockfile, a lint error, a file that Prettier would format, a type error, a failing test or a failed build fails the check. On a pull request, a second job checks the commit messages and the title (see [Commit messages](#commit-messages)).
+
+The [Audit workflow](.github/workflows/audit.yml) runs the same `pnpm audit --audit-level=moderate` on `master` every Monday, and on demand from the Actions tab, so an advisory published against an unchanged lockfile fails a run. Like the Live check below, GitHub turns it off after 60 days without activity: turn it back on with `gh workflow enable audit.yml`. Run the same command locally: it reads the lockfile and needs no install.
 
 ## Commit messages
 
