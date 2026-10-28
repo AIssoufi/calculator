@@ -25,6 +25,9 @@ const EXECUTABLE_MODE = 0o755;
 /** Identity of the throwaway repositories, whatever the git configuration of the machine. */
 const GIT_OPTIONS = ['-c', 'user.name=Test', '-c', 'user.email=test@example.com'];
 
+/** Environment of git, without the global and system configuration of the machine. */
+const GIT_ENV = { ...process.env, GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_NOSYSTEM: '1' };
+
 /** A JavaScript file that Prettier would format, and the same file formatted with its defaults. */
 const UNFORMATTED_CODE = 'const   one=1\n';
 const FORMATTED_CODE = 'const one = 1;\n';
@@ -46,6 +49,7 @@ const git = ({ cwd, args }) =>
   execFileSync('git', [...GIT_OPTIONS, ...args], {
     cwd,
     encoding: 'utf8',
+    env: GIT_ENV,
     stdio: ['ignore', 'pipe', 'pipe']
   });
 

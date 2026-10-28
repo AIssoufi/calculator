@@ -18,6 +18,9 @@ const GIT_OPTIONS = [
   'core.hooksPath=/dev/null'
 ];
 
+/** Environment of git, without the global and system configuration of the machine. */
+const GIT_ENV = { ...process.env, GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_NOSYSTEM: '1' };
+
 const repositories = [];
 
 after(() => {
@@ -25,7 +28,7 @@ after(() => {
 });
 
 const git = ({ cwd, args }) =>
-  execFileSync('git', [...GIT_OPTIONS, ...args], { cwd, encoding: 'utf8' });
+  execFileSync('git', [...GIT_OPTIONS, ...args], { cwd, encoding: 'utf8', env: GIT_ENV });
 
 /** Creates an empty repository whose current branch is the given one. */
 const createRepository = branch => {
@@ -47,7 +50,10 @@ const runHook = ({ repository, message, args = [] }) => {
   const messageFile = join(repository, 'COMMIT_EDITMSG');
 
   writeFileSync(messageFile, message);
-  execFileSync(process.execPath, [HOOK_SCRIPT, messageFile, ...args], { cwd: repository });
+  execFileSync(process.execPath, [HOOK_SCRIPT, messageFile, ...args], {
+    cwd: repository,
+    env: GIT_ENV
+  });
 
   return readFileSync(messageFile, 'utf8');
 };
@@ -81,7 +87,8 @@ describe('prepare-commit-msg.mjs', () => {
     const typed = prepared.replace(/^/, 'feat: add a key');
     const cleanedUp = execFileSync('git', ['stripspace', '--strip-comments'], {
       input: typed,
-      encoding: 'utf8'
+      encoding: 'utf8',
+      env: GIT_ENV
     });
 
     assert.equal(cleanedUp, 'feat: add a key\n\nRefs: CALC-5\n');
@@ -122,6 +129,8 @@ describe('prepare-commit-msg.mjs', () => {
   it('does nothing without a message file', () => {
     const repository = createRepository('CALC-5');
 
-    assert.doesNotThrow(() => execFileSync(process.execPath, [HOOK_SCRIPT], { cwd: repository }));
+    assert.doesNotThrow(() =>
+      execFileSync(process.execPath, [HOOK_SCRIPT], { cwd: repository, env: GIT_ENV })
+    );
   });
 });
