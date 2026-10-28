@@ -37,6 +37,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Fails on a moderate or higher advisory against the lockfile; the Audit workflow runs the
+      # same check every week on master.
+      - name: Audit the dependencies
+        run: pnpm audit --audit-level=moderate
+
       - name: Lint the code
         run: pnpm lint
 
