@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { VIEWPORTS } from './constants';
 
 // The example of "How it computes" in the README: evaluated from left to right, it gives 20.
 const TYPED_KEYS = '2+3*4=';
@@ -9,12 +10,6 @@ const CLICKED_KEY_NAMES = ['2', '+', '3', 'Multiplier', '4', '='];
 
 // Keys of the keypad: 11 on the number pad, 5 on the operator pad and 3 on the function pad.
 const KEY_COUNT = 19;
-
-// A phone and a laptop, at which every key must be visible without scrolling.
-const VIEWPORTS = [
-  { width: 390, height: 844 },
-  { width: 1280, height: 800 }
-];
 
 // Opens the app and waits until React has rendered the screen, right after which the keys attach
 // their keydown listeners in an effect: a key typed before them would be lost (see #36). Returns

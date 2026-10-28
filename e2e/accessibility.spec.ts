@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
+import { VIEWPORTS } from './constants';
 
 // The rules of WCAG 2.0, 2.1 and 2.2 at levels A and AA, with the best practices of axe. axe 4.14
 // has no `wcag22a` tag, and `wcag21a` holds the 2.1 level A rule `label-content-name-mismatch`.
@@ -10,12 +11,6 @@ const PAGES = [
   { name: 'the calculator', route: '/', readyRole: 'status' },
   { name: 'the not found page', route: '/404.html', readyRole: 'heading' }
 ] as const;
-
-// A phone and a laptop, as in the other specs.
-const VIEWPORTS = [
-  { width: 390, height: 844 },
-  { width: 1280, height: 800 }
-];
 
 for (const viewport of VIEWPORTS) {
   test.describe(`at ${viewport.width}x${viewport.height}`, () => {

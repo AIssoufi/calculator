@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { VIEWPORTS } from './constants';
 
 // The page that Cloudflare Pages serves, with a 404 status, for every path that matches no file of
 // the build. `vite preview` has no such fallback, so the tests open the file itself.
@@ -14,12 +15,6 @@ const NESTED_UNKNOWN_PATH = `${UNKNOWN_ROOT_FOLDER}b/c`;
 
 // The background image of the page, shared with the calculator.
 const BACKGROUND_IMAGE_PATH = '/images/bg.jpg';
-
-// A phone and a laptop, at which the page must fit without scrolling sideways.
-const VIEWPORTS = [
-  { width: 390, height: 844 },
-  { width: 1280, height: 800 }
-];
 
 test('is built, in French, and kept out of search results', async ({ page }) => {
   const response = await page.goto(NOT_FOUND_PATH);
