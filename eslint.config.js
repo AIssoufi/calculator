@@ -1,4 +1,5 @@
 import js from '@eslint/js';
+import prettier from 'eslint-config-prettier/flat';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
@@ -15,7 +16,8 @@ const E2E_FILES = ['e2e/**/*.ts'];
  * typescript-eslint rules for the app and its smoke tests, which are written in TypeScript, and the
  * React and Rules of Hooks rules for the app. The app runs in the browser; its specs also get the
  * Vitest globals. The smoke tests, which Playwright runs, and the configuration files and the
- * commit tooling, still in JavaScript, run in Node.js.
+ * commit tooling, still in JavaScript, run in Node.js. eslint-config-prettier comes last: it turns
+ * off the rules that only check the layout, which Prettier owns.
  */
 export default [
     { ignores: ['build/'] },
@@ -55,5 +57,6 @@ export default [
     {
         files: [...E2E_FILES, '*.{js,mjs}', 'scripts/**/*.mjs'],
         languageOptions: { globals: globals.node }
-    }
+    },
+    prettier
 ];
