@@ -149,7 +149,9 @@ Three files make the build fit Cloudflare Pages:
   - Pages serves it with a 404 status; without it, Pages would answer such paths with `index.html` and a 200;
   - it loads only absolute paths, since it answers at any depth, as [`e2e/not-found.spec.ts`](e2e/not-found.spec.ts) checks.
 
-The [Live check workflow](.github/workflows/live-check.yml) checks the production site every hour, at minute 17, and on demand from the Actions tab. It runs [`scripts/live-check/check-live-site.sh`](scripts/live-check/check-live-site.sh), which requests the site with curl and fails, with one line naming each failed check, unless:
+The [Live check workflow](.github/workflows/live-check.yml) checks the production site on a schedule and on demand from the Actions tab. Its cron asks for a run every hour, at minute 17, but GitHub delays and drops scheduled runs, so runs come hours apart: it is a periodic check, not continuous monitoring ([#81](https://github.com/AIssoufi/calculator/issues/81)).
+
+It runs [`scripts/live-check/check-live-site.sh`](scripts/live-check/check-live-site.sh), which requests the site with curl and fails, with one line naming each failed check, unless:
 
 - the page answers 200, holds `<title>Calculatrice</title>` and sends a Content-Security-Policy header;
 - the hashed `assets/index-*.js` and `assets/index-*.css` files that the page references answer 200;

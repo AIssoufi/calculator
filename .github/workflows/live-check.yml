@@ -1,8 +1,9 @@
 name: Live check
 
-# Checks the production site from outside, every hour and on demand from the Actions tab. GitHub
-# runs a schedule on the default branch only, and delays the busy start of each hour, hence the
-# odd minute. It sends a failed run to the last person who changed the cron line.
+# Checks the production site from outside, on an hourly cron and on demand from the Actions tab.
+# GitHub runs a schedule on the default branch only and delays and drops scheduled runs, so they
+# come hours apart (#81). It is busiest at the start of each hour, hence the odd minute. It sends
+# a failed run to the last person who changed the cron line.
 on:
   schedule:
     - cron: '17 * * * *'
