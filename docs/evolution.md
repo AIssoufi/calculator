@@ -202,6 +202,26 @@ The Before column is `c0b6363`, the base of the pull request, measured on 2026-1
 
 Decision: [0013. Format the code and the docs with Prettier](decisions/0013-add-prettier.md)
 
+## 2026: Node.js 26
+
+Node.js 24 entered maintenance on 2026-10-20, and Node.js 26 became the Active LTS on 2026-10-28. `.nvmrc` now holds `26`, which the CI and the Cloudflare Pages build read, the `engines` field of `package.json` declares it, and `engineStrict` makes `pnpm install` fail on an older Node.js; no dependency changed (#89).
+
+The Before column is `4475253`, the base of the pull request, measured on 2026-10-28 with Node.js 24.22.0, in alternation with the After column, measured with Node.js 26.13.0, on the same machine, with the measuring tool and the method of the [introduction](#evolution).
+
+| Figure                    | Before                                   | After                       |
+| ------------------------- | ---------------------------------------- | --------------------------- |
+| Stack                     | Node.js 24.22.0                          | Node.js 26.13.0             |
+| Install time              | 0.5 s (0.5, 0.6, 0.5)                    | 0.6 s (0.6, 0.6, 0.6)       |
+| Build time                | 0.2 s (0.8, 0.2, 0.2)                    | 0.2 s (0.7, 0.2, 0.2)       |
+| JavaScript, raw / gzipped | 255,645 B / 81,502 B                     | the same                    |
+| CSS, raw / gzipped        | 3,140 B / 1,200 B                        | the same                    |
+| Audit (`pnpm audit`)      | 0 advisories                             | 0 advisories                |
+| Tests                     | 661: 244 Node.js test runner, 417 Vitest | the same 661                |
+| Test suite time           | 9.1 s (9.5, 9.1, 9.0)                    | 8.5 s (8.8, 8.5, 8.4)       |
+| CI duration               | see the pull request of #89              | see the pull request of #89 |
+
+Decision: [0014. Move to Node.js 26, the Active LTS](decisions/0014-move-to-node-26.md)
+
 ## Current state
 
 Measured on 2026-10-28 on the pull request of #55, on an Apple M3 with 8 cores, macOS (Darwin 27.0.0), Node.js 24.22.0 and pnpm 12.14.0, except the Lighthouse scores, measured on 2026-10-24 on the production site, which served the build of `9e44f52`, the merge of pull request #59 (`index-CrBqt4YC.js` and `index-BzBp1EiE.css`).
