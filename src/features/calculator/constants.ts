@@ -38,6 +38,13 @@ export const ROUNDED_INTEGER_THRESHOLD = 10 ** (DISPLAY_PRECISION_DIGITS - 1);
 /** Digits after the point of a mantissa, so the exponent notation keeps the display precision. */
 export const EXPONENT_FRACTION_DIGITS = DISPLAY_PRECISION_DIGITS - 1;
 
+/**
+ * Significant digits of the larger operand that a sum or a difference keeps. Below the float
+ * precision of about 16 digits, it drops the noise left when close values cancel out, such as
+ * `5.55e-17` for `0.1 + 0.2 - 0.3`.
+ */
+export const ADDITIVE_PRECISION_DIGITS = 15;
+
 /** Divisor of the `%` key: it turns the entry into a fraction of 100. */
 export const PERCENT_DIVISOR = 100;
 

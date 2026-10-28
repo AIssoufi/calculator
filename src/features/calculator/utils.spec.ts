@@ -1,5 +1,13 @@
 import type { Operator } from './types';
-import { applyOperator, countDigits, formatNumber, isDigit, isOperator, parseEntry } from './utils';
+import {
+  applyOperator,
+  countDigits,
+  formatNumber,
+  isDigit,
+  isOperator,
+  parseEntry,
+  roundToOperandPrecision
+} from './utils';
 
 describe('isDigit', () => {
   it.each(['0', '5', '9'])('accepts the digit %j', key => {
@@ -98,6 +106,49 @@ describe('formatNumber', () => {
   );
 });
 
+describe('roundToOperandPrecision', () => {
+  it.each([
+    [0.1, 0.2, 0.1 + 0.2, 0.3],
+    [0.1 + 0.2, 0.3, 0.1 + 0.2 - 0.3, 0],
+    [1.1 + 2.2, 3.3, 1.1 + 2.2 - 3.3, 0],
+    [0.3 - 0.1, 0.2, 0.3 - 0.1 - 0.2, 0],
+    [1.0000001, 1, 1.0000001 - 1, 1e-7],
+    [-0.1, -0.2, -0.1 - 0.2, -0.3],
+    [-0.1, 0.2, -0.1 + 0.2, 0.1],
+    [0, 0.1, 0.1, 0.1],
+    [1e-20, 2e-20, 1e-20 + 2e-20, 3e-20],
+    [123456789, 987654321, 1111111110, 1111111110],
+    [99999999999, 0.0000001, 99999999999 + 0.0000001, 99999999999],
+    [100000000000, 0.1, 100000000000 + 0.1, 100000000000.1]
+  ])('rounds %s and %s, giving %s, to %s', (left, right, result, expected) => {
+    expect(roundToOperandPrecision({ left, right, result })).toBe(expected);
+  });
+
+  it('gives 0, not -0, for a small negative noise', () => {
+    expect(roundToOperandPrecision({ left: 0.3 - 0.1, right: 0.2, result: 0.3 - 0.1 - 0.2 })).toBe(
+      0
+    );
+  });
+
+  it.each([
+    [0, 0, 0],
+    [-0, -0, -0],
+    [100000000000, 0.00001, 100000000000 + 0.00001],
+    [-100000000000, -0.00001, -100000000000 - 0.00001],
+    [10000000000000, 0.04, 10000000000000 + 0.04],
+    [123456789012345, 0.4, 123456789012345 + 0.4],
+    [1e15, 0.5, 1e15 + 0.5],
+    [Number.MAX_SAFE_INTEGER, -1, Number.MAX_SAFE_INTEGER - 1],
+    [5e-324, 5e-324, 1e-323],
+    [1e308, 1e308, Infinity],
+    [-1e308, 1e308, -Infinity],
+    [Infinity, 1, Infinity],
+    [NaN, 1, NaN]
+  ])('keeps the result of %s and %s, %s, as it is', (left, right, result) => {
+    expect(roundToOperandPrecision({ left, right, result })).toBe(result);
+  });
+});
+
 describe('applyOperator', () => {
   it.each<[number, Operator, number, number]>([
     [2, '+', 3, 5],
@@ -105,13 +156,22 @@ describe('applyOperator', () => {
     [2, '*', 3, 6],
     [6, '/', 3, 2],
     [0, '-', 5, -5],
-    [5, '*', 0, 0]
+    [5, '*', 0, 0],
+    [0.1, '+', 0.2, 0.3],
+    [0.1 + 0.2, '-', 0.3, 0],
+    [0.1 * 3, '-', 0.3, 0],
+    [1.0000001, '-', 1, 1e-7],
+    [Number.MAX_SAFE_INTEGER, '-', 1, Number.MAX_SAFE_INTEGER - 1]
   ])('computes %p %s %p as %p', (left, operator, right, expected) => {
     expect(applyOperator({ left, operator, right })).toBe(expected);
   });
 
   it('gives Infinity for a division by zero, for the caller to report', () => {
     expect(applyOperator({ left: 6, operator: '/', right: 0 })).toBe(Infinity);
+  });
+
+  it('gives Infinity for a sum that overflows, for the caller to report', () => {
+    expect(applyOperator({ left: 1e308, operator: '+', right: 1e308 })).toBe(Infinity);
   });
 
   it('gives NaN for zero divided by zero, for the caller to report', () => {

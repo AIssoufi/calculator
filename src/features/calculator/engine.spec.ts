@@ -296,12 +296,44 @@ describe('engine', () => {
     });
   });
 
+  describe('a sum or a difference where close values cancel out', () => {
+    it.each([
+      ['0 . 1 + 0 . 2 - 0 . 3 =', '0'],
+      ['1 . 1 + 2 . 2 - 3 . 3 =', '0'],
+      ['0 . 3 - 0 . 1 - 0 . 2 =', '0'],
+      ['0 . 1 * 3 - 0 . 3 =', '0'],
+      ['1 . 0 0 0 0 0 0 1 - 1 =', '1e-7'],
+      ['0 . 1 ± - 0 . 2 ± + 0 . 3 =', '0.4'],
+      ['0 . 1 + 0 . 2 - 0 . 3 +', '0'],
+      ['0 . 1 + 0 . 2 - 0 . 3 + 5 =', '5'],
+      ['0 . 1 + 0 . 2 - 0 . 3 = =', '-0.3'],
+      ['0 . 3 - 0 . 1 = =', '0.1'],
+      ['0 . 3 - 0 . 1 = = =', '0'],
+      ['0 + 0 =', '0'],
+      ['0 - 0 =', '0'],
+      ['9 9 9 9 9 9 9 9 9 * 9 9 9 9 9 9 9 9 9 - 1 =', '9.99999998e+17'],
+      ['1 2 3 4 5 6 7 8 9 * 1 0 0 0 0 0 0 + 1 =', '123456789000001']
+    ])('shows %j as %j', (sequence, expected) => {
+      expect(display(sequence)).toBe(expected);
+    });
+
+    it('still shows an error once a sum overflows', () => {
+      // About 1.35e308, which `+ 100 %` adds to itself, beyond the largest finite number.
+      const nearMaximum = `9${' * 9 9 9 9 9 9 9 9 9'.repeat(34)} * 1 5`;
+
+      expect(display(`${nearMaximum} +`)).not.toBe(ERROR_MESSAGE);
+      expect(display(`${nearMaximum} + 1 0 0 % =`)).toBe(ERROR_MESSAGE);
+    });
+  });
+
   describe('a result whose integer part fills the display precision', () => {
     it.each([
       ['1 2 3 4 5 6 7 8 9 * 1 0 0 0 + 1 2 . 5 =', '1.23456789013e+11'],
       ['9 9 9 9 9 9 9 9 9 * 1 0 0 0 + 0 . 5 =', '9.99999999001e+11'],
       ['1 2 3 4 5 6 7 8 9 * 1 0 0 0 + 1 2 =', '123456789012'],
-      ['9 9 9 9 9 9 9 9 9 * 1 0 0 + 9 9 . 5 =', '99999999999.5']
+      ['9 9 9 9 9 9 9 9 9 * 1 0 0 + 9 9 . 5 =', '99999999999.5'],
+      ['1 0 0 0 0 0 * 1 0 0 0 0 0 0 + 0 . 0 0 0 0 1 =', '1e+11'],
+      ['1 2 3 4 5 6 7 8 9 * 1 0 0 0 0 0 0 + 0 . 4 =', '1.23456789e+14']
     ])('shows %j as %j', (sequence, expected) => {
       expect(display(sequence)).toBe(expected);
     });
