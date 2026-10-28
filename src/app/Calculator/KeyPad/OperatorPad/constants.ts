@@ -1,4 +1,4 @@
-import { OPERATORS } from "../../../../features/calculator/constants";
+import { OPERATORS } from '../../../../features/calculator/constants';
 
 /**
  * Operator keys from top to bottom: the label shown, the name read by screen readers when the

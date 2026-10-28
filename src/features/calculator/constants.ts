@@ -2,10 +2,10 @@ import type { CalculatorState, Operator } from './types';
 
 /** The four arithmetic operators, as the engine and the `pressOperator` action name them. */
 export const OPERATORS = Object.freeze({
-    ADD: '+',
-    SUBTRACT: '-',
-    MULTIPLY: '*',
-    DIVIDE: '/'
+  ADD: '+',
+  SUBTRACT: '-',
+  MULTIPLY: '*',
+  DIVIDE: '/'
 });
 
 /** Separator of the decimal part of an entry; an entry holds one at most. */
@@ -46,8 +46,8 @@ export const PERCENT_DIVISOR = 100;
  * after any other operator, `%` only divides the entry by {@link PERCENT_DIVISOR}.
  */
 export const SHARE_OF_TOTAL_OPERATORS: readonly Operator[] = Object.freeze([
-    OPERATORS.ADD,
-    OPERATORS.SUBTRACT
+  OPERATORS.ADD,
+  OPERATORS.SUBTRACT
 ]);
 
 /** Text the screen shows when an operation gives no finite result, such as a division by zero. */
@@ -55,11 +55,11 @@ export const ERROR_MESSAGE = 'Erreur';
 
 /** State of the engine before any key press, and after `AC`. */
 export const INITIAL_STATE: Readonly<CalculatorState> = Object.freeze({
-    accumulator: null,
-    pendingOperator: null,
-    entry: EMPTY_ENTRY,
-    result: null,
-    justEvaluated: false,
-    lastOperation: null,
-    hasError: false
+  accumulator: null,
+  pendingOperator: null,
+  entry: EMPTY_ENTRY,
+  result: null,
+  justEvaluated: false,
+  lastOperation: null,
+  hasError: false
 });

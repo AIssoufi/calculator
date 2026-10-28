@@ -18,19 +18,19 @@
   width: var(--button-size);
 }
 
-  /* Held down with the pointer, or with a keyboard shortcut. */
-  .btn:active,
-  .btn-pressed {
-    background-color: rgb(178, 178, 178);
-  }
+/* Held down with the pointer, or with a keyboard shortcut. */
+.btn:active,
+.btn-pressed {
+  background-color: rgb(178, 178, 178);
+}
 
-  /* Drawn inside the key, since the calculator clips what overflows it, and in black, which
+/* Drawn inside the key, since the calculator clips what overflows it, and in black, which
      stands out on the grey and orange keys. */
-  .btn:focus-visible {
-    outline-color: #000;
-    outline-offset: -5px;
-  }
+.btn:focus-visible {
+  outline-color: #000;
+  outline-offset: -5px;
+}
 
-  .btn-large {
-    flex-grow: 2;
-  }
+.btn-large {
+  flex-grow: 2;
+}

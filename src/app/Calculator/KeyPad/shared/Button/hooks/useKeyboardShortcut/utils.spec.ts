@@ -35,11 +35,14 @@ describe('isShortcutPress', () => {
     expect(isShortcutPress({ event: pressOn(document.body, { key: '=' }), keys: [] })).toBe(false);
   });
 
-  it.each(['ctrlKey', 'metaKey', 'altKey'])('is false when %s is held, for a browser shortcut', modifier => {
-    const event = pressOn(document.body, { key: '=', [modifier]: true });
+  it.each(['ctrlKey', 'metaKey', 'altKey'])(
+    'is false when %s is held, for a browser shortcut',
+    modifier => {
+      const event = pressOn(document.body, { key: '=', [modifier]: true });
 
-    expect(isShortcutPress({ event, keys: KEYS })).toBe(false);
-  });
+      expect(isShortcutPress({ event, keys: KEYS })).toBe(false);
+    }
+  );
 
   it.each([
     ['a button', '<button type="button">7</button>', 'button'],

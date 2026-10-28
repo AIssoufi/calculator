@@ -1,9 +1,9 @@
 import {
-    DISPLAY_PRECISION_DIGITS,
-    EXPONENT_FRACTION_DIGITS,
-    OPERATORS,
-    ROUNDED_INTEGER_THRESHOLD,
-    ZERO_ENTRY
+  DISPLAY_PRECISION_DIGITS,
+  EXPONENT_FRACTION_DIGITS,
+  OPERATORS,
+  ROUNDED_INTEGER_THRESHOLD,
+  ZERO_ENTRY
 } from './constants';
 import type { Digit, Operator } from './types';
 
@@ -15,24 +15,24 @@ const MANTISSA_TRAILING_ZEROS_PATTERN = /\.?0+(?=e)/;
 
 /** The two operands of an arithmetic operation. */
 interface Operands {
-    /** Left operand: the running total. */
-    left: number;
-    /** Right operand: the value of the entry. */
-    right: number;
+  /** Left operand: the running total. */
+  left: number;
+  /** Right operand: the value of the entry. */
+  right: number;
 }
 
 /** Parameters of {@link applyOperator}. */
 interface ApplyOperatorParams extends Operands {
-    /** Operator to apply; an unknown one returns the right operand unchanged. */
-    operator: Operator;
+  /** Operator to apply; an unknown one returns the right operand unchanged. */
+  operator: Operator;
 }
 
 /** Computation of each operator, keyed by its symbol. */
 const OPERATIONS: Record<Operator, (operands: Operands) => number> = {
-    [OPERATORS.ADD]: ({ left, right }) => left + right,
-    [OPERATORS.SUBTRACT]: ({ left, right }) => left - right,
-    [OPERATORS.MULTIPLY]: ({ left, right }) => left * right,
-    [OPERATORS.DIVIDE]: ({ left, right }) => left / right
+  [OPERATORS.ADD]: ({ left, right }) => left + right,
+  [OPERATORS.SUBTRACT]: ({ left, right }) => left - right,
+  [OPERATORS.MULTIPLY]: ({ left, right }) => left * right,
+  [OPERATORS.DIVIDE]: ({ left, right }) => left / right
 };
 
 /**
@@ -42,7 +42,7 @@ const OPERATIONS: Record<Operator, (operands: Operands) => number> = {
  * @returns `false` for anything else, such as `'12'`, `'.'`, `5` or `undefined`.
  */
 export const isDigit = (key: unknown): key is Digit =>
-    typeof key === 'string' && SINGLE_DIGIT_PATTERN.test(key);
+  typeof key === 'string' && SINGLE_DIGIT_PATTERN.test(key);
 
 /**
  * Tells whether a key is one of the four {@link OPERATORS}.
@@ -68,8 +68,8 @@ export const countDigits = (entry: string): number => (entry.match(ANY_DIGIT_PAT
  * @example parseEntry('-1.') // -1
  */
 export const parseEntry = (entry: string): number => {
-    const value = Number.parseFloat(entry);
-    return Number.isFinite(value) ? value : 0;
+  const value = Number.parseFloat(entry);
+  return Number.isFinite(value) ? value : 0;
 };
 
 /**
@@ -87,22 +87,24 @@ export const parseEntry = (entry: string): number => {
  * @example formatNumber(123456789 * 123456789) // '1.52415787502e+16'
  */
 export const formatNumber = (value: number): string => {
-    if (!Number.isFinite(value)) {
-        return ZERO_ENTRY;
-    }
+  if (!Number.isFinite(value)) {
+    return ZERO_ENTRY;
+  }
 
-    if (Number.isSafeInteger(value)) {
-        return String(value);
-    }
+  if (Number.isSafeInteger(value)) {
+    return String(value);
+  }
 
-    const rounded = Number(value.toPrecision(DISPLAY_PRECISION_DIGITS));
-    const integerPartFillsPrecision = Math.abs(rounded) >= ROUNDED_INTEGER_THRESHOLD;
+  const rounded = Number(value.toPrecision(DISPLAY_PRECISION_DIGITS));
+  const integerPartFillsPrecision = Math.abs(rounded) >= ROUNDED_INTEGER_THRESHOLD;
 
-    if (integerPartFillsPrecision) {
-        return value.toExponential(EXPONENT_FRACTION_DIGITS).replace(MANTISSA_TRAILING_ZEROS_PATTERN, '');
-    }
+  if (integerPartFillsPrecision) {
+    return value
+      .toExponential(EXPONENT_FRACTION_DIGITS)
+      .replace(MANTISSA_TRAILING_ZEROS_PATTERN, '');
+  }
 
-    return String(rounded);
+  return String(rounded);
 };
 
 /**
@@ -112,9 +114,9 @@ export const formatNumber = (value: number): string => {
  * @example applyOperator({ left: 2, operator: '*', right: 3 }) // 6
  */
 export const applyOperator = ({ left, operator, right }: ApplyOperatorParams): number => {
-    if (!isOperator(operator)) {
-        return right;
-    }
+  if (!isOperator(operator)) {
+    return right;
+  }
 
-    return OPERATIONS[operator]({ left, right });
+  return OPERATIONS[operator]({ left, right });
 };

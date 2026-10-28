@@ -1,10 +1,10 @@
 import {
-    LINE_BREAK,
-    LINE_BREAK_PATTERN,
-    MERGE_SOURCE,
-    TICKET_KEY,
-    TICKET_NUMBER_PATTERN,
-    TICKET_TRAILER_KEY
+  LINE_BREAK,
+  LINE_BREAK_PATTERN,
+  MERGE_SOURCE,
+  TICKET_KEY,
+  TICKET_NUMBER_PATTERN,
+  TICKET_TRAILER_KEY
 } from '../constants.mjs';
 import { isNonEmptyString } from './strings.mjs';
 import { getFooterTrailers, getParagraphs, isTrailerBlock } from './trailers.mjs';
@@ -39,11 +39,11 @@ import { getFooterTrailers, getParagraphs, isTrailerBlock } from './trailers.mjs
  * @returns {string[]} Values as written, valid or not, such as `['CALC-17']`; `[]` without any.
  */
 export const getTicketReferences = message => {
-    const ticketTrailerKey = TICKET_TRAILER_KEY.toLowerCase();
+  const ticketTrailerKey = TICKET_TRAILER_KEY.toLowerCase();
 
-    return getFooterTrailers(message)
-        .filter(({ key }) => key.toLowerCase() === ticketTrailerKey)
-        .map(({ value }) => value);
+  return getFooterTrailers(message)
+    .filter(({ key }) => key.toLowerCase() === ticketTrailerKey)
+    .map(({ value }) => value);
 };
 
 /**
@@ -54,15 +54,15 @@ export const getTicketReferences = message => {
  * @returns {boolean} `false` for `calc-17`, `CALC-017`, `CALC-17 CALC-18`, `#17` or a non-string.
  */
 export const isTicketReference = ({ value, ticketKey = TICKET_KEY } = {}) => {
-    if (!isNonEmptyString(value) || !isNonEmptyString(ticketKey)) {
-        return false;
-    }
+  if (!isNonEmptyString(value) || !isNonEmptyString(ticketKey)) {
+    return false;
+  }
 
-    const prefix = `${ticketKey}-`;
-    const hasTicketKey = value.startsWith(prefix);
-    const hasTicketNumber = TICKET_NUMBER_PATTERN.test(value.slice(prefix.length));
+  const prefix = `${ticketKey}-`;
+  const hasTicketKey = value.startsWith(prefix);
+  const hasTicketNumber = TICKET_NUMBER_PATTERN.test(value.slice(prefix.length));
 
-    return hasTicketKey && hasTicketNumber;
+  return hasTicketKey && hasTicketNumber;
 };
 
 /**
@@ -79,28 +79,30 @@ export const isTicketReference = ({ value, ticketKey = TICKET_KEY } = {}) => {
  * // 'feat: add a key\n\nRefs: CALC-9\n'
  */
 export const addTicketReference = ({ message = '', reference } = {}) => {
-    const isInputValid = typeof message === 'string' && isNonEmptyString(reference);
-    const hasTicketReference = getTicketReferences(message).length > 0;
+  const isInputValid = typeof message === 'string' && isNonEmptyString(reference);
+  const hasTicketReference = getTicketReferences(message).length > 0;
 
-    if (!isInputValid || hasTicketReference) {
-        return message;
-    }
+  if (!isInputValid || hasTicketReference) {
+    return message;
+  }
 
-    const trailer = `${TICKET_TRAILER_KEY}: ${reference}`;
-    const lines = message.split(LINE_BREAK_PATTERN);
-    const paragraphs = getParagraphs(lines);
-    const lastParagraph = paragraphs.at(-1);
+  const trailer = `${TICKET_TRAILER_KEY}: ${reference}`;
+  const lines = message.split(LINE_BREAK_PATTERN);
+  const paragraphs = getParagraphs(lines);
+  const lastParagraph = paragraphs.at(-1);
 
-    if (!lastParagraph) {
-        return ['', '', trailer, ...lines].join(LINE_BREAK);
-    }
+  if (!lastParagraph) {
+    return ['', '', trailer, ...lines].join(LINE_BREAK);
+  }
 
-    const hasBody = paragraphs.length > 1;
-    const hasTrailerBlock = hasBody && isTrailerBlock(lastParagraph.map(index => lines[index]));
-    const insertIndex = hasTrailerBlock ? lastParagraph[0] : lastParagraph.at(-1) + 1;
-    const insertedLines = hasTrailerBlock ? [trailer] : ['', trailer];
+  const hasBody = paragraphs.length > 1;
+  const hasTrailerBlock = hasBody && isTrailerBlock(lastParagraph.map(index => lines[index]));
+  const insertIndex = hasTrailerBlock ? lastParagraph[0] : lastParagraph.at(-1) + 1;
+  const insertedLines = hasTrailerBlock ? [trailer] : ['', trailer];
 
-    return [...lines.slice(0, insertIndex), ...insertedLines, ...lines.slice(insertIndex)].join(LINE_BREAK);
+  return [...lines.slice(0, insertIndex), ...insertedLines, ...lines.slice(insertIndex)].join(
+    LINE_BREAK
+  );
 };
 
 /**
@@ -112,12 +114,12 @@ export const addTicketReference = ({ message = '', reference } = {}) => {
  * @returns {string} The message to write back to the message file.
  */
 export const prepareCommitMessage = ({ message = '', branch, source } = {}) => {
-    const isMergeCommit = source === MERGE_SOURCE;
-    const isTicketBranch = isTicketReference({ value: branch });
+  const isMergeCommit = source === MERGE_SOURCE;
+  const isTicketBranch = isTicketReference({ value: branch });
 
-    if (isMergeCommit || !isTicketBranch) {
-        return message;
-    }
+  if (isMergeCommit || !isTicketBranch) {
+    return message;
+  }
 
-    return addTicketReference({ message, reference: branch });
+  return addTicketReference({ message, reference: branch });
 };

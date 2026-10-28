@@ -1,13 +1,13 @@
 # Roles
 
-| Role | Runs as | Does | Never does |
-| --- | --- | --- | --- |
-| Owner | A human | Sets priorities, answers the questions of the agents, approves anything public or hard to undo (a domain, a deployment setting) | |
-| Master | A Claude Code session on `master`, in the main checkout | Creates and prioritizes issues, starts and briefs the workers, relays the owner's decisions, merges | Write the code of a ticket |
-| Worker | A Claude Code session in the worktree of one ticket | Implements the ticket, runs the checks, asks for the reviews, opens the pull request | Merge, touch another branch, fix something outside its ticket |
-| Auditor | A read-only sub-agent of the master | Looks for bugs, outdated packages, accessibility, performance and documentation gaps, and returns ranked findings | Change any file |
-| Conventions reviewer | A read-only sub-agent of the worker | Checks the change against the coding conventions and the README | Change any file |
-| Visual tester | A read-only sub-agent of the worker | Screenshots the app at phone, tablet, laptop and desktop widths, and checks that the change works and nothing else broke | Change any file of the repository |
+| Role                 | Runs as                                                 | Does                                                                                                                            | Never does                                                    |
+| -------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Owner                | A human                                                 | Sets priorities, answers the questions of the agents, approves anything public or hard to undo (a domain, a deployment setting) |                                                               |
+| Master               | A Claude Code session on `master`, in the main checkout | Creates and prioritizes issues, starts and briefs the workers, relays the owner's decisions, merges                             | Write the code of a ticket                                    |
+| Worker               | A Claude Code session in the worktree of one ticket     | Implements the ticket, runs the checks, asks for the reviews, opens the pull request                                            | Merge, touch another branch, fix something outside its ticket |
+| Auditor              | A read-only sub-agent of the master                     | Looks for bugs, outdated packages, accessibility, performance and documentation gaps, and returns ranked findings               | Change any file                                               |
+| Conventions reviewer | A read-only sub-agent of the worker                     | Checks the change against the coding conventions and the README                                                                 | Change any file                                               |
+| Visual tester        | A read-only sub-agent of the worker                     | Screenshots the app at phone, tablet, laptop and desktop widths, and checks that the change works and nothing else broke        | Change any file of the repository                             |
 
 ## Findings outside a ticket
 

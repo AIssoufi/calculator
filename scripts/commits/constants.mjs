@@ -35,7 +35,10 @@ export const SCISSORS_LINE = '# ------------------------ >8 --------------------
  * Prefixes of the lines git writes itself in a trailer block: they let git read a block that
  * holds other lines as trailers, as `git interpret-trailers` does.
  */
-export const GIT_GENERATED_PREFIXES = Object.freeze(['Signed-off-by: ', '(cherry picked from commit ']);
+export const GIT_GENERATED_PREFIXES = Object.freeze([
+  'Signed-off-by: ',
+  '(cherry picked from commit '
+]);
 
 /**
  * Most other lines per trailer line in a block that git still reads as trailers thanks to a
@@ -44,7 +47,8 @@ export const GIT_GENERATED_PREFIXES = Object.freeze(['Signed-off-by: ', '(cherry
 export const MAX_OTHER_LINES_PER_TRAILER = 3;
 
 /** Header of a release commit or pull request of release-please, such as `chore(master): release 1.2.0`. */
-export const RELEASE_PLEASE_HEADER_PATTERN = /^chore(\([\w./-]+\))?: release( [\w@./-]+)? v?\d+\.\d+\.\d+/;
+export const RELEASE_PLEASE_HEADER_PATTERN =
+  /^chore(\([\w./-]+\))?: release( [\w@./-]+)? v?\d+\.\d+\.\d+/;
 
 /** Sign-off trailer that Dependabot adds to each of its commits. */
 export const DEPENDABOT_SIGN_OFF_PATTERN = /^Signed-off-by: dependabot\[bot\]/m;

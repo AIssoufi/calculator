@@ -25,10 +25,23 @@ describe('calculatorSlice', () => {
   });
 
   it.each([
-    [[pressDigit('2'), pressOperator(OPERATORS.ADD), pressDigit('3'), pressOperator(OPERATORS.MULTIPLY), pressDigit('4'), pressEquals()], '20'],
+    [
+      [
+        pressDigit('2'),
+        pressOperator(OPERATORS.ADD),
+        pressDigit('3'),
+        pressOperator(OPERATORS.MULTIPLY),
+        pressDigit('4'),
+        pressEquals()
+      ],
+      '20'
+    ],
     [[pressDigit('1'), pressDecimalPoint(), pressDigit('5'), pressPercent()], '0.015'],
     [[pressToggleSign(), pressDigit('5')], '-5'],
-    [[pressDigit('6'), pressOperator(OPERATORS.DIVIDE), pressDigit('0'), pressEquals()], ERROR_MESSAGE],
+    [
+      [pressDigit('6'), pressOperator(OPERATORS.DIVIDE), pressDigit('0'), pressEquals()],
+      ERROR_MESSAGE
+    ],
     [[pressDigit('2'), pressOperator(OPERATORS.ADD), pressDigit('3'), pressClearEntry()], '2'],
     [[pressDigit('2'), pressOperator(OPERATORS.ADD), pressDigit('3'), pressAllClear()], '0']
   ])('hands the key presses to the engine (case %#)', (actions, expected) => {

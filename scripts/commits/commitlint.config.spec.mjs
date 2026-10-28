@@ -5,7 +5,9 @@ import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 const ROOT_DIR = fileURLToPath(new URL('../..', import.meta.url));
-const TITLE_CONFIG_FILE = fileURLToPath(new URL('./pull-request-title.config.mjs', import.meta.url));
+const TITLE_CONFIG_FILE = fileURLToPath(
+  new URL('./pull-request-title.config.mjs', import.meta.url)
+);
 const CO_AUTHOR = 'Co-Authored-By: Claude <noreply@anthropic.com>';
 
 /**
@@ -51,7 +53,9 @@ describe('commitlint.config.mjs', () => {
   });
 
   it('fails a message without a Refs: trailer', async () => {
-    const report = await lintMessage({ message: `feat: add a percent key\n\nWhy it changes.\n\n${CO_AUTHOR}\n` });
+    const report = await lintMessage({
+      message: `feat: add a percent key\n\nWhy it changes.\n\n${CO_AUTHOR}\n`
+    });
 
     assert.equal(report.valid, false);
     assert.deepEqual(getFailedRules(report), ['footer-ticket-reference']);
@@ -59,7 +63,9 @@ describe('commitlint.config.mjs', () => {
 
   for (const reference of ['#17', 'CALC-017', 'calc-17', 'ISF-17', 'CALC-17 CALC-18']) {
     it(`fails the malformed reference ${JSON.stringify(reference)}`, async () => {
-      const report = await lintMessage({ message: `feat: add a percent key\n\nRefs: ${reference}\n` });
+      const report = await lintMessage({
+        message: `feat: add a percent key\n\nRefs: ${reference}\n`
+      });
 
       assert.equal(report.valid, false);
       assert.deepEqual(getFailedRules(report), ['footer-ticket-reference']);
@@ -67,7 +73,9 @@ describe('commitlint.config.mjs', () => {
   }
 
   it('fails a Refs: line followed by a paragraph of text', async () => {
-    const report = await lintMessage({ message: 'feat: add a percent key\n\nRefs: CALC-17\n\nWhy it changes.\n' });
+    const report = await lintMessage({
+      message: 'feat: add a percent key\n\nRefs: CALC-17\n\nWhy it changes.\n'
+    });
 
     assert.deepEqual(getFailedRules(report), ['footer-ticket-reference']);
   });
@@ -104,7 +112,10 @@ describe('commitlint.config.mjs', () => {
 
 describe('pull-request-title.config.mjs', () => {
   it('passes a Conventional Commits title without a Refs: trailer', async () => {
-    const report = await lintMessage({ message: 'feat: enforce conventional commits', file: TITLE_CONFIG_FILE });
+    const report = await lintMessage({
+      message: 'feat: enforce conventional commits',
+      file: TITLE_CONFIG_FILE
+    });
 
     assert.deepEqual(report.errors, []);
   });
@@ -126,7 +137,12 @@ describe('pull-request-title.config.mjs', () => {
   }
 
   // GitHub refuses an empty title, and the commitlint CLI an empty input: no case for them here.
-  for (const title of ['Enforce conventional commits', 'feat: Enforce conventional commits', 'feat:', 'feat add a key']) {
+  for (const title of [
+    'Enforce conventional commits',
+    'feat: Enforce conventional commits',
+    'feat:',
+    'feat add a key'
+  ]) {
     it(`fails the title ${JSON.stringify(title)}`, async () => {
       const report = await lintMessage({ message: title, file: TITLE_CONFIG_FILE });
 

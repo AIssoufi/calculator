@@ -1,7 +1,12 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { describe, it } from 'node:test';
-import { addTicketReference, getTicketReferences, isTicketReference, prepareCommitMessage } from './tickets.mjs';
+import {
+  addTicketReference,
+  getTicketReferences,
+  isTicketReference,
+  prepareCommitMessage
+} from './tickets.mjs';
 
 const CO_AUTHOR = 'Co-Authored-By: Claude <noreply@anthropic.com>';
 const SCISSORS = '# ------------------------ >8 ------------------------';
@@ -71,7 +76,10 @@ describe('getTicketReferences', () => {
   });
 
   it('reads the key whatever its case, as git does', () => {
-    assert.deepEqual(getTicketReferences('feat: add a key\n\nrefs: CALC-1\nREFS: CALC-2\n'), ['CALC-1', 'CALC-2']);
+    assert.deepEqual(getTicketReferences('feat: add a key\n\nrefs: CALC-1\nREFS: CALC-2\n'), [
+      'CALC-1',
+      'CALC-2'
+    ]);
   });
 
   it('keeps an empty value', () => {
@@ -79,7 +87,10 @@ describe('getTicketReferences', () => {
   });
 
   it('ignores other trailers and keys that only start with Refs', () => {
-    assert.deepEqual(getTicketReferences(`feat: add a key\n\nReferences: CALC-1\n${CO_AUTHOR}\n`), []);
+    assert.deepEqual(
+      getTicketReferences(`feat: add a key\n\nReferences: CALC-1\n${CO_AUTHOR}\n`),
+      []
+    );
   });
 
   it('gives nothing for a message that is not text', () => {
@@ -91,8 +102,14 @@ describe('addTicketReference', () => {
   const reference = 'CALC-9';
 
   it('adds a paragraph to a header alone', () => {
-    assert.equal(addTicketReference({ message: 'feat: add a key\n', reference }), 'feat: add a key\n\nRefs: CALC-9\n');
-    assert.equal(addTicketReference({ message: 'feat: add a key', reference }), 'feat: add a key\n\nRefs: CALC-9');
+    assert.equal(
+      addTicketReference({ message: 'feat: add a key\n', reference }),
+      'feat: add a key\n\nRefs: CALC-9\n'
+    );
+    assert.equal(
+      addTicketReference({ message: 'feat: add a key', reference }),
+      'feat: add a key\n\nRefs: CALC-9'
+    );
   });
 
   it('adds a paragraph below a body without trailers', () => {
@@ -133,7 +150,10 @@ describe('addTicketReference', () => {
 
   it('adds the trailer when a Refs: line sits in the body, above a paragraph of text', () => {
     assert.equal(
-      addTicketReference({ message: 'feat: add a key\n\nRefs: CALC-1\n\nWhy it changes.\n', reference }),
+      addTicketReference({
+        message: 'feat: add a key\n\nRefs: CALC-1\n\nWhy it changes.\n',
+        reference
+      }),
       'feat: add a key\n\nRefs: CALC-1\n\nWhy it changes.\n\nRefs: CALC-9\n'
     );
   });
@@ -150,7 +170,10 @@ describe('addTicketReference', () => {
   it('adds the trailer below an empty header line in an empty message', () => {
     const template = '\n# Please enter the commit message for your changes.\n';
 
-    assert.equal(addTicketReference({ message: template, reference }), `\n\nRefs: CALC-9\n${template}`);
+    assert.equal(
+      addTicketReference({ message: template, reference }),
+      `\n\nRefs: CALC-9\n${template}`
+    );
     assert.equal(addTicketReference({ message: '', reference }), '\n\nRefs: CALC-9\n');
   });
 
@@ -164,12 +187,18 @@ describe('addTicketReference', () => {
   });
 
   it('writes Unix line breaks in a message with Windows ones', () => {
-    assert.equal(addTicketReference({ message: 'feat: add a key\r\n', reference }), 'feat: add a key\n\nRefs: CALC-9\n');
+    assert.equal(
+      addTicketReference({ message: 'feat: add a key\r\n', reference }),
+      'feat: add a key\n\nRefs: CALC-9\n'
+    );
   });
 
   for (const invalidReference of ['', undefined, null, 9]) {
     it(`leaves the message as it is for the reference ${JSON.stringify(invalidReference)}`, () => {
-      assert.equal(addTicketReference({ message: 'feat: add a key\n', reference: invalidReference }), 'feat: add a key\n');
+      assert.equal(
+        addTicketReference({ message: 'feat: add a key\n', reference: invalidReference }),
+        'feat: add a key\n'
+      );
     });
   }
 
@@ -187,7 +216,10 @@ describe('prepareCommitMessage', () => {
 
   for (const source of [undefined, 'message', 'template', 'commit', 'squash']) {
     it(`adds the ticket of the branch for the source ${JSON.stringify(source)}`, () => {
-      assert.equal(prepareCommitMessage({ message, branch: 'CALC-9', source }), 'feat: add a key\n\nRefs: CALC-9\n');
+      assert.equal(
+        prepareCommitMessage({ message, branch: 'CALC-9', source }),
+        'feat: add a key\n\nRefs: CALC-9\n'
+      );
     });
   }
 
@@ -195,7 +227,15 @@ describe('prepareCommitMessage', () => {
     assert.equal(prepareCommitMessage({ message, branch: 'CALC-9', source: 'merge' }), message);
   });
 
-  for (const branch of ['master', 'develop', 'calc-9', 'CALC-9-fix', 'feature/CALC-9', '', undefined]) {
+  for (const branch of [
+    'master',
+    'develop',
+    'calc-9',
+    'CALC-9-fix',
+    'feature/CALC-9',
+    '',
+    undefined
+  ]) {
     it(`leaves the message as it is on the branch ${JSON.stringify(branch)}`, () => {
       assert.equal(prepareCommitMessage({ message, branch }), message);
     });
@@ -204,7 +244,10 @@ describe('prepareCommitMessage', () => {
   it('adds nothing when the message already names a ticket', () => {
     const referencedMessage = 'feat: add a key\n\nRefs: CALC-1\n';
 
-    assert.equal(prepareCommitMessage({ message: referencedMessage, branch: 'CALC-9' }), referencedMessage);
+    assert.equal(
+      prepareCommitMessage({ message: referencedMessage, branch: 'CALC-9' }),
+      referencedMessage
+    );
   });
 
   it('gives an empty message for a call without parameters', () => {

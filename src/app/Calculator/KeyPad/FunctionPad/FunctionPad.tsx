@@ -8,14 +8,14 @@ import {
   pressPercent,
   pressToggleSign,
   selectCanClearEntry
-} from "../../../../features/calculator/calculatorSlice";
+} from '../../../../features/calculator/calculatorSlice';
 import {
   ALL_CLEAR_KEY,
   CLEAR_ENTRY_KEY,
   CLEAR_SHORTCUTS,
   PERCENT_SHORTCUTS,
   TOGGLE_SIGN_NAME
-} from "./constants";
+} from './constants';
 
 /**
  * Renders the function keys of the keypad: clear, sign and percent.

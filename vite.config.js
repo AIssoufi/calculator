@@ -12,15 +12,15 @@ import { defineConfig } from 'vitest/config';
  * clean the DOM up after each test.
  */
 export default defineConfig({
-    base: './',
-    build: {
-        outDir: 'build'
-    },
-    plugins: [react()],
-    test: {
-        environment: 'jsdom',
-        globals: true,
-        include: ['src/**/*.spec.{ts,tsx}'],
-        setupFiles: ['./src/setupTests.ts']
-    }
+  base: './',
+  build: {
+    outDir: 'build'
+  },
+  plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    include: ['src/**/*.spec.{ts,tsx}'],
+    setupFiles: ['./src/setupTests.ts']
+  }
 });

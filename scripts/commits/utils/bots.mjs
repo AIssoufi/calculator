@@ -8,12 +8,12 @@ import { DEPENDABOT_SIGN_OFF_PATTERN, RELEASE_PLEASE_HEADER_PATTERN } from '../c
  * @returns {boolean} `false` for any other message or a non-string.
  */
 export const isBotCommit = message => {
-    if (typeof message !== 'string') {
-        return false;
-    }
+  if (typeof message !== 'string') {
+    return false;
+  }
 
-    const isReleasePleaseCommit = RELEASE_PLEASE_HEADER_PATTERN.test(message);
-    const isDependabotCommit = DEPENDABOT_SIGN_OFF_PATTERN.test(message);
+  const isReleasePleaseCommit = RELEASE_PLEASE_HEADER_PATTERN.test(message);
+  const isDependabotCommit = DEPENDABOT_SIGN_OFF_PATTERN.test(message);
 
-    return isReleasePleaseCommit || isDependabotCommit;
+  return isReleasePleaseCommit || isDependabotCommit;
 };

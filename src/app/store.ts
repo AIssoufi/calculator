@@ -1,5 +1,5 @@
-import { configureStore } from "@reduxjs/toolkit";
-import calculatorReducer from "../features/calculator/calculatorSlice";
+import { configureStore } from '@reduxjs/toolkit';
+import calculatorReducer from '../features/calculator/calculatorSlice';
 
 /**
  * Creates a store holding the calculator state at its initial values.
@@ -7,11 +7,12 @@ import calculatorReducer from "../features/calculator/calculatorSlice";
  *
  * @returns A new store, typed with the state and the actions of its slices.
  */
-export const setupStore = () => configureStore({
+export const setupStore = () =>
+  configureStore({
     reducer: {
-        calculator: calculatorReducer
-    },
-});
+      calculator: calculatorReducer
+    }
+  });
 
 /** Store of the app, which `index.tsx` provides to the components. */
 export const store = setupStore();

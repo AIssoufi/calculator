@@ -11,11 +11,11 @@ const DISABLED = 0;
  * @type {import('@commitlint/types').UserConfig}
  */
 const pullRequestTitleConfig = {
-    ...config,
-    rules: {
-        ...config.rules,
-        [TICKET_RULE_NAME]: [DISABLED]
-    }
+  ...config,
+  rules: {
+    ...config.rules,
+    [TICKET_RULE_NAME]: [DISABLED]
+  }
 };
 
 export default pullRequestTitleConfig;

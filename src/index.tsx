@@ -12,14 +12,16 @@ const ROOT_ELEMENT_ID = 'root';
 const rootElement = document.getElementById(ROOT_ELEMENT_ID);
 
 if (!rootElement) {
-  throw new Error(`index.html has no element with the id "${ROOT_ELEMENT_ID}" to render the app into.`);
+  throw new Error(
+    `index.html has no element with the id "${ROOT_ELEMENT_ID}" to render the app into.`
+  );
 }
 
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
-      <Provider store={store}>
-        <App />
-      </Provider>
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>
 );

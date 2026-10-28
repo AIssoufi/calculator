@@ -37,7 +37,15 @@ describe('footerTicketReference', () => {
     });
   }
 
-  for (const reference of ['#17', 'CALC-017', 'calc-17', 'ISF-17', 'CALC-17 CALC-18', 'CALC-17, CALC-18', '']) {
+  for (const reference of [
+    '#17',
+    'CALC-017',
+    'calc-17',
+    'ISF-17',
+    'CALC-17 CALC-18',
+    'CALC-17, CALC-18',
+    ''
+  ]) {
     it(`fails with the malformed reference ${JSON.stringify(reference)}`, () => {
       const [isValid, errorMessage] = footerTicketReference(
         commit(`feat: add a key\n\nRefs: ${reference}\n`),
@@ -46,7 +54,10 @@ describe('footerTicketReference', () => {
       );
 
       assert.equal(isValid, false);
-      assert.match(errorMessage, new RegExp(`^"Refs: ${reference}" does not name a ticket of this repository`));
+      assert.match(
+        errorMessage,
+        new RegExp(`^"Refs: ${reference}" does not name a ticket of this repository`)
+      );
     });
   }
 
@@ -62,16 +73,22 @@ describe('footerTicketReference', () => {
   });
 
   it('checks the tickets of the key it is given', () => {
-    assert.deepEqual(footerTicketReference(commit('feat: add a key\n\nRefs: ISF-3\n'), 'always', 'ISF'), [true, '']);
-    assert.equal(footerTicketReference(commit('feat: add a key\n\nRefs: CALC-3\n'), 'always', 'ISF')[0], false);
+    assert.deepEqual(
+      footerTicketReference(commit('feat: add a key\n\nRefs: ISF-3\n'), 'always', 'ISF'),
+      [true, '']
+    );
+    assert.equal(
+      footerTicketReference(commit('feat: add a key\n\nRefs: CALC-3\n'), 'always', 'ISF')[0],
+      false
+    );
   });
 
   for (const ticketKey of [undefined, null, '', 42]) {
     it(`falls back to the CALC key for the key ${JSON.stringify(ticketKey)}`, () => {
-      assert.deepEqual(footerTicketReference(commit('feat: add a key\n\nRefs: CALC-3\n'), 'always', ticketKey), [
-        true,
-        ''
-      ]);
+      assert.deepEqual(
+        footerTicketReference(commit('feat: add a key\n\nRefs: CALC-3\n'), 'always', ticketKey),
+        [true, '']
+      );
     });
   }
 
@@ -84,7 +101,10 @@ describe('footerTicketReference', () => {
       true,
       'the footer must not name a ticket with a "Refs:" trailer'
     ]);
-    assert.equal(footerTicketReference(commit('feat: add a key\n\nRefs: CALC-3\n'), 'never', 'CALC')[0], false);
+    assert.equal(
+      footerTicketReference(commit('feat: add a key\n\nRefs: CALC-3\n'), 'never', 'CALC')[0],
+      false
+    );
   });
 
   for (const parsed of [undefined, null, {}, { raw: null }, { raw: 42 }]) {

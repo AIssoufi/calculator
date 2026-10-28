@@ -19,7 +19,9 @@ export function Screen() {
       <div className="result" role="status" style={getTextLengthStyle(result)}>
         {result}
       </div>
-      <div id="result" aria-hidden="true">{result}</div>
+      <div id="result" aria-hidden="true">
+        {result}
+      </div>
     </div>
   );
-};
+}

@@ -215,7 +215,9 @@ describe('check-live-site.sh', () => {
         ...HEALTHY_SITE,
         '/': { ...HEALTHY_SITE['/'], body: HOME_PAGE.replace('Calculatrice', 'Calculator') }
       },
-      expected: ['FAIL home page holds <title>Calculatrice</title>: the page holds <title>Calculator</title>']
+      expected: [
+        'FAIL home page holds <title>Calculatrice</title>: the page holds <title>Calculator</title>'
+      ]
     },
     {
       title: 'a home page without a title',
@@ -240,12 +242,19 @@ describe('check-live-site.sh', () => {
     {
       title: 'a home page without a Content-Security-Policy header',
       site: { ...HEALTHY_SITE, '/': { body: HOME_PAGE } },
-      expected: ['FAIL home page sends a Content-Security-Policy header: no such header, or an empty one']
+      expected: [
+        'FAIL home page sends a Content-Security-Policy header: no such header, or an empty one'
+      ]
     },
     {
       title: 'an empty Content-Security-Policy header',
-      site: { ...HEALTHY_SITE, '/': { headers: { 'content-security-policy': '' }, body: HOME_PAGE } },
-      expected: ['FAIL home page sends a Content-Security-Policy header: no such header, or an empty one']
+      site: {
+        ...HEALTHY_SITE,
+        '/': { headers: { 'content-security-policy': '' }, body: HOME_PAGE }
+      },
+      expected: [
+        'FAIL home page sends a Content-Security-Policy header: no such header, or an empty one'
+      ]
     },
     {
       title: 'a missing script',
@@ -334,7 +343,10 @@ describe('check-live-site.sh', () => {
 
   it('turns each failed check into an error annotation in GitHub Actions', async () => {
     const baseUrl = await serveSite({ ...HEALTHY_SITE, '/manifest.json': NOT_FOUND });
-    const { exitCode, stdout } = await runScript({ args: [baseUrl], env: { GITHUB_ACTIONS: 'true' } });
+    const { exitCode, stdout } = await runScript({
+      args: [baseUrl],
+      env: { GITHUB_ACTIONS: 'true' }
+    });
 
     assert.equal(exitCode, 1);
     assert.match(stdout, /^::error::FAIL manifest\.json answers 200: got 404$/m);

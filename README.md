@@ -1,4 +1,5 @@
 # Calculatrice
+
 <p align="center">
   <img src="public/images/capture.png" alt="capture d'écran">
 </p>
@@ -37,14 +38,14 @@ The logic lives in a pure, framework-free engine, [`src/features/calculator/engi
 
 Every key is a button: Tab reaches it and outlines it, and Enter or Space presses it. The keyboard also works from anywhere on the page:
 
-| Keyboard | Key |
-| --- | --- |
-| `0` to `9` | the digit |
-| `.` or `,` | `.` |
-| `+`, `-`, `*`, `/` | the operator |
-| `=` or Enter | `=`, unless a button or link has the focus: Enter then presses it |
-| Escape or Backspace | `C`, then `AC` |
-| `%` | `%` |
+| Keyboard            | Key                                                               |
+| ------------------- | ----------------------------------------------------------------- |
+| `0` to `9`          | the digit                                                         |
+| `.` or `,`          | `.`                                                               |
+| `+`, `-`, `*`, `/`  | the operator                                                      |
+| `=` or Enter        | `=`, unless a button or link has the focus: Enter then presses it |
+| Escape or Backspace | `C`, then `AC`                                                    |
+| `%`                 | `%`                                                               |
 
 A key held down on the keyboard shows pressed. A key combined with Ctrl, Cmd or Alt is left to the browser, such as Ctrl and `-` to zoom out. Screen readers announce each change of the screen, and read the symbol keys by their names, such as "Multiplier".
 
@@ -170,11 +171,13 @@ Most issues and pull requests of this repository are written by Claude Code agen
 See [`docs/ai-workflow/`](docs/ai-workflow/overview.md) for their roles, the ticket lifecycle, the reviews, the journal and the tooling.
 
 ## Technos utilisées
-* [ReactJS](http://redux.js.org)
-* [ReduxJS](http://redux.js.org)
-* [TypeScript](https://www.typescriptlang.org/)
+
+- [ReactJS](http://redux.js.org)
+- [ReduxJS](http://redux.js.org)
+- [TypeScript](https://www.typescriptlang.org/)
 
 ## Autres captures d'écran
+
 <p align="center">
 <img src="public/images/redux.png" alt="redux">
 <img src="public/images/react.png" alt="react">

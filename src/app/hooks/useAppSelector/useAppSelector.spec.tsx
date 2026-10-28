@@ -8,10 +8,12 @@ import type { AppStore } from '../../types';
 import { useAppSelector } from './useAppSelector';
 
 // Renders the hook with a selector of the entry, inside a provider of the given store.
-const renderEntryHook = (store: AppStore) => renderHook(
-  () => useAppSelector(state => state.calculator.entry),
-  { wrapper: ({ children }: { children: ReactNode }) => <Provider store={store}>{children}</Provider> }
-);
+const renderEntryHook = (store: AppStore) =>
+  renderHook(() => useAppSelector(state => state.calculator.entry), {
+    wrapper: ({ children }: { children: ReactNode }) => (
+      <Provider store={store}>{children}</Provider>
+    )
+  });
 
 describe('useAppSelector', () => {
   it('reads the state of the store it is rendered in', () => {

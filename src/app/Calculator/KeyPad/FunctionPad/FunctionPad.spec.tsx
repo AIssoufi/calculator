@@ -21,23 +21,27 @@ describe('FunctionPad', () => {
   it('names the clear key AC and the sign key for screen readers, before any key press', () => {
     renderFunctionPad();
 
-    expect(screen.getByRole('button', { name: ALL_CLEAR_KEY.name }))
-      .toHaveTextContent(ALL_CLEAR_KEY.label);
+    expect(screen.getByRole('button', { name: ALL_CLEAR_KEY.name })).toHaveTextContent(
+      ALL_CLEAR_KEY.label
+    );
     expect(screen.getByRole('button', { name: TOGGLE_SIGN_NAME })).toHaveTextContent('+/-');
     expect(screen.getByRole('button', { name: '%' })).toBeInTheDocument();
   });
 
-  it.each(['{Escape}', '{Backspace}'])('clears the entry with %s, and the key turns into AC', async key => {
-    const { store, user } = renderFunctionPad();
-    store.dispatch(pressDigit('7'));
+  it.each(['{Escape}', '{Backspace}'])(
+    'clears the entry with %s, and the key turns into AC',
+    async key => {
+      const { store, user } = renderFunctionPad();
+      store.dispatch(pressDigit('7'));
 
-    expect(await screen.findByRole('button', { name: CLEAR_ENTRY_KEY.name })).toBeInTheDocument();
+      expect(await screen.findByRole('button', { name: CLEAR_ENTRY_KEY.name })).toBeInTheDocument();
 
-    await user.keyboard(key);
+      await user.keyboard(key);
 
-    expect(store.getState().calculator.entry).toBe('');
-    expect(screen.getByRole('button', { name: ALL_CLEAR_KEY.name })).toBeInTheDocument();
-  });
+      expect(store.getState().calculator.entry).toBe('');
+      expect(screen.getByRole('button', { name: ALL_CLEAR_KEY.name })).toBeInTheDocument();
+    }
+  );
 
   it('applies the percent with the % key', async () => {
     const { store, user } = renderFunctionPad();

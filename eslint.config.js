@@ -20,43 +20,43 @@ const E2E_FILES = ['e2e/**/*.ts'];
  * off the rules that only check the layout, which Prettier owns.
  */
 export default [
-    { ignores: ['build/'] },
-    js.configs.recommended,
-    ...tseslint.configs.recommended.map(config => ({
-        ...config,
-        files: [...APP_FILES, ...E2E_FILES]
-    })),
-    {
-        files: APP_FILES,
-        ...react.configs.flat.recommended,
-        languageOptions: {
-            ...react.configs.flat.recommended.languageOptions,
-            globals: globals.browser
-        },
-        settings: { react: { version: 'detect' } }
+  { ignores: ['build/'] },
+  js.configs.recommended,
+  ...tseslint.configs.recommended.map(config => ({
+    ...config,
+    files: [...APP_FILES, ...E2E_FILES]
+  })),
+  {
+    files: APP_FILES,
+    ...react.configs.flat.recommended,
+    languageOptions: {
+      ...react.configs.flat.recommended.languageOptions,
+      globals: globals.browser
     },
-    {
-        files: APP_FILES,
-        ...react.configs.flat['jsx-runtime']
-    },
-    {
-        files: APP_FILES,
-        ...reactHooks.configs.flat.recommended
-    },
-    {
-        files: APP_FILES,
-        rules: {
-            // The components declare no PropTypes: TypeScript checks their props.
-            'react/prop-types': 'off'
-        }
-    },
-    {
-        files: ['src/**/*.spec.{ts,tsx}'],
-        languageOptions: { globals: globals.vitest }
-    },
-    {
-        files: [...E2E_FILES, '*.{js,mjs}', 'scripts/**/*.mjs'],
-        languageOptions: { globals: globals.node }
-    },
-    prettier
+    settings: { react: { version: 'detect' } }
+  },
+  {
+    files: APP_FILES,
+    ...react.configs.flat['jsx-runtime']
+  },
+  {
+    files: APP_FILES,
+    ...reactHooks.configs.flat.recommended
+  },
+  {
+    files: APP_FILES,
+    rules: {
+      // The components declare no PropTypes: TypeScript checks their props.
+      'react/prop-types': 'off'
+    }
+  },
+  {
+    files: ['src/**/*.spec.{ts,tsx}'],
+    languageOptions: { globals: globals.vitest }
+  },
+  {
+    files: [...E2E_FILES, '*.{js,mjs}', 'scripts/**/*.mjs'],
+    languageOptions: { globals: globals.node }
+  },
+  prettier
 ];
