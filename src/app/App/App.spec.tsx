@@ -68,7 +68,7 @@ describe('App', () => {
   it.each(KEY_LABELS)('renders the %s key of the keypad, showing its label', label => {
     renderApp();
 
-    expect(getKey(label)).toHaveTextContent(label);
+    expect(getKey(label).textContent).toBe(label);
   });
 
   it('reaches every key with Tab, in reading order, before the author links', async () => {
