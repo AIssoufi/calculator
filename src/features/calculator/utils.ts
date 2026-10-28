@@ -11,7 +11,9 @@ import type { Digit, Operator } from './types';
 const SINGLE_DIGIT_PATTERN = /^[0-9]$/;
 const ANY_DIGIT_PATTERN = /[0-9]/g;
 const OPERATOR_SYMBOLS: readonly unknown[] = Object.values(OPERATORS);
-/** Trailing zeros of a mantissa, with its point when nothing is left after it, as in `1.000e+21`. */
+/**
+ * Trailing zeros of a mantissa, with its point when nothing is left after it, as in `1.000e+21`.
+ */
 const MANTISSA_TRAILING_ZEROS_PATTERN = /\.?0+(?=e)/;
 
 /** The two operands of an arithmetic operation. */
