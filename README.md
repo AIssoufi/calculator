@@ -63,7 +63,7 @@ pnpm test:e2e      # the smoke tests of the production build in Chromium, as in 
 
 [ESLint](https://eslint.org/) applies its recommended rules, the [typescript-eslint](https://typescript-eslint.io/) rules to `src/` and `e2e/`, and the React and Rules of Hooks rules to `src/`; its settings are in [`eslint.config.js`](eslint.config.js).
 
-[Prettier](https://prettier.io/) owns the layout of the code and the docs: two-space indents, single quotes in the scripts and double quotes in JSX, semicolons and lines of 100 characters, set in [`prettier.config.mjs`](prettier.config.mjs). `eslint-config-prettier` turns off the ESLint rules that would disagree with it. Run `pnpm format` before a commit, or let your editor format on save with the Prettier extension. The commit that formatted the whole repository is listed in [`.git-blame-ignore-revs`](.git-blame-ignore-revs): `git config blame.ignoreRevsFile .git-blame-ignore-revs` makes `git blame` skip it, as GitHub does.
+[Prettier](https://prettier.io/) owns the layout of the code and the docs: two-space indents, single quotes in the scripts and double quotes in JSX, semicolons and lines of 100 characters, set in [`prettier.config.mjs`](prettier.config.mjs). `eslint-config-prettier` turns off the ESLint rules that would disagree with it. The `pre-commit` hook formats the staged files with Prettier and leaves their unstaged changes out of the commit; `pnpm format` formats every file at once, and your editor can format on save with the Prettier extension. The commit that formatted the whole repository is listed in [`.git-blame-ignore-revs`](.git-blame-ignore-revs): `git config blame.ignoreRevsFile .git-blame-ignore-revs` makes `git blame` skip it, as GitHub does.
 
 The app is written in [TypeScript](https://www.typescriptlang.org/), in strict mode. Vite and Vitest strip the types without checking them, so `pnpm typecheck` runs `tsc` on `src/`, with the settings of [`tsconfig.json`](tsconfig.json), then on `e2e/`, with those of [`e2e/tsconfig.json`](e2e/tsconfig.json), and fails on any type error. The configuration files and the commit tooling stay in JavaScript.
 
@@ -99,7 +99,7 @@ Refs: CALC-17
 Co-Authored-By: Jane Doe <jane@example.com>
 ```
 
-- `pnpm install` installs two [husky](https://typicode.github.io/husky/) hooks. `commit-msg` runs [commitlint](https://commitlint.js.org/), which refuses a message without a conventional header or a valid `Refs:` trailer. On a `CALC-<n>` branch, `prepare-commit-msg` adds `Refs: CALC-<n>` when the message has no `Refs:` trailer.
+- `pnpm install` installs three [husky](https://typicode.github.io/husky/) hooks. `pre-commit` formats the staged files (see [Tests](#tests)). `commit-msg` runs [commitlint](https://commitlint.js.org/), which refuses a message without a conventional header or a valid `Refs:` trailer. On a `CALC-<n>` branch, `prepare-commit-msg` adds `Refs: CALC-<n>` when the message has no `Refs:` trailer.
 - On every pull request, the CI checks each commit, and checks that the title is a conventional header.
 - Write a breaking change as a `BREAKING-CHANGE:` trailer, with a dash, or in a paragraph of its own above the trailers: git does not read `BREAKING CHANGE:` as a trailer, since its key has a space, so a `Refs:` line in the same paragraph is usually not found.
 - Merge commits, reverts and the commits of release-please and Dependabot are ignored. The rule applies from now on: older commits are not rewritten.

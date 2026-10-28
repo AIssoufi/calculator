@@ -52,3 +52,24 @@ export const RELEASE_PLEASE_HEADER_PATTERN =
 
 /** Sign-off trailer that Dependabot adds to each of its commits. */
 export const DEPENDABOT_SIGN_OFF_PATTERN = /^Signed-off-by: dependabot\[bot\]/m;
+
+/** Modes of the index entries that the pre-commit hook leaves out: symbolic links and submodules. */
+export const UNFORMATTED_INDEX_MODES = Object.freeze(['120000', '160000']);
+
+/** Files that list what Prettier skips, as its command line reads them by default. */
+export const PRETTIER_IGNORE_FILES = Object.freeze(['.gitignore', '.prettierignore']);
+
+/** Separator of the file names that git prints with `-z`, which keeps unusual names intact. */
+export const GIT_PATH_SEPARATOR = '\0';
+
+/** Temporary index from which git makes a commit of some paths only (`git commit -- <paths>`). */
+export const PATH_COMMIT_INDEX_PATTERN = /^next-index-\d+\.lock$/;
+
+/** Lock of the real index, which git renames to `index` once the commit is made. */
+export const INDEX_LOCK_FILE = 'index.lock';
+
+/** First character of each file line of `git diff --raw`. */
+export const RAW_DIFF_STATUS_PREFIX = ':';
+
+/** Separator of the modes, blobs and status of a file line of `git diff --raw`. */
+export const RAW_DIFF_FIELD_SEPARATOR = ' ';
