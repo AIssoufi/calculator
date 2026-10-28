@@ -74,6 +74,8 @@ Unit tests sit next to the code they cover and are named `*.spec.ts`, `*.spec.ts
 
 jsdom does no layout, so the smoke tests of [`e2e/`](e2e/) check the production build in a real browser: [Playwright](https://playwright.dev/) runs them in Chromium, with the settings of [`playwright.config.js`](playwright.config.js). `pnpm test:e2e` builds the app, serves the build with `pnpm preview` on port 4173, and checks that it computes with the keyboard and the mouse, and that every key fits the screen of a phone and of a laptop.
 
+`pnpm test:e2e` also checks accessibility: [`@axe-core/playwright`](https://www.npmjs.com/package/@axe-core/playwright) runs [axe](https://github.com/dequelabs/axe-core) on the calculator and the not found page, at the width of a phone and of a laptop. It fails on any violation of the WCAG 2.0, 2.1 and 2.2 rules of levels A and AA, or of the best practices of axe, and names each rule.
+
 Playwright installs no browser by itself: run `pnpm exec playwright install chromium` once. A port already taken fails the run, rather than testing another app: `E2E_PORT=4174 pnpm test:e2e` serves the build on another port.
 
 The [CI workflow](.github/workflows/ci.yml) runs on every pull request and every push to `master`:

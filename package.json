@@ -23,6 +23,7 @@
     "typecheck": "tsc --noEmit && tsc --noEmit --project e2e"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
     "@commitlint/lint": "^21.2.4",
