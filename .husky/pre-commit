@@ -1,0 +1,1 @@
+node scripts/commits/pre-commit.mjs
