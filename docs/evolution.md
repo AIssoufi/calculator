@@ -181,24 +181,45 @@ The Before column is `e44fdcf`, the base of the pull request, measured on 2026-1
 
 Decision: [0012. Smoke test the production build in Chromium with Playwright](decisions/0012-add-playwright-smoke-tests.md)
 
+## 2026: Prettier formats every file
+
+ESLint checked no layout, so stray spaces and mixed indents passed the CI (#44). Prettier 3.9 now formats the code and the docs, `pnpm format:check` fails the CI on a file it would format, and one commit, skipped by `git blame`, formatted the whole repository (#55).
+
+The Before column is `c0b6363`, the base of the pull request, measured on 2026-10-28 in alternation with the After column on the same machine, with the measuring tool and the method of the [introduction](#evolution).
+
+| Figure               | Before                                   | After                                                     |
+| -------------------- | ---------------------------------------- | --------------------------------------------------------- |
+| Stack                | no formatter                             | Prettier 3.9, and `eslint-config-prettier` last in ESLint |
+| Install time         | 0.5 s (0.6, 0.5, 0.5)                    | 0.5 s (0.5, 0.5, 0.6)                                     |
+| Direct dependencies  | 27 (4 + 23 development)                  | 29 (4 + 25 development)                                   |
+| Audit (`pnpm audit`) | 0 advisories                             | 0 advisories                                              |
+| `pnpm format:check`  | no such check                            | 0.6 s (0.7, 0.6, 0.6)                                     |
+| Tests                | 636: 221 Node.js test runner, 415 Vitest | the same 636                                              |
+| CI duration          | see the pull request of #55              | see the pull request of #55                               |
+
+- The formatting commit changed 71 files, with 1,198 lines added and 929 removed; the build, its size (255,867 B raw and 81,629 B gzipped for the script, before and after) and the tests are unchanged.
+- `pnpm format:check` was timed apart, with `/usr/bin/time -p`, on the After only.
+
+Decision: [0013. Format the code and the docs with Prettier](decisions/0013-add-prettier.md)
+
 ## Current state
 
-Measured on 2026-10-24 on `master` at `9e44f52`, the merge of pull request #59, on an Apple M3 with 8 cores, macOS (Darwin 27.0.0), Node.js 24.22.0 and pnpm 12.14.0. The production site served the build of that commit (the same `index-CrBqt4YC.js` and `index-BzBp1EiE.css`).
+Measured on 2026-10-28 on the pull request of #55, on an Apple M3 with 8 cores, macOS (Darwin 27.0.0), Node.js 24.22.0 and pnpm 12.14.0, except the Lighthouse scores, measured on 2026-10-24 on the production site, which served the build of `9e44f52`, the merge of pull request #59 (`index-CrBqt4YC.js` and `index-BzBp1EiE.css`).
 
-| Figure                  | Value                                                                                                  | How it was measured                                                                                                                    |
-| ----------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
-| Stack                   | React 19.3, Redux Toolkit 2.13, React Redux 9.3, TypeScript 6.0, Vite 8.3, Vitest 5.0, Playwright 1.64 | the versions of `package.json`                                                                                                         |
-| JavaScript              | 255,457 B raw, 81,292 B gzipped                                                                        | `wc -c` and `gzip -c <file> \| wc -c` on `build/assets/index-*.js`, the only script, after `pnpm build`                                |
-| CSS                     | 2,951 B raw, 1,160 B gzipped                                                                           | the same on `build/assets/index-*.css`, the only stylesheet                                                                            |
-| Test suite              | 563 tests: 192 Node.js test runner, 371 Vitest (18 files)                                              | `pnpm test`                                                                                                                            |
-| Smoke tests             | 17 Playwright tests in Chromium (4 files)                                                              | `pnpm exec playwright test --list`, and `pnpm test:e2e`, which passed them all                                                         |
-| Direct dependencies     | 4 dependencies, 23 development dependencies                                                            | the keys of `package.json`                                                                                                             |
-| `pnpm audit` advisories | none, after the lockfile refresh of #56                                                                | `pnpm audit --json`, `metadata.vulnerabilities`                                                                                        |
-| Lighthouse (mobile)     | performance 100, accessibility 100, best practices 100, SEO 100                                        | `npx lighthouse@12.8.2 https://calculator.issoufi.fr` in headless Chrome, default mobile settings; the three runs gave the same scores |
+| Figure                  | Value                                                                                                                | How it was measured                                                                                                                    |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Stack                   | React 19.3, Redux Toolkit 2.13, React Redux 9.3, TypeScript 6.0, Vite 8.3, Vitest 5.0, Playwright 1.64, Prettier 3.9 | the versions of `package.json`                                                                                                         |
+| JavaScript              | 255,867 B raw, 81,629 B gzipped                                                                                      | `wc -c` and `gzip -c <file> \| wc -c` on `build/assets/index-*.js`, the only script, after `pnpm build`                                |
+| CSS                     | 3,140 B raw, 1,200 B gzipped                                                                                         | the same on `build/assets/index-*.css`, the only stylesheet                                                                            |
+| Test suite              | 636 tests: 221 Node.js test runner, 415 Vitest (18 files)                                                            | `pnpm test`                                                                                                                            |
+| Smoke tests             | 17 Playwright tests in Chromium (4 files)                                                                            | `pnpm exec playwright test --list`, and `pnpm test:e2e`, which passed them all                                                         |
+| Direct dependencies     | 4 dependencies, 25 development dependencies                                                                          | the keys of `package.json`                                                                                                             |
+| `pnpm audit` advisories | none                                                                                                                 | `pnpm audit --json`, `metadata.vulnerabilities`                                                                                        |
+| Lighthouse (mobile)     | performance 100, accessibility 100, best practices 100, SEO 100                                                      | `npx lighthouse@12.8.2 https://calculator.issoufi.fr` in headless Chrome, default mobile settings; the three runs gave the same scores |
 
-- Vite prints 82.33 kB for the gzipped script: it compresses at a different level than `gzip -c`, the command of every table of this page.
+- Vite prints 82.47 kB for the gzipped script: it compresses at a different level than `gzip -c`, the command of every table of this page.
 - Lighthouse ran on the production site, as for the baseline of the npm eras, where the baseline of the TypeScript era ran on the local `build/`: compare these scores with those of the [baseline of the npm eras](#baseline-of-the-npm-eras).
-- The script grew by 70,709 B raw since the baseline of the TypeScript era, mostly from React DOM 19 (see [its era](#2026-react-19-redux-toolkit-2-and-react-redux-9)).
+- The script grew by 71,119 B raw since the baseline of the TypeScript era, mostly from React DOM 19 (see [its era](#2026-react-19-redux-toolkit-2-and-react-redux-9)).
 
 ## Baseline of the TypeScript era (#5)
 
