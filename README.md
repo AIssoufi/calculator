@@ -8,7 +8,7 @@
 
 ## Lancer le projet
 
-The project uses Node.js 24, pinned in `.nvmrc` (`nvm use` selects it), and [pnpm](https://pnpm.io/installation) 12.14.0, pinned by the `packageManager` field of `package.json`: an installed pnpm switches to that version by itself.
+The project uses Node.js 26, pinned in `.nvmrc` (`nvm use` selects it) and declared by the `engines` field of `package.json`, and [pnpm](https://pnpm.io/installation) 12.14.0, pinned by the `packageManager` field of `package.json`: an installed pnpm switches to that version by itself.
 
 ```bash
 pnpm install  # install the dependencies from pnpm-lock.yaml, and the git hooks
