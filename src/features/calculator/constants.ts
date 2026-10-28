@@ -8,6 +8,9 @@ export const OPERATORS = Object.freeze({
   DIVIDE: '/'
 });
 
+/** Symbols of the {@link OPERATORS}, typed loosely so any key can be looked up among them. */
+export const OPERATOR_SYMBOLS: readonly unknown[] = Object.values(OPERATORS);
+
 /** Separator of the decimal part of an entry; an entry holds one at most. */
 export const DECIMAL_POINT = '.';
 
@@ -23,6 +26,12 @@ export const ZERO_ENTRY = '0';
 /** Most digits an entry can hold, so a typed number stays readable on the screen. */
 export const MAX_ENTRY_DIGITS = 9;
 
+/** A key that is one digit from `0` to `9`, and nothing else. */
+export const SINGLE_DIGIT_PATTERN = /^[0-9]$/;
+
+/** Every digit of an entry, leaving out its sign and its decimal point. */
+export const ANY_DIGIT_PATTERN = /[0-9]/g;
+
 /**
  * Significant digits a result that is not a safe integer is rounded to, which hides float noise such
  * as `0.30000000000000004`.
@@ -37,6 +46,11 @@ export const ROUNDED_INTEGER_THRESHOLD = 10 ** (DISPLAY_PRECISION_DIGITS - 1);
 
 /** Digits after the point of a mantissa, so the exponent notation keeps the display precision. */
 export const EXPONENT_FRACTION_DIGITS = DISPLAY_PRECISION_DIGITS - 1;
+
+/**
+ * Trailing zeros of a mantissa, with its point when nothing is left after it, as in `1.000e+21`.
+ */
+export const MANTISSA_TRAILING_ZEROS_PATTERN = /\.?0+(?=e)/;
 
 /**
  * Significant digits of the larger operand that a sum or a difference keeps. Below the float
