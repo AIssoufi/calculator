@@ -51,7 +51,7 @@ describe('parseEntry', () => {
     ['-1.', -1],
     ['1e-7', 1e-7],
     ['1e+21', 1e21]
-  ])('reads %j as %p', (entry, expected) => {
+  ])('reads %j as %s', (entry, expected) => {
     expect(parseEntry(entry)).toBe(expected);
   });
 
@@ -93,12 +93,12 @@ describe('formatNumber', () => {
     [99999999999.5, '99999999999.5'],
     [99999999999.99, '1e+11'],
     [123456789.1234, '123456789.123']
-  ])('formats %p as %j', (value, expected) => {
+  ])('formats %s as %j', (value, expected) => {
     expect(formatNumber(value)).toBe(expected);
   });
 
   it.each([Infinity, -Infinity, NaN, '5', null, undefined])(
-    'formats %p, which is not a finite number, as "0"',
+    'formats %o, which is not a finite number, as "0"',
     value => {
       // @ts-expect-error -- a value of another type can still reach the helper at run time
       expect(formatNumber(value)).toBe('0');
@@ -162,7 +162,7 @@ describe('applyOperator', () => {
     [0.1 * 3, '-', 0.3, 0],
     [1.0000001, '-', 1, 1e-7],
     [Number.MAX_SAFE_INTEGER, '-', 1, Number.MAX_SAFE_INTEGER - 1]
-  ])('computes %p %s %p as %p', (left, operator, right, expected) => {
+  ])('computes %s %s %s as %s', (left, operator, right, expected) => {
     expect(applyOperator({ left, operator, right })).toBe(expected);
   });
 

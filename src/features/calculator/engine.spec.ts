@@ -348,7 +348,7 @@ describe('engine', () => {
       ['2 + 3 =', true],
       ['2 + 3 C', false],
       ['6 / 0 =', true]
-    ])('after %j is %p', (sequence, expected) => {
+    ])('after %j is %s', (sequence, expected) => {
       const state = sequence ? pressKeys(sequence) : INITIAL_STATE;
 
       expect(canClearEntry(state)).toBe(expected);
