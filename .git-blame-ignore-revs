@@ -1,0 +1,5 @@
+# Commits that git blame skips: GitHub reads this file by itself, and
+# `git config blame.ignoreRevsFile .git-blame-ignore-revs` sets it up locally.
+
+# style: format the whole repository with Prettier
+a94c9f90337d519461e8760b17260a8d895d532a
