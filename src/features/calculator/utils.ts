@@ -1,17 +1,16 @@
 import {
+  ADDITIVE_PRECISION_DIGITS,
+  ANY_DIGIT_PATTERN,
   DISPLAY_PRECISION_DIGITS,
   EXPONENT_FRACTION_DIGITS,
+  MANTISSA_TRAILING_ZEROS_PATTERN,
   OPERATORS,
+  OPERATOR_SYMBOLS,
   ROUNDED_INTEGER_THRESHOLD,
+  SINGLE_DIGIT_PATTERN,
   ZERO_ENTRY
 } from './constants';
 import type { Digit, Operator } from './types';
-
-const SINGLE_DIGIT_PATTERN = /^[0-9]$/;
-const ANY_DIGIT_PATTERN = /[0-9]/g;
-const OPERATOR_SYMBOLS: readonly unknown[] = Object.values(OPERATORS);
-/** Trailing zeros of a mantissa, with its point when nothing is left after it, as in `1.000e+21`. */
-const MANTISSA_TRAILING_ZEROS_PATTERN = /\.?0+(?=e)/;
 
 /** The two operands of an arithmetic operation. */
 interface Operands {
@@ -27,10 +26,63 @@ interface ApplyOperatorParams extends Operands {
   operator: Operator;
 }
 
+/** Parameters of {@link roundToOperandPrecision}. */
+interface RoundToOperandPrecisionParams extends Operands {
+  /** Sum or difference of the two operands, as JavaScript computes it. */
+  result: number;
+}
+
+/**
+ * Rounds a sum or a difference to {@link ADDITIVE_PRECISION_DIGITS} significant digits of its
+ * larger operand, which drops the float noise that rounding the result alone keeps when close
+ * values cancel out: `0.1 + 0.2 - 0.3` gives `5.55e-17` in JavaScript, and `0` once rounded. From
+ * `10^15`, where the rounding would drop integer digits, and for operands that are both zero or not
+ * finite, the result is kept as it is; so is a result from {@link ROUNDED_INTEGER_THRESHOLD} whose
+ * rounding would drop the whole fraction, such as `100000000000.00001`, which the screen would
+ * then show as an exact integer.
+ *
+ * @returns The rounded result, `0` rather than `-0`, or the result unchanged.
+ * @example roundToOperandPrecision({ left: 0.1 + 0.2, right: 0.3, result: 0.1 + 0.2 - 0.3 }) // 0
+ */
+export const roundToOperandPrecision = ({
+  left,
+  right,
+  result
+}: RoundToOperandPrecisionParams): number => {
+  const largerMagnitude = Math.max(Math.abs(left), Math.abs(right));
+  const largerExponent = Math.floor(Math.log10(largerMagnitude));
+  const scale = 10 ** (ADDITIVE_PRECISION_DIGITS - 1 - largerExponent);
+  // A scale below 1 would round integer digits; an infinite or NaN one comes from zero, tiny or
+  // non-finite operands.
+  const keepsIntegerDigits = Number.isFinite(scale) && scale >= 1;
+
+  if (!keepsIntegerDigits) {
+    return result;
+  }
+
+  const rounded = Math.round(result * scale) / scale;
+  // The screen shows an integer in full, as exact: from ROUNDED_INTEGER_THRESHOLD, the fraction
+  // dropped here would no longer show in exponent notation that the result is rounded.
+  const hidesFraction =
+    Number.isInteger(rounded) &&
+    !Number.isInteger(result) &&
+    Math.abs(rounded) >= ROUNDED_INTEGER_THRESHOLD;
+
+  if (hidesFraction) {
+    return result;
+  }
+
+  // Math.round gives -0 for a small negative noise, such as -2.78e-17.
+  const isZero = rounded === 0;
+  return isZero ? 0 : rounded;
+};
+
 /** Computation of each operator, keyed by its symbol. */
 const OPERATIONS: Record<Operator, (operands: Operands) => number> = {
-  [OPERATORS.ADD]: ({ left, right }) => left + right,
-  [OPERATORS.SUBTRACT]: ({ left, right }) => left - right,
+  [OPERATORS.ADD]: ({ left, right }) =>
+    roundToOperandPrecision({ left, right, result: left + right }),
+  [OPERATORS.SUBTRACT]: ({ left, right }) =>
+    roundToOperandPrecision({ left, right, result: left - right }),
   [OPERATORS.MULTIPLY]: ({ left, right }) => left * right,
   [OPERATORS.DIVIDE]: ({ left, right }) => left / right
 };
