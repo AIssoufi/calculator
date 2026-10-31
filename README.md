@@ -160,13 +160,24 @@ It runs [`scripts/live-check/check-live-site.sh`](scripts/live-check/check-live-
 - `/manifest.json` answers 200 with a JSON object;
 - `/does-not-exist` answers 404.
 
+Its second step, `Check the production deployment`, covers what the site cannot show: after a failed deployment, Pages keeps serving the previous build.
+
+[`check-production-deployment.sh`](scripts/live-check/check-production-deployment.sh) reads the `Cloudflare Pages` check run of the head of `master` through the GitHub API:
+
+- it fails on the `failure` conclusion and on an answer it cannot read;
+- it passes on a success, a build in progress, any other conclusion and a head without that check.
+
 When a run fails, GitHub notifies the last person who changed the cron line. It also turns off a scheduled workflow after 60 days without activity in a public repository such as this one: turn the Live check back on from the Actions tab, or with `gh workflow enable live-check.yml`.
 
-The script needs curl and jq only, and checks any deployment, a preview included; it adds `https://` to a bare host. `pnpm test` runs its tests, [`check-live-site.spec.mjs`](scripts/live-check/check-live-site.spec.mjs), against a fake site.
+Both scripts need curl and jq only, and `pnpm test` runs their tests:
+
+- `check-live-site.sh` checks any deployment, a preview included, and adds `https://` to a bare host; [its tests](scripts/live-check/check-live-site.spec.mjs) run against a fake site;
+- `check-production-deployment.sh` takes a branch or a commit, and `GITHUB_TOKEN` is optional on this public repository; [its tests](scripts/live-check/check-production-deployment.spec.mjs) run against a fake GitHub API.
 
 ```bash
 scripts/live-check/check-live-site.sh https://calculator.issoufi.fr
 scripts/live-check/check-live-site.sh <preview>.calculator-1x0.pages.dev
+scripts/live-check/check-production-deployment.sh AIssoufi/calculator master
 ```
 
 ## History
