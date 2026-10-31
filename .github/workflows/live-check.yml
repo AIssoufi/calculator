@@ -1,6 +1,7 @@
 name: Live check
 
 # Checks the production site from outside, on an hourly cron and on demand from the Actions tab.
+# Also fails when the deployment of the head of master failed, which the site does not show.
 # GitHub runs a schedule on the default branch only and delays and drops scheduled runs, so they
 # come hours apart (#81). It is busiest at the start of each hour, hence the odd minute. It sends
 # a failed run to the last person who changed the cron line.
@@ -11,6 +12,7 @@ on:
 
 permissions:
   contents: read
+  checks: read
 
 jobs:
   live-check:
@@ -27,3 +29,10 @@ jobs:
       # Needs curl and jq only, which the runner image provides: nothing to install.
       - name: Check the production site
         run: bash scripts/live-check/check-live-site.sh https://calculator.issoufi.fr
+
+      # After a failed deployment the site keeps serving its previous build, so the step above
+      # stays green: only the check run of the commit tells (#97).
+      - name: Check the production deployment
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: bash scripts/live-check/check-production-deployment.sh "$GITHUB_REPOSITORY" master
