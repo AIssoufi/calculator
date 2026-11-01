@@ -8,7 +8,9 @@
 
 ## Lancer le projet
 
-The project uses Node.js 24, pinned in `.nvmrc` (`nvm use` selects it), and [pnpm](https://pnpm.io/installation) 12.14.0, pinned by the `packageManager` field of `package.json`: an installed pnpm switches to that version by itself.
+The project uses Node.js 26, pinned in `.nvmrc` (`nvm use` selects it) and required by the `engines` field of `package.json`: `pnpm install` fails on an older Node.js.
+
+It uses [pnpm](https://pnpm.io/installation) 12.14.0, pinned by the `packageManager` field of `package.json`: an installed pnpm switches to that version by itself.
 
 ```bash
 pnpm install  # install the dependencies from pnpm-lock.yaml, and the git hooks
@@ -19,7 +21,7 @@ pnpm preview  # serves the production build on http://localhost:4173/
 
 [Vite](https://vite.dev/) serves and builds the app from [`index.html`](index.html), with the settings of [`vite.config.js`](vite.config.js). The files of `public/` are copied as they are to `build/`.
 
-[`pnpm-workspace.yaml`](pnpm-workspace.yaml) holds the pnpm settings: pnpm only installs versions published at least 7 days ago, and runs no install script of a dependency unless it is listed in `allowBuilds` (none needs one).
+[`pnpm-workspace.yaml`](pnpm-workspace.yaml) holds the pnpm settings: pnpm only installs versions published at least 7 days ago, refuses a Node.js that the `engines` field does not allow (`engineStrict`), and runs no install script of a dependency unless it is listed in `allowBuilds` (none needs one).
 
 ## How it computes
 

@@ -6,3 +6,6 @@ minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
   - pnpm
   - '@pnpm/*'
+# Fails the install on a Node.js that the engines field of package.json does not allow, which pnpm
+# would otherwise accept without a warning
+engineStrict: true
