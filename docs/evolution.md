@@ -2,7 +2,7 @@
 
 How the project's stack changed, era by era, oldest first. Each tool change has its Architecture Decision Record in [`decisions/`](decisions/).
 
-The figures of the npm eras were measured on 2026-10-20 from the last commit of each era, rebuilt in a detached worktree with the method of the [baseline of the npm eras](#baseline-of-the-npm-eras); the Vite and TypeScript eras use the method of the [baseline of the TypeScript era](#baseline-of-the-typescript-era-5), and the later eras were measured by a measuring tool kept outside the repository, as each of their sections tells. That tool times and runs the commands of the [baseline of the TypeScript era](#baseline-of-the-typescript-era-5), with the differences named below, so each figure can be measured again by hand: it checks out the Before and the After commits in detached worktrees on the same machine and measures them in alternation, three runs of each figure, and gives the median first, then the three runs. It times `pnpm install --frozen-lockfile` after deleting `node_modules`, `pnpm build` after deleting `build/` but keeping `node_modules/.vite`, the start of `vite` until it serves the page, and `pnpm test`; it reads the raw and gzipped sizes of the script and the stylesheet of `build/assets/` with `wc -c` and `gzip -c <file> | wc -c`, the number of tests from the summaries of the Node.js test runner, Vitest and Playwright, the direct dependencies from the keys of `package.json`, the advisories from `pnpm audit --json`, and the four scores of Lighthouse on `build/` served locally with its default mobile settings. The CI durations come from the run of each pull request, or of the push of the Before commit to `master`, from `createdAt` to `updatedAt` in `gh run view`, and the job times from the jobs of that run. The [current state](#current-state) gives today's figures. Each table compares the last commit of the previous era (Before) with the last commit of the era (After). `npm audit` and `pnpm audit` read today's advisory database, so they count what is known to be vulnerable today, not what was known at the time.
+The figures of the npm eras were measured on 2026-10-20 from the last commit of each era, rebuilt in a detached worktree with the method of the [baseline of the npm eras](#baseline-of-the-npm-eras); the Vite and TypeScript eras use the method of the [baseline of the TypeScript era](#baseline-of-the-typescript-era-5), and the later eras were measured by a measuring tool kept outside the repository, as each of their sections tells. That tool times and runs the commands of the [baseline of the TypeScript era](#baseline-of-the-typescript-era-5), with the differences named below, so each figure can be measured again by hand: it checks out the Before and the After commits in detached worktrees on the same machine and measures them in alternation, three runs of each figure, and gives the median first, then the three runs. It times `pnpm install --frozen-lockfile` after deleting `node_modules`, `pnpm build` after deleting `build/` but keeping `node_modules/.vite`, the start of `vite` until it serves the page, and `pnpm test`; it reads the raw sizes of the script and the stylesheet of `build/assets/` with `wc -c` and their gzipped sizes with the level 6 of the zlib of Node.js, the number of tests from the summaries of the Node.js test runner, Vitest and Playwright, the direct dependencies from the keys of `package.json`, the advisories from `pnpm audit --json`, and the four scores of Lighthouse on `build/` served locally with its default mobile settings. The CI durations come from the run of each pull request, or of the push of the Before commit to `master`, from `createdAt` to `updatedAt` in `gh run view`, and the job times from the jobs of that run. The eras of Dependabot, the security headers, the Live check, the pre-commit hook and axe were written afterwards (#91): their figures were measured on 2026-11-01 with Node.js 26.13.0 and pnpm 12.14.0 in detached worktrees, sizes with `gzip -c`, and only the install and end-to-end times in alternation, so a figure of these eras compares with its own table, not with the eras around it. The [current state](#current-state) gives today's figures. Each table compares the last commit of the previous era (Before) with the last commit of the era (After). `npm audit` and `pnpm audit` read today's advisory database, so they count what is known to be vulnerable today, not what was known at the time.
 
 ## 2018: a Create React App with Redux, on GitHub Pages
 
@@ -161,6 +161,25 @@ The Before column is `3fa976a`, the last commit of the previous era, measured on
 - Lighthouse's performance score goes from 97 to 95 (runs 98, 97, 97 before; 95, 95, 96 after): the simulated throttling of Lighthouse downloads and parses the larger script before the first paint.
 - The install, build, dev server and test times overlap from one column to the other.
 
+## 2026: Dependabot proposes the updates
+
+Every update was found and made by hand (#33). `.github/dependabot.yml` now runs weekly updates of the npm packages, with the minor and patch updates grouped and each major apart, and of the GitHub Actions, all grouped, after a cooldown of 7 days that matches `minimumReleaseAge` (#39).
+
+The Before column is `12e2cf7`, the base of the pull request, and the After column its merge `efbb2ba`, measured on 2026-11-01 as the [introduction](#evolution) tells.
+
+| Figure              | Before                                   | After                                                            |
+| ------------------- | ---------------------------------------- | ---------------------------------------------------------------- |
+| Dependency updates  | by hand                                  | weekly pull requests, 7 days after a release                     |
+| Direct dependencies | 26 (4 + 22 development)                  | 26 (4 + 22 development)                                          |
+| Tests               | 557: 187 Node.js test runner, 370 Vitest | 562: 192 Node.js test runner, 370 Vitest                         |
+| CI duration         | 39 s (run 39570202171)                   | 45 s (run 39599068182 of the pull request, one run of each side) |
+
+- 4 of the 5 new tests lint the titles of Dependabot, and the fifth checks that a Dependabot commit is ignored through its sign-off.
+- The build is unchanged: 255,456 B raw and 81,288 B gzipped for the script, on both commits.
+- On 2026-11-01 Dependabot had opened no pull request (see #79 and #94).
+
+Decision: [0015. Propose dependency updates with Dependabot](decisions/0015-add-dependabot.md)
+
 ## 2026: smoke tests of the production build in Chromium
 
 The unit tests run in jsdom, which does no layout, so the layout bugs of #8 and #34 were found by hand. Playwright 1.64 now runs 4 smoke tests in Chromium against the production build served by `vite preview`, locally with `pnpm test:e2e` and on every pull request (#42).
@@ -180,6 +199,44 @@ The Before column is `e44fdcf`, the base of the pull request, measured on 2026-1
 - The build, its size and the unit tests are unchanged: Playwright is a development dependency that the app does not import.
 
 Decision: [0012. Smoke test the production build in Chromium with Playwright](decisions/0012-add-playwright-smoke-tests.md)
+
+## 2026: security headers
+
+The site sent no Content-Security-Policy, no HSTS and no frame protection (#46). `public/_headers` now sends them on every response, the 404 page included, and a Playwright spec reads that file from the build, then serves both pages under its headers in Chromium, where a violation fails the test (#51).
+
+The Before column is `d215782`, the base of the pull request, and the After column its merge `83ac239`, measured on 2026-11-01 as the [introduction](#evolution) tells.
+
+| Figure              | Before                       | After                                                            |
+| ------------------- | ---------------------------- | ---------------------------------------------------------------- |
+| Security headers    | none                         | Content-Security-Policy, HSTS, Permissions-Policy                |
+| Direct dependencies | 27 (4 + 23 development)      | 27 (4 + 23 development)                                          |
+| Tests               | 562, and 12 Playwright tests | the same 562, and 16 Playwright tests                            |
+| End-to-end time     | 3.3 s (3.5, 3.3, 2.8)        | 3.2 s (3.2, 3.6, 3.1)                                            |
+| CI duration         | 48 s (run 39921086371)       | 45 s (run 39927250956 of the pull request, one run of each side) |
+
+- The end-to-end time is `pnpm exec playwright test --workers=1`, wall clock. It overlaps from one column to the other.
+- The script is unchanged: 255,456 B raw and 81,288 B gzipped, on both commits.
+
+Decision: [0016. Send the security headers from `public/_headers`](decisions/0016-add-security-headers.md)
+
+## 2026: the Live check
+
+The CI proves a commit, not the site that visitors reach (#62). A scheduled workflow now reads `calculator.issoufi.fr` with `curl` and `jq`: the status and title of the page, its Content-Security-Policy, its hashed assets, the manifest and a 404 (#64). GitHub delays and drops scheduled runs, so the check is periodic, not continuous (#83). A failed deployment left the site serving its previous build, and 17 runs up to 2026-11-01 stayed green after `4475253`, so a second step now reads the `Cloudflare Pages` check run of the head of `master` (#99).
+
+The Before column is `9cc91a8`, the base of the pull request of #64, and the After column its merge `0fd766e`, measured on 2026-11-01 as the [introduction](#evolution) tells.
+
+| Figure              | Before                                   | After                                                            |
+| ------------------- | ---------------------------------------- | ---------------------------------------------------------------- |
+| Check of production | none                                     | a cron at minute 17 of each hour                                 |
+| Direct dependencies | 27 (4 + 23 development)                  | 27 (4 + 23 development)                                          |
+| Tests               | 563: 192 Node.js test runner, 371 Vitest | 592: 221 Node.js test runner, 371 Vitest                         |
+| CI duration         | 44 s (run 40078052229)                   | 45 s (run 40135862436 of the pull request, one run of each side) |
+
+- The 29 new tests run the script against a fake site.
+- The deployment step (#99) goes from 661 tests at `16959ce`, its Before, to 694 at `03eb52c`, its merge: 33 more for the Node.js test runner, 277 in all. Its pull request ran in 52 s (run 41235282111), against 58 s for `16959ce` (run 41293535800).
+- A scheduled run took 7 to 11 s over the last 15 runs before that step.
+
+Decision: [0017. Check the production site from a scheduled workflow](decisions/0017-add-live-check.md)
 
 ## 2026: Prettier formats every file
 
@@ -201,6 +258,44 @@ The Before column is `c0b6363`, the base of the pull request, measured on 2026-1
 - `pnpm format:check` was timed apart, with `/usr/bin/time -p`, on the After only.
 
 Decision: [0013. Format the code and the docs with Prettier](decisions/0013-add-prettier.md)
+
+## 2026: the pre-commit hook
+
+A forgotten `pnpm format` failed the CI after the push (#74). A husky hook now formats the staged files through the API of Prettier, the staged and the disk versions apart, so a partly staged file keeps its unstaged lines out of the commit (#77).
+
+The Before column is `fb4b080`, the base of the pull request, and the After column its merge `13aa28a`, measured on 2026-11-01 as the [introduction](#evolution) tells.
+
+| Figure                  | Before                                   | After                                                            |
+| ----------------------- | ---------------------------------------- | ---------------------------------------------------------------- |
+| Formatting of a commit  | by hand, then `pnpm format:check` in CI  | the hook, and the same check in CI                               |
+| Hook on one staged file | no hook                                  | 0.10 s (0.11, 0.10, 0.10)                                        |
+| Direct dependencies     | 29 (4 + 25 development)                  | 29 (4 + 25 development)                                          |
+| Tests                   | 636: 221 Node.js test runner, 415 Vitest | 659: 244 Node.js test runner, 415 Vitest                         |
+| CI duration             | 48 s (run 40701794456)                   | 39 s (run 40703456527 of the pull request, one run of each side) |
+
+- The hook was timed at `4475253`, with `node scripts/commits/pre-commit.mjs`.
+- The script and its specs are 563 added lines, and no dependency.
+
+Decision: [0018. Format the staged files before a commit](decisions/0018-format-staged-files-before-a-commit.md)
+
+## 2026: accessibility tests with axe
+
+An accessibility problem only showed in a manual audit (#86). `@axe-core/playwright` 4.14 now checks the calculator and the 404 page of the production build in Chromium, at a phone and a laptop width, with no rule excluded (#87).
+
+The Before column is `c934b74`, the base of the pull request, and the After column its merge `4475253`, measured on 2026-11-01 as the [introduction](#evolution) tells.
+
+| Figure              | Before                       | After                                                            |
+| ------------------- | ---------------------------- | ---------------------------------------------------------------- |
+| Install time        | 0.5 s (0.6, 0.5, 0.5)        | 0.5 s (0.5, 0.5, 0.5)                                            |
+| Direct dependencies | 29 (4 + 25 development)      | 30 (4 + 26 development)                                          |
+| Tests               | 661, and 17 Playwright tests | the same 661, and 21 Playwright tests                            |
+| End-to-end time     | 3.1 s (3.4, 3.1, 3.1)        | 4.9 s (5.2, 4.9, 4.3)                                            |
+| CI duration         | 116 s (run 40710482613)      | 53 s (run 40711144742 of the pull request, one run of each side) |
+
+- The end-to-end time is `pnpm exec playwright test --workers=1`, wall clock: the 4 axe tests add 1.8 s.
+- The build is unchanged: 255,645 B raw and 81,308 B gzipped for the script, on both commits.
+
+Decision: [0019. Test the accessibility of the build with axe](decisions/0019-test-accessibility-with-axe.md)
 
 ## 2026: Node.js 26
 
@@ -224,22 +319,24 @@ Decision: [0014. Move to Node.js 26, the Active LTS](decisions/0014-move-to-node
 
 ## Current state
 
-Measured on 2026-10-28 on the pull request of #55, on an Apple M3 with 8 cores, macOS (Darwin 27.0.0), Node.js 24.22.0 and pnpm 12.14.0, except the Lighthouse scores, measured on 2026-10-24 on the production site, which served the build of `9e44f52`, the merge of pull request #59 (`index-CrBqt4YC.js` and `index-BzBp1EiE.css`).
+Measured on 2026-11-01 on `1132d01`, the base of the pull request of #91, on an Apple M3 with 8 cores, macOS (Darwin 27.0.0), Node.js 26.13.0 and pnpm 12.14.0. The Lighthouse scores were measured the same day on the production site, which served the same files as the build of that commit (`index-CO3Hhjt-.js` and `index-Bduf4zLO.css`).
 
-| Figure                  | Value                                                                                                                | How it was measured                                                                                                                    |
-| ----------------------- | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| Stack                   | React 19.3, Redux Toolkit 2.13, React Redux 9.3, TypeScript 6.0, Vite 8.3, Vitest 5.0, Playwright 1.64, Prettier 3.9 | the versions of `package.json`                                                                                                         |
-| JavaScript              | 255,867 B raw, 81,629 B gzipped                                                                                      | `wc -c` and `gzip -c <file> \| wc -c` on `build/assets/index-*.js`, the only script, after `pnpm build`                                |
-| CSS                     | 3,140 B raw, 1,200 B gzipped                                                                                         | the same on `build/assets/index-*.css`, the only stylesheet                                                                            |
-| Test suite              | 636 tests: 221 Node.js test runner, 415 Vitest (18 files)                                                            | `pnpm test`                                                                                                                            |
-| Smoke tests             | 17 Playwright tests in Chromium (4 files)                                                                            | `pnpm exec playwright test --list`, and `pnpm test:e2e`, which passed them all                                                         |
-| Direct dependencies     | 4 dependencies, 25 development dependencies                                                                          | the keys of `package.json`                                                                                                             |
-| `pnpm audit` advisories | none                                                                                                                 | `pnpm audit --json`, `metadata.vulnerabilities`                                                                                        |
-| Lighthouse (mobile)     | performance 100, accessibility 100, best practices 100, SEO 100                                                      | `npx lighthouse@12.8.2 https://calculator.issoufi.fr` in headless Chrome, default mobile settings; the three runs gave the same scores |
+| Figure                  | Value                                                                                                                          | How it was measured                                                                                                                    |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Stack                   | React 19.3, Redux Toolkit 2.13, React Redux 9.3, TypeScript 6.0, Vite 8.3, Vitest 5.0, Playwright 1.64, axe 4.14, Prettier 3.9 | the versions of `package.json`                                                                                                         |
+| JavaScript              | 255,950 B raw, 81,391 B gzipped                                                                                                | `wc -c` and `gzip -c <file> \| wc -c` on `build/assets/index-*.js`, the only script, after `pnpm build`                                |
+| CSS                     | 3,140 B raw, 1,217 B gzipped                                                                                                   | the same on `build/assets/index-*.css`, the only stylesheet                                                                            |
+| Test suite              | 744 tests: 277 Node.js test runner, 467 Vitest (18 files)                                                                      | `pnpm test`                                                                                                                            |
+| End-to-end tests        | 22 Playwright tests in Chromium (5 files): smoke, headers, icons, not found page, accessibility                                | `pnpm exec playwright test --list`, and `pnpm test:e2e`, which passed them all                                                         |
+| Direct dependencies     | 4 dependencies, 26 development dependencies                                                                                    | the keys of `package.json`                                                                                                             |
+| `pnpm audit` advisories | not recorded on this page, see #96                                                                                             | `pnpm audit --json`, `metadata.vulnerabilities`                                                                                        |
+| Lighthouse (mobile)     | performance 90, accessibility 100, best practices 100, SEO 100                                                                 | `npx lighthouse@12.8.2 https://calculator.issoufi.fr` in headless Chrome, default mobile settings; the three runs gave the same scores |
 
-- Vite prints 82.47 kB for the gzipped script: it compresses at a different level than `gzip -c`, the command of every table of this page.
+- Vite prints 82.45 kB for the gzipped script, with its own compression: compare it with no other figure.
+- `gzip -c` gives 1,217 B for the stylesheet where the table of the [Node.js 26 era](#2026-nodejs-26) gives 1,200 B for the same file: that figure equals the level 6 of the zlib of Node.js, which the measuring tool used. Compare a gzipped size within one table only.
 - Lighthouse ran on the production site, as for the baseline of the npm eras, where the baseline of the TypeScript era ran on the local `build/`: compare these scores with those of the [baseline of the npm eras](#baseline-of-the-npm-eras).
-- The script grew by 71,119 B raw since the baseline of the TypeScript era, mostly from React DOM 19 (see [its era](#2026-react-19-redux-toolkit-2-and-react-redux-9)).
+- Performance was 100 on 2026-10-24. The largest contentful paint is 1.3 s and the total blocking time 0 ms, but the Speed Index reads 13.2, 24.4 and 34.3 s, which alone lowers the score; #100 looks for its cause.
+- The script grew by 71,202 B raw since the baseline of the TypeScript era, mostly from React DOM 19 (see [its era](#2026-react-19-redux-toolkit-2-and-react-redux-9)).
 
 ## Baseline of the TypeScript era (#5)
 
