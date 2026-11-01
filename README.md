@@ -61,7 +61,7 @@ pnpm format:check  # Prettier: fails on a file that is not formatted, as in the 
 pnpm typecheck     # TypeScript, as in the CI
 pnpm test          # a single run of the unit tests, as in the CI
 pnpm test:watch    # watch mode: re-runs the tests of the changed files
-pnpm test:e2e      # the smoke tests of the production build in Chromium, as in the CI
+pnpm test:e2e      # the smoke, security header and accessibility tests of the production build in Chromium, as in the CI
 ```
 
 [ESLint](https://eslint.org/) applies its recommended rules, the [typescript-eslint](https://typescript-eslint.io/) rules to `src/` and `e2e/`, and the React and Rules of Hooks rules to `src/`; its settings are in [`eslint.config.js`](eslint.config.js).
@@ -90,7 +90,7 @@ The [CI workflow](.github/workflows/ci.yml) runs on every pull request and every
 5. it checks the types;
 6. it runs the tests once;
 7. it builds the app;
-8. it runs the smoke tests in Chromium, which it caches between runs until Playwright changes.
+8. it runs the smoke, security header and accessibility tests in Chromium, which it caches between runs until Playwright changes.
 
 A moderate or higher advisory against the lockfile, a lint error, a file that Prettier would format, a type error, a failing test or a failed build fails the check. On a pull request, a second job checks the commit messages and the title (see [Commit messages](#commit-messages)).
 
