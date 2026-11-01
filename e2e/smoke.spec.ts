@@ -5,6 +5,10 @@ import { VIEWPORTS } from './constants';
 const TYPED_KEYS = '2+3*4=';
 const EXPECTED_RESULT = '20';
 
+// A classic calculator test: plain JavaScript numbers leave 5.55e-17 when values cancel out.
+const CANCELLING_KEYS = '0.1+0.2-0.3=';
+const CANCELLING_RESULT = '0';
+
 // Accessible names of the buttons that enter the same calculation with the mouse.
 const CLICKED_KEY_NAMES = ['2', '+', '3', 'Multiplier', '4', '='];
 
@@ -30,6 +34,14 @@ test('computes with the keyboard', async ({ page }) => {
   await page.keyboard.type(TYPED_KEYS);
 
   await expect(calculatorScreen).toHaveText(EXPECTED_RESULT);
+});
+
+test('shows 0 when close decimal values cancel out', async ({ page }) => {
+  const calculatorScreen = await openCalculator(page);
+
+  await page.keyboard.type(CANCELLING_KEYS);
+
+  await expect(calculatorScreen).toHaveText(CANCELLING_RESULT);
 });
 
 test('computes with the mouse', async ({ page }) => {
